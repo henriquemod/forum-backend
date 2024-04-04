@@ -6,7 +6,6 @@ import { join } from 'path'
 export const setupRoutes = (app: Express): void => {
   const router = Router()
   readdirSync(join(__dirname, '../routes')).map(async (file) => {
-    console.log({ file })
     const curImport = await import(`../routes/${file}`)
     curImport.default(router)
   })
