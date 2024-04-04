@@ -1,0 +1,15 @@
+{
+  "name": "pet-wise-qa-backend",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun src/main/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.4.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.4.3"
+  }
+}
