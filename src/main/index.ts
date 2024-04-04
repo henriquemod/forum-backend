@@ -3,14 +3,6 @@ import bodyParser from 'body-parser'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any
-    }
-  }
-}
-
 dotenv.config()
 
 const app = express()
