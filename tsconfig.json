@@ -21,6 +21,9 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
-  }
+    "noPropertyAccessFromIndexSignature": false,
+    "typeRoots": ["./node_modules/@types", "./src/main"]
+  },
+  "include": ["./src/**/*.d.ts"],
+  "files": ["src/main/index.d.ts"]
 }
