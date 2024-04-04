@@ -1,9 +1,11 @@
 {
   "name": "pet-wise-qa-backend",
-  "module": "index.ts",
+  "module": "src/main/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun src/main/index.ts"
+    "start": "node dist/index.js",
+    "dev": "bun src/main/index.ts",
+    "build": "tsc --build"
   },
   "devDependencies": {
     "@types/bun": "latest",
