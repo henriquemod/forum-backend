@@ -2,9 +2,13 @@ import { Controller } from '@/application/controllers'
 import { ok, unauthorized, type HttpResponse } from '@/application/helpers'
 import type { Login } from '@/domain/features'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
+import type { TokenMongoRepository } from '@/infra/db/mongodb'
 
 export class LoginController extends Controller {
-  constructor(private readonly login: Login) {
+  constructor(
+    private readonly login: Login,
+    private readonly tokenRepository: TokenMongoRepository
+  ) {
     super()
   }
 
@@ -16,12 +20,18 @@ export class LoginController extends Controller {
       username,
       password
     })
-    return accessToken instanceof Error
-      ? unauthorized()
-      : ok({
-          token: accessToken.token,
-          refreshToken: accessToken.refreshToken
-        })
+    if (accessToken instanceof Error) return unauthorized()
+
+    const repositoryResponse = await this.tokenRepository.add({
+      token: accessToken.token
+    })
+
+    if (!repositoryResponse) return unauthorized()
+
+    return ok({
+      token: accessToken.token,
+      refreshToken: accessToken.refreshToken
+    })
   }
 
   override buildValidators({ password, username }: Login.Params): Validator[] {
