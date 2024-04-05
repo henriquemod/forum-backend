@@ -1,5 +1,5 @@
 import type { AddTokenRepository } from '@/data/protocols/db/token'
-import { AccessTokenSchema } from '@/infra/db/mongodb/schemas/token'
+import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 import mongoose from 'mongoose'
 
 export class TokenMongoRepository implements AddTokenRepository {

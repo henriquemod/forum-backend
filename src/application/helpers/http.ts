@@ -5,6 +5,11 @@ export interface HttpResponse<T = any> {
   data: T
 }
 
+export const forbidden = (error: Error): HttpResponse<Error> => ({
+  statusCode: 403,
+  data: error
+})
+
 export const badRequest = (error: Error): HttpResponse<Error> => ({
   statusCode: 400,
   data: error

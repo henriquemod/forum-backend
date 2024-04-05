@@ -1,4 +1,4 @@
-import { adaptExpressRoute } from '@/infra/http/express-router'
+import { adaptExpressRoute } from '@/main/adapters'
 import { env } from '@/main/config/env'
 import type { NextFunction, Request, Response, Router } from 'express'
 import jwt from 'jsonwebtoken'

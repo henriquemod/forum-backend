@@ -1,16 +1,5 @@
 import type { Controller } from '@/application/controllers'
-import type { Request, RequestHandler, Response } from 'express'
-
-export class ExpressRouter {
-  constructor(private readonly controller: Controller) {}
-  async adapt(req: Request, res: Response): Promise<void> {
-    const { statusCode, data } = await this.controller.handle({ ...req.body })
-    const json =
-      statusCode >= 200 && statusCode <= 299 ? data : { error: data.message }
-
-    res.status(statusCode).json(json)
-  }
-}
+import type { RequestHandler } from 'express'
 
 export const adaptExpressRoute = (controller: Controller): RequestHandler => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises

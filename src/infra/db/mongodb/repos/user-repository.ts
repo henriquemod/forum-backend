@@ -1,7 +1,6 @@
-import type { AddUserRepository } from '@/data/protocols/db/token'
-import type { AuthenticateRepository } from '@/data/protocols/db/user'
+import type { AddUserRepository, AuthenticateRepository } from '@/data/protocols/db/user'
 import type { Authenticate } from '@/domain/features/auth'
-import { UserSchema } from '@/infra/db/mongodb/schemas/user'
+import { UserSchema } from '@/infra/db/mongodb/schemas'
 import { env } from '@/main/config/env'
 import jwt from 'jsonwebtoken'
 
@@ -34,7 +33,7 @@ export class UserMongoRepository
     const token = jwt.sign(
       { id: user.id, username: data.username },
       env.jwtSecret,
-      { expiresIn: '20s' }
+      { expiresIn: '2d' }
     )
 
     // Refresh token is long-lived

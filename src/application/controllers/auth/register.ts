@@ -1,8 +1,8 @@
 import { Controller } from '@/application/controllers'
 import { badRequest, ok, type HttpResponse } from '@/application/helpers'
-import { ValidationBuilder as builder, type Validator } from '../../validation'
-import type { AddUserRepository } from '@/data/protocols/db/token'
+import type { AddUserRepository } from '@/data/protocols/db/user'
 import type { Register } from '@/domain/features/auth'
+import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 export class RegisterController extends Controller {
   constructor(private readonly userRepository: AddUserRepository) {
