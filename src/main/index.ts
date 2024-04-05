@@ -1,10 +1,9 @@
 import { makeApp } from '@/main/config/app'
 import { env } from '@/main/config/env'
-import { MongoHelper } from '@/infra/db/mongodb'
-// import { makePgDatasource } from './factories/repos/pg-datasource'
+import mongoose from 'mongoose'
 
 const start = async (): Promise<void> => {
-  await MongoHelper.connect(env.mongoUrl)
+  await mongoose.connect(env.mongoUrl)
 
   const app = makeApp()
 

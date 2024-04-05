@@ -6,6 +6,7 @@ import {
   makeLoginController,
   makeRefreshTokenController
 } from '../factories/controllers/auth'
+import { makeRegisterController } from '../factories/controllers/auth/register'
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization
@@ -24,6 +25,7 @@ let refreshTokens: string[] = []
 export default (router: Router): void => {
   router.post('/login', adaptExpressRoute(makeLoginController()))
   router.post('/token', adaptExpressRoute(makeRefreshTokenController()))
+  router.post('/register', adaptExpressRoute(makeRegisterController()))
 
   router.get('/protected', authenticateToken, (req, res) => {
     res.json({

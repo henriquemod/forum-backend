@@ -5,7 +5,8 @@ export interface AddToken {
 export namespace AddToken {
   export interface Params {
     token: string
+    userId: string
   }
 
-  export type Result = boolean
+  export type Result = undefined
 }

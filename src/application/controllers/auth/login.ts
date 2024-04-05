@@ -1,13 +1,14 @@
 import { Controller } from '@/application/controllers'
 import { ok, unauthorized, type HttpResponse } from '@/application/helpers'
+import type { AddTokenRepository } from '@/data/protocols/db/token'
+import type { AuthenticateRepository } from '@/data/protocols/db/user/find'
 import type { Login } from '@/domain/features'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
-import type { TokenMongoRepository } from '@/infra/db/mongodb'
 
 export class LoginController extends Controller {
   constructor(
-    private readonly login: Login,
-    private readonly tokenRepository: TokenMongoRepository
+    private readonly login: AuthenticateRepository,
+    private readonly tokenRepository: AddTokenRepository
   ) {
     super()
   }
@@ -16,17 +17,16 @@ export class LoginController extends Controller {
     username,
     password
   }: Login.Params): Promise<HttpResponse<Login.Result>> {
-    const accessToken = await this.login.perform({
+    const accessToken = await this.login.auth({
       username,
       password
     })
     if (accessToken instanceof Error) return unauthorized()
 
-    const repositoryResponse = await this.tokenRepository.add({
-      token: accessToken.token
-    })
-
-    if (!repositoryResponse) return unauthorized()
+    // await this.tokenRepository.add({
+    //   token: accessToken.token,
+    //   userId: 'a'
+    // })
 
     return ok({
       token: accessToken.token,
