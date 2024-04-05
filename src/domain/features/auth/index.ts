@@ -1,3 +1,3 @@
-export * from './add-token'
-export * from './add-user'
+export * from './save-token'
 export * from './authenticate'
+export * from './register'

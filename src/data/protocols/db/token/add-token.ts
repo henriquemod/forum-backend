@@ -1,10 +1,10 @@
-import type { AddToken } from '@/domain/features/auth'
+import type { SaveToken } from '@/domain/features/auth'
 
 export interface AddTokenRepository {
   add: (data: AddTokenRepository.Params) => Promise<AddTokenRepository.Result>
 }
 
 export namespace AddTokenRepository {
-  export type Params = AddToken.Params
-  export type Result = AddToken.Result
+  export type Params = SaveToken.Params
+  export type Result = SaveToken.Result
 }

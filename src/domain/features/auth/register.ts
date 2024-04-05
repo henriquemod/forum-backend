@@ -1,4 +1,4 @@
-import type { RegisterError } from '../errors'
+import type { RegisterError } from '../../errors'
 
 export interface Register {
   perform: (params: Register.Params) => Promise<Register.Result>

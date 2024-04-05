@@ -1,10 +1,10 @@
-import type { AddUser } from '@/domain/features/auth'
+import type { Register } from '@/domain/features/auth'
 
 export interface AddUserRepository {
   add: (data: AddUserRepository.Params) => Promise<AddUserRepository.Result>
 }
 
 export namespace AddUserRepository {
-  export type Params = AddUser.Params
-  export type Result = AddUser.Result
+  export type Params = Register.Params
+  export type Result = Register.Result
 }
