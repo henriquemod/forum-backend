@@ -23,13 +23,14 @@ export class LoginController extends Controller {
 
     await this.tokenSaver.save({
       email: accessToken.email,
-      token: accessToken.token
+      accessToken: accessToken.accessToken,
+      refreshAccessToken: accessToken.refreshAccessToken
     })
 
     return ok({
       email: accessToken.email,
-      token: accessToken.token,
-      refreshToken: accessToken.refreshToken
+      accessToken: accessToken.accessToken,
+      refreshAccessToken: accessToken.refreshAccessToken
     })
   }
 

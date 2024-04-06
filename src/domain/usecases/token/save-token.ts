@@ -1,3 +1,5 @@
+import type { AccessToken } from '@/domain/models'
+
 export interface SaveToken {
   save: (account: SaveToken.Params) => Promise<SaveToken.Result>
 }
@@ -5,7 +7,8 @@ export interface SaveToken {
 export namespace SaveToken {
   export interface Params {
     email: string
-    token: string
+    accessToken: AccessToken
+    refreshAccessToken: AccessToken
   }
 
   export type Result = undefined

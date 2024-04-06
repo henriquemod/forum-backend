@@ -1,7 +1,10 @@
+import type { AccessToken } from '@/domain/models'
+
 export namespace AddTokenRepository {
   export interface Params {
     userId: string
-    token: string
+    accessToken: AccessToken
+    refreshAccessToken: AccessToken
   }
   export type Result = undefined
 }

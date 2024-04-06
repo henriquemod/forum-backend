@@ -1,12 +1,24 @@
 import { UnauthorizedError } from '@/application/errors'
-import type { JWTTokenValidator, RefreshToken } from '@/data/usecases/token'
+import type {
+  TokenValidate,
+  RefreshToken,
+  FindTokenRepository
+} from '@/data/protocols/db/token'
 import { env } from '@/main/config/env'
 import jwt from 'jsonwebtoken'
 
-export class TokenValidator implements JWTTokenValidator, RefreshToken {
-  async validate(token: string): Promise<boolean> {
+export class TokenManager implements TokenValidate, RefreshToken {
+  constructor(private readonly tokenRepository: FindTokenRepository) {}
+
+  async validate(accessToken: string): Promise<boolean> {
+    const userToken = await this.tokenRepository.find({ accessToken })
+
+    if (!userToken) {
+      return false
+    }
+
     return await new Promise((resolve) => {
-      jwt.verify(token, env.jwtSecret, (err) => {
+      jwt.verify(accessToken, env.jwtSecret, (err) => {
         if (err) {
           resolve(false)
         }

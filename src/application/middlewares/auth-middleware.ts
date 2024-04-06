@@ -1,5 +1,5 @@
 import type { Request } from 'express'
-import type { TokenValidator } from '@/infra/encryption/jwt/validate-token'
+import type { TokenManager } from '@/data/usecases/token/validate-token'
 import {
   noContent,
   unauthorized,
@@ -8,7 +8,7 @@ import {
 } from '../protocols'
 
 export class AuthMiddleware implements Middleware {
-  constructor(private readonly tokenValidator: TokenValidator) {}
+  constructor(private readonly tokenValidator: TokenManager) {}
   async handle({ authorization }: Request['headers']): Promise<HttpResponse> {
     if (!authorization) {
       return unauthorized()

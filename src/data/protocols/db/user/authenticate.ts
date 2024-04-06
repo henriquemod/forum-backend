@@ -11,5 +11,8 @@ export namespace AuthenticateRepository {
     username: string
     password: string
   }
-  export type Result = User & { token: AccessToken; refreshToken: AccessToken }
+  export type Result = User & {
+    accessToken: AccessToken
+    refreshAccessToken: AccessToken
+  }
 }

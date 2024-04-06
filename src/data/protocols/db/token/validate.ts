@@ -1,8 +1,8 @@
-export namespace TokenValidator {
+export namespace TokenValidate {
   export type Params = string
   export type Result = boolean
 }
 
-export interface JWTTokenValidator {
-  validate: (token: TokenValidator.Params) => Promise<TokenValidator.Result>
+export interface TokenValidate {
+  validate: (token: TokenValidate.Params) => Promise<TokenValidate.Result>
 }

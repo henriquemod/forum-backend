@@ -33,7 +33,7 @@ export class UserMongoRepository
       email: data.email
     })
 
-    if (!user || !user.email || !user.username || !user.password) {
+    if (!user) {
       throw new Error('User not found')
     }
 
@@ -52,22 +52,22 @@ export class UserMongoRepository
       username: data.username
     })
 
-    if (!user || !user.email || !user.username || !user.password) {
+    if (!user) {
       throw new Error('Unauthorized')
     }
 
     // Access token is short-lived
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { id: user.id, username: data.username },
       env.jwtSecret,
-      { expiresIn: '2d' }
+      { expiresIn: '3h' }
     )
 
     // Refresh token is long-lived
-    const refreshToken = jwt.sign(
+    const refreshAccessToken = jwt.sign(
       { id: user.id, username: data.username },
       env.refreshTokenSecret,
-      { expiresIn: '7d' }
+      { expiresIn: '3d' }
     )
 
     return {
@@ -75,8 +75,8 @@ export class UserMongoRepository
       email: user.email,
       username: user.username,
       password: user.password,
-      token,
-      refreshToken
+      accessToken,
+      refreshAccessToken
     }
   }
 }

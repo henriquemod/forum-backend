@@ -18,7 +18,8 @@ export class DbAddToken implements SaveToken {
     }
 
     await this.addTokenRepository.add({
-      token: account.token,
+      accessToken: account.accessToken,
+      refreshAccessToken: account.refreshAccessToken,
       userId: user.id
     })
   }
