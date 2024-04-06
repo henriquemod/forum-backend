@@ -1,14 +1,13 @@
-import { Controller } from '@/application/controllers'
-import { ok, type HttpResponse } from '@/application/helpers'
-import type { AddTokenRepository } from '@/data/protocols/db/token'
-import type { AuthenticateRepository } from '@/data/protocols/db/user/find'
+import { Controller, ok, type HttpResponse } from '@/application/protocols'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
-import type { Authenticate } from '@/domain/features/auth'
+import type { Authenticate } from '@/domain/usecases/auth'
+import type { SaveToken } from '@/domain/usecases/token'
+import type { AuthenticateRepository } from '@/data/protocols/db/user'
 
 export class LoginController extends Controller {
   constructor(
     private readonly login: AuthenticateRepository,
-    private readonly tokenRepository: AddTokenRepository
+    private readonly tokenSaver: SaveToken
   ) {
     super()
   }
@@ -17,23 +16,27 @@ export class LoginController extends Controller {
     username,
     password
   }: Authenticate.Params): Promise<HttpResponse<Authenticate.Result>> {
-    const accessToken = await this.login.auth({
+    const accessToken = await this.login.authenticate({
       username,
       password
     })
 
-    // await this.tokenRepository.add({
-    //   token: accessToken.token,
-    //   userId: 'a'
-    // })
+    await this.tokenSaver.save({
+      email: accessToken.email,
+      token: accessToken.token
+    })
 
     return ok({
+      email: accessToken.email,
       token: accessToken.token,
       refreshToken: accessToken.refreshToken
     })
   }
 
-  override buildValidators({ password, username }: Authenticate.Params): Validator[] {
+  override buildValidators({
+    password,
+    username
+  }: Authenticate.Params): Validator[] {
     return [
       ...builder
         .of({

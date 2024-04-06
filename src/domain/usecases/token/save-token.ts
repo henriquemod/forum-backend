@@ -1,11 +1,11 @@
 export interface SaveToken {
-  add: (account: SaveToken.Params) => Promise<SaveToken.Result>
+  save: (account: SaveToken.Params) => Promise<SaveToken.Result>
 }
 
 export namespace SaveToken {
   export interface Params {
+    email: string
     token: string
-    userId: string
   }
 
   export type Result = undefined

@@ -9,6 +9,7 @@ export namespace Authenticate {
   }
 
   export interface Result {
+    email: string
     token: string
     refreshToken: string
   }

@@ -1,12 +1,14 @@
-import type { Authenticate } from '@/domain/features/auth'
+import type { User } from '@/domain/models'
 
-export interface AuthenticateRepository {
-  auth: (
-    data: AuthenticateRepository.Params
-  ) => Promise<AuthenticateRepository.Result>
+export interface FindUserByEmailRepository {
+  findByEmail: (
+    data: FindUserByEmailRepository.Params
+  ) => Promise<FindUserByEmailRepository.Result>
 }
 
-export namespace AuthenticateRepository {
-  export type Params = Authenticate.Params
-  export type Result = Authenticate.Result
+export namespace FindUserByEmailRepository {
+  export interface Params {
+    email: string
+  }
+  export type Result = User
 }

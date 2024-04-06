@@ -1,4 +1,4 @@
-import type { Register } from '@/domain/features/auth'
+import type { Register } from '@/domain/usecases/auth'
 
 export interface AddUserRepository {
   add: (data: AddUserRepository.Params) => Promise<AddUserRepository.Result>

@@ -1,9 +1,5 @@
-import {
-  badRequest,
-  serverError,
-  type HttpResponse
-} from '@/application/helpers'
 import { ValidationComposite, type Validator } from '@/application/validation'
+import { badRequest, serverError, type HttpResponse } from './http'
 
 export abstract class Controller {
   abstract perform(httpRequest: any): Promise<HttpResponse>

@@ -21,8 +21,22 @@ export class UnauthorizedError extends Error {
 }
 
 export class AccessDeniedError extends Error {
-  constructor () {
+  constructor() {
     super('Access denied')
     this.name = 'AccessDeniedError'
+  }
+}
+
+export class AuthenticationError extends Error {
+  constructor() {
+    super('Authentication failed')
+    this.name = 'AuthenticationError'
+  }
+}
+
+export class RegisterError extends Error {
+  constructor() {
+    super('Account registration failed')
+    this.name = 'RegisterError'
   }
 }

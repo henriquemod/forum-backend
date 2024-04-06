@@ -1,25 +1,12 @@
 import { adaptExpressRoute } from '@/main/adapters'
-import { env } from '@/main/config/env'
-import type { NextFunction, Request, Response, Router } from 'express'
-import jwt from 'jsonwebtoken'
+import type { Router } from 'express'
 import {
   makeLoginController,
   makeRefreshTokenController
 } from '../factories/controllers/auth'
 import { makeRegisterController } from '../factories/controllers/auth/register'
+import { auth } from '../middlewares'
 
-const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1] // Bearer TOKEN
-
-  if (token == null) return res.sendStatus(401)
-
-  jwt.verify(token, env.jwtSecret, (err, user) => {
-    if (err) return res.sendStatus(403)
-    req.user = user
-    next()
-  })
-}
 let refreshTokens: string[] = []
 
 export default (router: Router): void => {
@@ -27,7 +14,7 @@ export default (router: Router): void => {
   router.post('/token', adaptExpressRoute(makeRefreshTokenController()))
   router.post('/register', adaptExpressRoute(makeRegisterController()))
 
-  router.get('/protected', authenticateToken, (req, res) => {
+  router.get('/protected', auth, (req, res) => {
     res.json({
       message: "You're authorized to access this route",
       user: req.user

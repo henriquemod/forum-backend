@@ -1,27 +1,28 @@
-import { Controller } from '@/application/controllers'
-import { ok, unauthorized, type HttpResponse } from '@/application/helpers'
+import { Controller, ok, type HttpResponse } from '@/application/protocols'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
-import type { RefreshToken } from '@/domain/features'
+import type { RefreshToken } from '@/data/usecases/token'
 
 export class RefreshTokenController extends Controller {
   constructor(private readonly refreshTokenService: RefreshToken) {
     super()
   }
 
-  async perform({
-    accessToken
-  }: RefreshToken.Params): Promise<HttpResponse<RefreshToken.Result>> {
-    const res = await this.refreshTokenService.perform({
-      accessToken
+  async perform({ accessToken }: { accessToken: string }): Promise<
+    HttpResponse<{
+      accessToken: string
+    }>
+  > {
+    const res = await this.refreshTokenService.refresh(accessToken)
+    return ok({
+      accessToken: res.accessToken
     })
-    return res instanceof Error
-      ? unauthorized()
-      : ok({
-          accessToken: res.accessToken
-        })
   }
 
-  override buildValidators({ accessToken }: RefreshToken.Params): Validator[] {
+  override buildValidators({
+    accessToken
+  }: {
+    accessToken: string
+  }): Validator[] {
     return [
       ...builder
         .of({
