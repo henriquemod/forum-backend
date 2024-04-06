@@ -1,36 +1,60 @@
 import { ServerError, UnauthorizedError } from '../errors'
 
-export interface HttpResponse<T = any> {
-  statusCode: number
-  data: T
+export enum HttpStatusCode {
+  OK = 200,
+  NO_CONTENT = 204,
+  BAD_REQUEST = 400,
+  UNAUTHORIZED = 401,
+  FORBIDDEN = 403,
+  NOT_FOUND = 404,
+  SERVER_ERROR = 500
 }
 
+export type SuccessResponse = HttpStatusCode.OK | HttpStatusCode.NO_CONTENT
+
+export type ErrorResponse =
+  | HttpStatusCode.BAD_REQUEST
+  | HttpStatusCode.UNAUTHORIZED
+  | HttpStatusCode.FORBIDDEN
+  | HttpStatusCode.NOT_FOUND
+  | HttpStatusCode.SERVER_ERROR
+
+export type HttpResponse<T = any> =
+  | {
+      statusCode: SuccessResponse
+      data: T
+    }
+  | {
+      statusCode: ErrorResponse
+      error: Error
+    }
+
 export const forbidden = (error: Error): HttpResponse<Error> => ({
-  statusCode: 403,
-  data: error
+  statusCode: HttpStatusCode.FORBIDDEN,
+  error
 })
 
 export const badRequest = (error: Error): HttpResponse<Error> => ({
-  statusCode: 400,
-  data: error
+  statusCode: HttpStatusCode.BAD_REQUEST,
+  error
 })
 
 export const unauthorized = (): HttpResponse<Error> => ({
-  statusCode: 401,
-  data: new UnauthorizedError()
+  statusCode: HttpStatusCode.UNAUTHORIZED,
+  error: new UnauthorizedError()
 })
 
 export const serverError = (error: Error): HttpResponse<Error> => ({
-  statusCode: 500,
-  data: new ServerError(error)
+  statusCode: HttpStatusCode.SERVER_ERROR,
+  error: new ServerError(error)
 })
 
 export const ok = <T = any>(data: T): HttpResponse<T> => ({
-  statusCode: 200,
+  statusCode: HttpStatusCode.OK,
   data
 })
 
 export const noContent = (): HttpResponse => ({
-  statusCode: 204,
+  statusCode: HttpStatusCode.NO_CONTENT,
   data: null
 })

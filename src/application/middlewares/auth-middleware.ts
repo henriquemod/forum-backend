@@ -29,9 +29,3 @@ export class AuthMiddleware implements Middleware {
     return noContent()
   }
 }
-
-// export namespace AuthMiddleware {
-//   export interface Request {
-//     accessToken?: string
-//   }
-// }

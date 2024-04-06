@@ -1,2 +1,2 @@
-export * from './token-validator'
-export * from './token-refresher'
+export * from '../../protocols/db/token/validate'
+export * from '../../protocols/db/token/refresh'

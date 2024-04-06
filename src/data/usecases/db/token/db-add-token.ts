@@ -1,6 +1,6 @@
 import type { FindUserByEmail } from '@/domain/usecases/db/user'
 import type { SaveToken } from '@/domain/usecases/token'
-import type { AddTokenRepository } from '../protocols/db/token'
+import type { AddTokenRepository } from '../../../protocols/db/token'
 
 export class DbAddToken implements SaveToken {
   constructor(

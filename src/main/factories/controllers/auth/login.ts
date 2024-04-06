@@ -1,6 +1,6 @@
 import { LoginController } from '@/application/controllers/auth'
-import { DbAddToken } from '@/data/usecases/db-add-token'
-import { DBFindUserByEmail } from '@/data/usecases/user'
+import { DbAddToken } from '@/data/usecases/db/token'
+import { DBFindUserByEmail } from '@/data/usecases/db/user'
 import {
   TokenMongoRepository,
   UserMongoRepository

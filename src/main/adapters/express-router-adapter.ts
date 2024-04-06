@@ -5,12 +5,12 @@ export const adaptExpressRoute = (controller: Controller): RequestHandler => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (req, res) => {
     const httpResponse = await controller.handle({ ...req.body })
-    if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {
+    if ('data' in httpResponse) {
       res.status(httpResponse.statusCode).json(httpResponse.data)
     } else {
       res
         .status(httpResponse.statusCode)
-        .json({ error: httpResponse.data.message })
+        .json({ error: httpResponse.error.message })
     }
   }
 }
