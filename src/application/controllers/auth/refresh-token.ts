@@ -12,7 +12,7 @@ export class RefreshTokenController extends Controller {
       accessToken: string
     }>
   > {
-    const res = await this.refreshTokenService.refresh(accessToken)
+    const res = await this.refreshTokenService.refresh({ accessToken })
     return ok({
       accessToken: res.accessToken
     })

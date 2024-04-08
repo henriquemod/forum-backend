@@ -1,17 +1,16 @@
 import type {
   AddUserRepository,
-  AuthenticateRepository,
-  FindUserByEmailRepository
+  FindUserByEmailRepository,
+  FindUserByUsernameRepository
 } from '@/data/protocols/db/user'
+import type { User } from '@/domain/models'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
-import { env } from '@/main/config/env'
-import jwt from 'jsonwebtoken'
 
 export class UserMongoRepository
   implements
     AddUserRepository,
     FindUserByEmailRepository,
-    AuthenticateRepository
+    FindUserByUsernameRepository
 {
   async add(data: AddUserRepository.Params): Promise<AddUserRepository.Result> {
     const accessToken = new UserSchema({
@@ -45,38 +44,22 @@ export class UserMongoRepository
     }
   }
 
-  async authenticate(
-    data: AuthenticateRepository.Params
-  ): Promise<AuthenticateRepository.Result> {
+  async findByUsername(
+    data: FindUserByUsernameRepository.Params
+  ): Promise<User> {
     const user = await UserSchema.findOne({
       username: data.username
     })
 
     if (!user) {
-      throw new Error('Unauthorized')
+      throw new Error('User not found')
     }
-
-    // Access token is short-lived
-    const accessToken = jwt.sign(
-      { id: user.id, username: data.username },
-      env.jwtSecret,
-      { expiresIn: '3h' }
-    )
-
-    // Refresh token is long-lived
-    const refreshAccessToken = jwt.sign(
-      { id: user.id, username: data.username },
-      env.refreshTokenSecret,
-      { expiresIn: '3d' }
-    )
 
     return {
       id: user.id,
       email: user.email,
       username: user.username,
-      password: user.password,
-      accessToken,
-      refreshAccessToken
+      password: user.password
     }
   }
 }

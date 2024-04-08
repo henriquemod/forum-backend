@@ -1,6 +1,8 @@
+import type { User } from './user'
+
 export interface Token {
-  id: string
-  username: string
-  email: string
-  password: string
+  accessToken: string
+  refreshAccessToken: string
+  invalid: boolean
+  user: User
 }

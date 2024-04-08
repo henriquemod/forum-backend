@@ -1,14 +1,19 @@
 import { UnauthorizedError } from '@/application/errors'
 import type {
-  TokenValidate,
+  FindRefreshTokenRepository,
+  FindTokenRepository,
   RefreshToken,
-  FindTokenRepository
+  RefreshTokenValidate,
+  SignInToken,
+  TokenValidate
 } from '@/data/protocols/db/token'
-import { env } from '@/main/config/env'
-import jwt from 'jsonwebtoken'
 
 export class TokenManager implements TokenValidate, RefreshToken {
-  constructor(private readonly tokenRepository: FindTokenRepository) {}
+  constructor(
+    private readonly tokenRepository: FindTokenRepository &
+      FindRefreshTokenRepository,
+    private readonly jwt: TokenValidate & SignInToken & RefreshTokenValidate
+  ) {}
 
   async validate(accessToken: string): Promise<boolean> {
     const userToken = await this.tokenRepository.find({ accessToken })
@@ -17,32 +22,33 @@ export class TokenManager implements TokenValidate, RefreshToken {
       return false
     }
 
-    return await new Promise((resolve) => {
-      jwt.verify(accessToken, env.jwtSecret, (err) => {
-        if (err) {
-          resolve(false)
-        }
-        resolve(true)
-      })
-    })
+    return await this.jwt.validate(accessToken)
   }
 
-  async refresh(
-    accessToken: RefreshToken.Params
-  ): Promise<RefreshToken.Result> {
-    return await new Promise((resolve) => {
-      jwt.verify(accessToken, env.refreshTokenSecret, (err, user) => {
-        if (err || !user || typeof user === 'string')
-          throw new UnauthorizedError()
-
-        const accessToken = jwt.sign(
-          { id: user.id, username: user.username },
-          env.jwtSecret,
-          { expiresIn: '20d' }
-        )
-
-        resolve({ accessToken })
-      })
+  async refresh({
+    accessRefreshToken
+  }: RefreshToken.Params): Promise<RefreshToken.Result> {
+    const userToken = await this.tokenRepository.findRefreshToken({
+      accessRefreshToken
     })
+
+    if (!userToken) {
+      throw new UnauthorizedError()
+    }
+
+    const allowed = await this.jwt.validateRefreshToken(
+      userToken.refreshAccessToken
+    )
+
+    if (!allowed) {
+      throw new UnauthorizedError()
+    }
+
+    const newTokenData = await this.jwt.signIn(userToken.user)
+
+    return {
+      accessToken: newTokenData.accessToken,
+      accessRefreshToken: newTokenData.refreshAccessToken
+    }
   }
 }

@@ -1,12 +1,14 @@
 import { Controller, ok, type HttpResponse } from '@/application/protocols'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
-import type { Authenticate } from '@/domain/usecases/auth'
+import type { Login } from '@/domain/usecases/auth'
 import type { SaveToken } from '@/domain/usecases/token'
-import type { AuthenticateRepository } from '@/data/protocols/db/user'
+import type { FindUserByUsernameRepository } from '@/data/protocols/db/user'
+import { env } from '@/main/config/env'
+import jwt from 'jsonwebtoken'
 
 export class LoginController extends Controller {
   constructor(
-    private readonly login: AuthenticateRepository,
+    private readonly userRepository: FindUserByUsernameRepository,
     private readonly tokenSaver: SaveToken
   ) {
     super()
@@ -15,29 +17,44 @@ export class LoginController extends Controller {
   async perform({
     username,
     password
-  }: Authenticate.Params): Promise<HttpResponse<Authenticate.Result>> {
-    const accessToken = await this.login.authenticate({
-      username,
-      password
+  }: Login.Params): Promise<HttpResponse<Login.Result>> {
+    const user = await this.userRepository.findByUsername({
+      username
     })
 
+    if (user.password !== password) {
+      // NOTE - Passwords should be hashed in a real-world application
+      throw new Error('Invalid credentials')
+    }
+
+    // Access token is short-lived
+    const accessToken = jwt.sign(
+      { id: user.id, username: user.username },
+      env.jwtSecret,
+      { expiresIn: '3h' }
+    )
+
+    // Refresh token is long-lived
+    const refreshAccessToken = jwt.sign(
+      { id: user.id, username: user.username },
+      env.refreshTokenSecret,
+      { expiresIn: '3d' }
+    )
+
     await this.tokenSaver.save({
-      email: accessToken.email,
-      accessToken: accessToken.accessToken,
-      refreshAccessToken: accessToken.refreshAccessToken
+      email: user.email,
+      accessToken,
+      refreshAccessToken
     })
 
     return ok({
-      email: accessToken.email,
-      accessToken: accessToken.accessToken,
-      refreshAccessToken: accessToken.refreshAccessToken
+      email: user.email,
+      accessToken,
+      refreshAccessToken
     })
   }
 
-  override buildValidators({
-    password,
-    username
-  }: Authenticate.Params): Validator[] {
+  override buildValidators({ password, username }: Login.Params): Validator[] {
     return [
       ...builder
         .of({

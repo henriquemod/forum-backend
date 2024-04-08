@@ -1,12 +1,17 @@
-import type { AccessToken } from '@/domain/models'
+import type { AccessToken, User } from '@/domain/models'
 
 export namespace RefreshToken {
-  export type Params = AccessToken
+  export interface Params extends User {
+    accessRefreshToken: AccessToken
+  }
   export interface Result {
     accessToken: AccessToken
+    accessRefreshToken: AccessToken
   }
 }
 
 export interface RefreshToken {
-  refresh: (accessToken: RefreshToken.Params) => Promise<RefreshToken.Result>
+  refresh: (
+    accessRefreshToken: RefreshToken.Params
+  ) => Promise<RefreshToken.Result>
 }

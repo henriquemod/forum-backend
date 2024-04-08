@@ -1,8 +1,8 @@
-export interface Authenticate {
-  login: (account: Authenticate.Params) => Promise<Authenticate.Result>
+export interface Login {
+  login: (account: Login.Params) => Promise<Login.Result>
 }
 
-export namespace Authenticate {
+export namespace Login {
   export interface Params {
     username: string
     password: string

@@ -4,5 +4,16 @@ export namespace TokenValidate {
 }
 
 export interface TokenValidate {
-  validate: (token: TokenValidate.Params) => Promise<TokenValidate.Result>
+  validate: (accessToken: TokenValidate.Params) => Promise<TokenValidate.Result>
+}
+
+export namespace RefreshTokenValidate {
+  export type Params = string
+  export type Result = boolean
+}
+
+export interface RefreshTokenValidate {
+  validateRefreshToken: (
+    accessToken: RefreshTokenValidate.Params
+  ) => Promise<RefreshTokenValidate.Result>
 }

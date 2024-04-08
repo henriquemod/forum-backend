@@ -12,3 +12,16 @@ export namespace FindUserByEmailRepository {
   }
   export type Result = User
 }
+
+export interface FindUserByUsernameRepository {
+  findByUsername: (
+    data: FindUserByUsernameRepository.Params
+  ) => Promise<FindUserByUsernameRepository.Result>
+}
+
+export namespace FindUserByUsernameRepository {
+  export interface Params {
+    username: string
+  }
+  export type Result = User
+}
