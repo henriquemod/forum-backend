@@ -1,22 +1,17 @@
-import type {
-  AddUserRepository,
-  FindUserByEmailRepository,
-  FindUserByUsernameRepository
-} from '@/data/protocols/db/user'
-import type { User } from '@/domain/models'
+import type { User } from '@/data/protocols/db'
+import type { User as UserModel } from '@/domain/models'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
 
-export class UserMongoRepository
-  implements
-    AddUserRepository,
-    FindUserByEmailRepository,
-    FindUserByUsernameRepository
-{
-  async add(data: AddUserRepository.Params): Promise<AddUserRepository.Result> {
+export class UserMongoRepository implements User.Add, User.Find {
+  async add({
+    username,
+    email,
+    password
+  }: Omit<UserModel, 'id'>): Promise<User.AddResult> {
     const accessToken = new UserSchema({
-      username: data.username,
-      email: data.email,
-      password: data.password
+      username,
+      email,
+      password
     })
     const newUser = await accessToken.save()
 
@@ -25,11 +20,9 @@ export class UserMongoRepository
     }
   }
 
-  async findByEmail(
-    data: FindUserByEmailRepository.Params
-  ): Promise<FindUserByEmailRepository.Result> {
+  async findByEmail(email: string): Promise<UserModel> {
     const user = await UserSchema.findOne({
-      email: data.email
+      email
     })
 
     if (!user) {
@@ -44,11 +37,9 @@ export class UserMongoRepository
     }
   }
 
-  async findByUsername(
-    data: FindUserByUsernameRepository.Params
-  ): Promise<User> {
+  async findByUsername(username: string): Promise<UserModel> {
     const user = await UserSchema.findOne({
-      username: data.username
+      username
     })
 
     if (!user) {

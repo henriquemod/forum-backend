@@ -1,7 +1,5 @@
-import type { RegisterError } from '@/application/errors'
-
 export interface Register {
-  perform: (params: Register.Params) => Promise<Register.Result>
+  register: (params: Register.Params) => Promise<Register.Result>
 }
 
 export namespace Register {
@@ -11,9 +9,7 @@ export namespace Register {
     email: string
   }
 
-  export type Result =
-    | {
-        id: string
-      }
-    | RegisterError
+  export interface Result {
+    id: string
+  }
 }

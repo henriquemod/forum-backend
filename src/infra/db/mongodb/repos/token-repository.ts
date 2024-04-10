@@ -1,36 +1,30 @@
-import type {
-  AddTokenRepository,
-  FindRefreshTokenRepository,
-  FindTokenRepository,
-  InvalidateTokenRepository
-} from '@/data/protocols/db/token'
+import type { Token } from '@/data/protocols/db'
+import type { AccessToken } from '@/domain/models'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 import mongoose from 'mongoose'
 
 export class TokenMongoRepository
-  implements
-    AddTokenRepository,
-    FindTokenRepository,
-    FindRefreshTokenRepository,
-    InvalidateTokenRepository
+  implements Token.Add, Token.Find, Token.Invalidate
 {
-  async add(
-    data: AddTokenRepository.Params
-  ): Promise<AddTokenRepository.Result> {
-    const accessToken = new AccessTokenSchema({
-      accessToken: data.accessToken,
-      refreshAccessToken: data.refreshAccessToken,
+  async add({
+    accessToken,
+    refreshAccessToken,
+    userId
+  }: Token.AddParams): Promise<void> {
+    const token = new AccessTokenSchema({
+      accessToken,
+      refreshAccessToken,
       invalid: false,
-      userId: new mongoose.Types.ObjectId(data.userId)
+      userId: new mongoose.Types.ObjectId(userId)
     })
-    await accessToken.save()
+    await token.save()
   }
 
-  async find(
-    data: FindTokenRepository.Params
-  ): Promise<FindTokenRepository.Result> {
+  async findByToken(
+    accessToken: AccessToken
+  ): Promise<Token.FindResult | undefined> {
     const token = await AccessTokenSchema.findOne({
-      accessToken: data.accessToken,
+      accessToken,
       invalid: false
     })
       .populate('userId')
@@ -41,23 +35,19 @@ export class TokenMongoRepository
     if (token) {
       return {
         accessToken: token.accessToken,
-        refreshAccessToken: token.refreshAccessToken,
-        invalid: token.invalid,
-        user: {
-          id: token.userId.id.toString(),
-          username: token.userId.username.toString(),
-          password: token.userId.password,
-          email: token.userId.email
-        }
+        id: token.userId.id.toString(),
+        username: token.userId.username.toString(),
+        password: token.userId.password,
+        email: token.userId.email
       }
     }
   }
 
-  async findRefreshToken(
-    data: FindRefreshTokenRepository.Params
-  ): Promise<FindRefreshTokenRepository.Result> {
+  async findByRefreshToken(
+    refreshAccessToken: AccessToken
+  ): Promise<Token.FindResult | undefined> {
     const token = await AccessTokenSchema.findOne({
-      refreshAccessToken: data.accessRefreshToken,
+      refreshAccessToken,
       invalid: false
     })
       .populate('userId')
@@ -68,14 +58,10 @@ export class TokenMongoRepository
     if (token) {
       return {
         accessToken: token.accessToken,
-        refreshAccessToken: token.refreshAccessToken,
-        invalid: token.invalid,
-        user: {
-          id: token.userId.id.toString(),
-          username: token.userId.username.toString(),
-          password: token.userId.password,
-          email: token.userId.email
-        }
+        id: token.userId.id.toString(),
+        username: token.userId.username.toString(),
+        password: token.userId.password,
+        email: token.userId.email
       }
     }
   }

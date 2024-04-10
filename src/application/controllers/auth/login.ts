@@ -2,13 +2,13 @@ import { Controller, ok, type HttpResponse } from '@/application/protocols'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 import type { Login } from '@/domain/usecases/auth'
 import type { SaveToken } from '@/domain/usecases/token'
-import type { FindUserByUsernameRepository } from '@/data/protocols/db/user'
+import type { User } from '@/data/protocols/db/user'
 import { env } from '@/main/config/env'
 import jwt from 'jsonwebtoken'
 
 export class LoginController extends Controller {
   constructor(
-    private readonly userRepository: FindUserByUsernameRepository,
+    private readonly userRepository: User.Find,
     private readonly tokenSaver: SaveToken
   ) {
     super()
@@ -18,9 +18,7 @@ export class LoginController extends Controller {
     username,
     password
   }: Login.Params): Promise<HttpResponse<Login.Result>> {
-    const user = await this.userRepository.findByUsername({
-      username
-    })
+    const user = await this.userRepository.findByUsername(username)
 
     if (user.password !== password) {
       // NOTE - Passwords should be hashed in a real-world application

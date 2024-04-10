@@ -1,15 +1,10 @@
-import {
-  badRequest,
-  Controller,
-  ok,
-  type HttpResponse
-} from '@/application/protocols'
-import type { AddUserRepository } from '@/data/protocols/db/user'
+import { Controller, ok, type HttpResponse } from '@/application/protocols'
+import type { User } from '@/data/protocols/db/user'
 import type { Register } from '@/domain/usecases/auth'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 export class RegisterController extends Controller {
-  constructor(private readonly userRepository: AddUserRepository) {
+  constructor(private readonly userRepository: User.Add) {
     super()
   }
 
@@ -23,8 +18,6 @@ export class RegisterController extends Controller {
       password,
       email
     })
-
-    if (accessToken instanceof Error) return badRequest(accessToken)
 
     return ok({
       id: accessToken.id
