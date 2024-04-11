@@ -15,7 +15,7 @@ export class TokenMongoRepository
       accessToken,
       refreshAccessToken,
       invalid: false,
-      userId: new mongoose.Types.ObjectId(userId)
+      user: new mongoose.Types.ObjectId(userId)
     })
     await token.save()
   }
@@ -27,18 +27,15 @@ export class TokenMongoRepository
       accessToken,
       invalid: false
     })
-      .populate('userId')
-      .populate('accessToken')
-      .populate('invalid')
-      .select('userId')
+      .populate('user')
 
     if (token) {
       return {
         accessToken: token.accessToken,
-        id: token.userId.id.toString(),
-        username: token.userId.username.toString(),
-        password: token.userId.password,
-        email: token.userId.email
+        id: token.user.id.toString(),
+        username: token.user.username.toString(),
+        password: token.user.password,
+        email: token.user.email
       }
     }
   }
@@ -50,18 +47,15 @@ export class TokenMongoRepository
       refreshAccessToken,
       invalid: false
     })
-      .populate('userId')
-      .populate('accessToken')
-      .populate('invalid')
-      .select('userId')
+    .populate('user')
 
     if (token) {
       return {
         accessToken: token.accessToken,
-        id: token.userId.id.toString(),
-        username: token.userId.username.toString(),
-        password: token.userId.password,
-        email: token.userId.email
+        id: token.user.id.toString(),
+        username: token.user.username.toString(),
+        password: token.user.password,
+        email: token.user.email
       }
     }
   }

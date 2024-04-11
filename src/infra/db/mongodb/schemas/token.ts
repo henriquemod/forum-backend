@@ -1,17 +1,17 @@
-import mongoose from 'mongoose'
+import type { Token } from '@/domain/models'
+import mongoose, { Schema } from 'mongoose'
 
-const accessTokenSchema = new mongoose.Schema({
+export const accessTokenSchema = new mongoose.Schema<Token>({
   accessToken: { type: String, required: true },
   refreshAccessToken: { type: String, required: true },
   invalid: { type: Boolean, required: true },
-  userId: {
-    required: true,
-    type: mongoose.Schema.Types.ObjectId,
+  user: {
+    type: Schema.Types.ObjectId,
     ref: 'User'
   }
 })
 
-export const AccessTokenSchema = mongoose.model(
+export const AccessTokenSchema = mongoose.model<Token>(
   'AccessToken',
   accessTokenSchema
 )

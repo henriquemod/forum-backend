@@ -1,3 +1,4 @@
+import { AuthenticationError } from '@/application/errors/authentication-error'
 import type { User } from '@/data/protocols/db'
 import type { User as UserModel } from '@/domain/models'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
@@ -43,7 +44,7 @@ export class UserMongoRepository implements User.Add, User.Find {
     })
 
     if (!user) {
-      throw new Error('User not found')
+      throw new AuthenticationError()
     }
 
     return {
