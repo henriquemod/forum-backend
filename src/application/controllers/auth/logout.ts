@@ -1,6 +1,6 @@
 import { Controller, noContent } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
-import type { Token } from '@/data/protocols/token'
+import type { Token } from '@/data/usecases/token'
 import type { Logout } from '@/domain/usecases/auth'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 

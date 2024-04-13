@@ -1,5 +1,5 @@
 import { LogoutController } from '@/application/controllers/auth'
-import { TokenManager } from '@/data/usecases/token'
+import { TokenManager } from '@/data/protocols/token'
 import {
   TokenMongoRepository,
   UserMongoRepository

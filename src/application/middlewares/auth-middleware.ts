@@ -1,4 +1,4 @@
-import type { TokenManager } from '@/data/usecases/token'
+import type { TokenManager } from '@/data/protocols/token'
 import type { Request } from 'express'
 import { BadRequest, Forbidden } from '../errors'
 import {

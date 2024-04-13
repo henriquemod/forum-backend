@@ -1,4 +1,4 @@
-import type { Token } from '@/data/protocols/token'
+import type { Token } from '@/data/usecases/token'
 import type { User } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db/token'
 import { env } from '@/main/config/env'

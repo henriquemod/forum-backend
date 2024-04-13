@@ -1,6 +1,6 @@
 import { AuthMiddleware } from '@/application/middlewares'
 import type { Middleware } from '@/application/protocols'
-import { TokenManager } from '@/data/usecases/token'
+import { TokenManager } from '@/data/protocols/token'
 import {
   TokenMongoRepository,
   UserMongoRepository

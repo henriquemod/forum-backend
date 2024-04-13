@@ -1,5 +1,5 @@
 import { InternalServerError } from '@/application/errors'
-import type { Hash } from '@/data/protocols/encryption'
+import type { Hash } from '@/data/usecases/encryption'
 import { env } from '@/main/config/env'
 import bcrypt from 'bcrypt'
 

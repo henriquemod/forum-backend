@@ -1,4 +1,4 @@
-import type { Hash } from '@/data/protocols/encryption'
+import type { Hash } from '@/data/usecases/encryption'
 import type { User as UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db/user'
 import { UserSchema } from '@/infra/db/mongodb/schemas'

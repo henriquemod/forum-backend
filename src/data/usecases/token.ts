@@ -1,68 +1,33 @@
-import { NotFound } from '@/application/errors'
-import type { Token } from '@/data/protocols/token'
-import type { User } from '@/domain/models'
-import type { DBToken } from '@/domain/usecases/db/token'
-import type { DBUser } from '@/domain/usecases/db/user'
+import type { AccessToken, User } from '@/domain/models'
 
-export class TokenManager
-  implements Token.SignIn, Token.Invalidate, Token.Refresh, Token.Validate
-{
-  constructor(
-    private readonly tokenRepository: DBToken.Find &
-      DBToken.Delete &
-      DBToken.Add,
-    private readonly userRepository: DBUser.Find,
-    private readonly tokenEncryption: Token.SignIn
-  ) {}
+export namespace Token {
+  export type ValidateResult = boolean
 
-  async userHasToken(userId: string): Promise<boolean> {
-    const token = await this.tokenRepository.findByUserId(userId)
-    return !!token
+  export interface RefreshResult {
+    accessToken: AccessToken
+    accessRefreshToken: AccessToken
   }
 
-  async validate(accessToken: string): Promise<boolean> {
-    const token = await this.tokenRepository.findByToken(accessToken)
-    return !!token
+  export interface SignResult {
+    userId: string
+    accessToken: AccessToken
+    refreshAccessToken: AccessToken
   }
 
-  async refresh(accessToken: string): Promise<Token.RefreshResult> {
-    const token = await this.tokenRepository.findByToken(accessToken)
-    if (!token) {
-      throw new NotFound('Token not found')
-    }
-    const data = await this.signIn(token.user)
-
-    return {
-      accessToken: data.accessToken,
-      accessRefreshToken: data.refreshAccessToken
-    }
+  export interface Validate {
+    userHasToken: (userId: string) => Promise<boolean>
+    validate: (accessToken: AccessToken) => Promise<ValidateResult>
   }
 
-  async invalidate(accessToken: string): Promise<void> {
-    await this.tokenRepository.delete(accessToken)
+  export interface Invalidate {
+    invalidate: (accessToken: AccessToken) => Promise<void>
   }
 
-  async signIn(user: User): Promise<Token.SignResult> {
-    const userData = await this.tokenRepository.findByUserId(user.id)
+  export interface Refresh {
+    refresh: (accessToken: AccessToken) => Promise<RefreshResult>
+  }
 
-    if (userData) {
-      await this.tokenRepository.delete(userData.accessToken)
-    }
-
-    const findUser = await this.userRepository.findByUserId(user.id)
-
-    if (!findUser) {
-      throw new NotFound('User not found')
-    }
-
-    const tokenData = await this.tokenEncryption.signIn(user)
-
-    await this.tokenRepository.add({
-      accessToken: tokenData.accessToken,
-      refreshAccessToken: tokenData.refreshAccessToken,
-      userId: user.id
-    })
-
-    return tokenData
+  export interface SignIn {
+    signIn: (user: User) => Promise<SignResult>
   }
 }
