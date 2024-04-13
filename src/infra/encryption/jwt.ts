@@ -1,19 +1,43 @@
-import type { Token } from '@/data/protocols/db'
-import type { Token as TokenModel, User } from '@/domain/models'
+import type { Token } from '@/data/protocols/token'
+import type { User } from '@/domain/models'
+import type { DBToken } from '@/domain/usecases/db/token'
 import { env } from '@/main/config/env'
 import jwt from 'jsonwebtoken'
 
 export class JWTEncryption
-  implements Token.Validate, Token.SignIn, Token.Refresh, Token.Invalidate
+  implements Token.SignIn, Token.Invalidate, Token.Validate
 {
-  constructor(private readonly tokenRepository: Token.Invalidate) {}
+  constructor(
+    private readonly tokenRepository: DBToken.Delete & DBToken.Find
+  ) {}
 
-  async invalidate(accessToken: string): Promise<void> {
-    await this.tokenRepository.invalidate(accessToken)
+  async userHasToken(userId: string): Promise<boolean> {
+    const token = await this.tokenRepository.findByUserId(userId)
+    return !!token
   }
 
-  async refresh(accessToken: string): Promise<Token.RefreshResult> {
-    throw new Error('Method not implemented.')
+  async signIn(user: User): Promise<Token.SignResult> {
+    const accessToken = jwt.sign(
+      { id: user.id, username: user.username },
+      env.jwtSecret,
+      { expiresIn: '3h' }
+    )
+
+    const refreshToken = jwt.sign(
+      { id: user.id, username: user.username },
+      env.refreshTokenSecret,
+      { expiresIn: '3d' }
+    )
+
+    return {
+      accessToken,
+      refreshAccessToken: refreshToken,
+      userId: user.id
+    }
+  }
+
+  async invalidate(accessToken: string): Promise<void> {
+    await this.tokenRepository.delete(accessToken)
   }
 
   async validate(accessToken: string): Promise<boolean> {
@@ -36,25 +60,5 @@ export class JWTEncryption
         resolve(true)
       })
     })
-  }
-
-  async signIn(user: User): Promise<Omit<TokenModel, 'invalid'>> {
-    const accessToken = jwt.sign(
-      { id: user.id, username: user.username },
-      env.jwtSecret,
-      { expiresIn: '3h' }
-    )
-
-    const refreshToken = jwt.sign(
-      { id: user.id, username: user.username },
-      env.refreshTokenSecret,
-      { expiresIn: '3d' }
-    )
-
-    return {
-      accessToken,
-      refreshAccessToken: refreshToken,
-      user
-    }
   }
 }

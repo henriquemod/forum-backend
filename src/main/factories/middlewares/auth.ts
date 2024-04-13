@@ -1,13 +1,18 @@
 import { AuthMiddleware } from '@/application/middlewares'
 import type { Middleware } from '@/application/protocols'
 import { TokenManager } from '@/data/usecases/token'
-import { TokenMongoRepository } from '@/infra/db/mongodb/repos'
-import { JWTEncryption } from '@/infra/encryption'
+import {
+  TokenMongoRepository,
+  UserMongoRepository
+} from '@/infra/db/mongodb/repos'
+import { BCryptHash, JWTEncryption } from '@/infra/encryption'
 
 export const makeAuthMiddleware = (): Middleware => {
   const tokenRepository = new TokenMongoRepository()
+  const userRepository = new UserMongoRepository(new BCryptHash())
   const tokenValidator = new TokenManager(
     tokenRepository,
+    userRepository,
     new JWTEncryption(tokenRepository)
   )
   return new AuthMiddleware(tokenValidator)

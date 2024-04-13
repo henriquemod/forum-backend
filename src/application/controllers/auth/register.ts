@@ -1,12 +1,12 @@
 import { BadRequest } from '@/application/errors'
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
-import type { User } from '@/data/protocols/db/user'
 import type { Register } from '@/domain/usecases/auth'
+import type { DBUser } from '@/domain/usecases/db/user'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 export class RegisterController extends Controller {
-  constructor(private readonly userRepository: User.Add & User.Find) {
+  constructor(private readonly userRepository: DBUser.Add & DBUser.Find) {
     super()
   }
 

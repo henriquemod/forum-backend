@@ -1,6 +1,24 @@
 import { LogoutController } from '@/application/controllers/auth'
-import { TokenMongoRepository } from '@/infra/db/mongodb/repos'
+import { TokenManager } from '@/data/usecases/token'
+import {
+  TokenMongoRepository,
+  UserMongoRepository
+} from '@/infra/db/mongodb/repos'
+import { BCryptHash, JWTEncryption } from '@/infra/encryption'
 
 export const makeLogoutController = (): LogoutController => {
-  return new LogoutController(new TokenMongoRepository())
+  const bCryptHash = new BCryptHash()
+  const tokenRepository = new TokenMongoRepository()
+  const userRepository = new UserMongoRepository(bCryptHash)
+  return new LogoutController(
+    new TokenManager(
+      tokenRepository,
+      userRepository,
+      new TokenManager(
+        tokenRepository,
+        userRepository,
+        new JWTEncryption(tokenRepository)
+      )
+    )
+  )
 }

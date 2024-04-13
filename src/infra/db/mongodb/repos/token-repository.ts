@@ -1,16 +1,16 @@
-import type { Token } from '@/data/protocols/db'
 import type { AccessToken } from '@/domain/models'
+import type { DBToken } from '@/domain/usecases/db/token'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 import mongoose from 'mongoose'
 
 export class TokenMongoRepository
-  implements Token.Add, Token.Find, Token.Invalidate
+  implements DBToken.Add, DBToken.Find, DBToken.Delete
 {
   async add({
     accessToken,
     refreshAccessToken,
     userId
-  }: Token.AddParams): Promise<void> {
+  }: DBToken.AddParams): Promise<void> {
     const token = new AccessTokenSchema({
       accessToken,
       refreshAccessToken,
@@ -21,7 +21,7 @@ export class TokenMongoRepository
 
   async findByToken(
     accessToken: AccessToken
-  ): Promise<Token.FindResult | null> {
+  ): Promise<DBToken.FindResult | null> {
     return await AccessTokenSchema.findOne({
       accessToken
     }).populate('user')
@@ -29,18 +29,18 @@ export class TokenMongoRepository
 
   async findByRefreshToken(
     refreshAccessToken: AccessToken
-  ): Promise<Token.FindResult | null> {
+  ): Promise<DBToken.FindResult | null> {
     return await AccessTokenSchema.findOne({
       refreshAccessToken
     }).populate('user')
   }
 
-  async findByUserId(userId: string): Promise<Token.FindResult | null> {
+  async findByUserId(userId: string): Promise<DBToken.FindResult | null> {
     const user = new mongoose.Types.ObjectId(userId)
     return await AccessTokenSchema.findOne({ user }).populate('user')
   }
 
-  async invalidate(accessToken: string): Promise<undefined> {
+  async delete(accessToken: string): Promise<undefined> {
     await AccessTokenSchema.deleteOne({ accessToken })
   }
 }

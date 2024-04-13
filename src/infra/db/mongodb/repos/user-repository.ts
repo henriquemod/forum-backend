@@ -1,16 +1,16 @@
-import type { User } from '@/data/protocols/db'
 import type { Hash } from '@/data/protocols/encryption'
 import type { User as UserModel } from '@/domain/models'
+import type { DBUser } from '@/domain/usecases/db/user'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
 
-export class UserMongoRepository implements User.Add, User.Find {
+export class UserMongoRepository implements DBUser.Add, DBUser.Find {
   constructor(private readonly hash: Hash.Generate) {}
 
   async add({
     username,
     email,
     password
-  }: Omit<UserModel, 'id'>): Promise<User.AddResult> {
+  }: Omit<UserModel, 'id'>): Promise<DBUser.AddResult> {
     const hashedPassword = await this.hash.generate(password)
 
     const accessToken = new UserSchema({

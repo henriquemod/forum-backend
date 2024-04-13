@@ -1,52 +1,68 @@
-import { Forbidden, NotFound } from '@/application/errors'
-import type { Token } from '@/data/protocols/db/token'
+import { NotFound } from '@/application/errors'
+import type { Token } from '@/data/protocols/token'
+import type { User } from '@/domain/models'
+import type { DBToken } from '@/domain/usecases/db/token'
+import type { DBUser } from '@/domain/usecases/db/user'
 
-export class TokenManager implements Token.Validate, Token.Refresh {
+export class TokenManager
+  implements Token.SignIn, Token.Invalidate, Token.Refresh, Token.Validate
+{
   constructor(
-    private readonly tokenRepository: Token.Find & Token.Add,
-    private readonly jwt: Token.Validate &
-      Token.SignIn &
-      Token.Refresh &
-      Token.Invalidate
+    private readonly tokenRepository: DBToken.Find &
+      DBToken.Delete &
+      DBToken.Add,
+    private readonly userRepository: DBUser.Find,
+    private readonly tokenEncryption: Token.SignIn
   ) {}
 
-  async validate(accessToken: string): Promise<boolean> {
-    const userToken = await this.tokenRepository.findByToken(accessToken)
-
-    if (!userToken) {
-      throw new NotFound('Invalid access token')
-    }
-
-    return await this.jwt.validate(accessToken)
+  async userHasToken(userId: string): Promise<boolean> {
+    const token = await this.tokenRepository.findByUserId(userId)
+    return !!token
   }
 
-  async refresh(accessRefreshToken: string): Promise<Token.RefreshResult> {
-    const userAccessToken =
-      await this.tokenRepository.findByRefreshToken(accessRefreshToken)
+  async validate(accessToken: string): Promise<boolean> {
+    const token = await this.tokenRepository.findByToken(accessToken)
+    return !!token
+  }
 
-    if (!userAccessToken) {
-      throw new NotFound('Invalid refresh token')
+  async refresh(accessToken: string): Promise<Token.RefreshResult> {
+    const token = await this.tokenRepository.findByToken(accessToken)
+    if (!token) {
+      throw new NotFound('Token not found')
     }
-
-    const allowed = await this.jwt.validate(userAccessToken.accessToken)
-
-    if (!allowed) {
-      throw new Forbidden('Invalid or expired access token')
-    }
-
-    await this.jwt.invalidate(userAccessToken.accessToken)
-
-    const newTokenData = await this.jwt.signIn(userAccessToken.user)
-
-    await this.tokenRepository.add({
-      accessToken: newTokenData.accessToken,
-      refreshAccessToken: newTokenData.refreshAccessToken,
-      userId: userAccessToken.user.id
-    })
+    const data = await this.signIn(token.user)
 
     return {
-      accessToken: newTokenData.accessToken,
-      accessRefreshToken: newTokenData.refreshAccessToken
+      accessToken: data.accessToken,
+      accessRefreshToken: data.refreshAccessToken
     }
+  }
+
+  async invalidate(accessToken: string): Promise<void> {
+    await this.tokenRepository.delete(accessToken)
+  }
+
+  async signIn(user: User): Promise<Token.SignResult> {
+    const userData = await this.tokenRepository.findByUserId(user.id)
+
+    if (userData) {
+      await this.tokenRepository.delete(userData.accessToken)
+    }
+
+    const findUser = await this.userRepository.findByUserId(user.id)
+
+    if (!findUser) {
+      throw new NotFound('User not found')
+    }
+
+    const tokenData = await this.tokenEncryption.signIn(user)
+
+    await this.tokenRepository.add({
+      accessToken: tokenData.accessToken,
+      refreshAccessToken: tokenData.refreshAccessToken,
+      userId: user.id
+    })
+
+    return tokenData
   }
 }
