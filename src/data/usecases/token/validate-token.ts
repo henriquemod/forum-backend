@@ -31,7 +31,7 @@ export class TokenManager implements Token.Validate, Token.Refresh {
       throw new UnauthorizedError()
     }
 
-    const newTokenData = await this.jwt.signIn(userAccessToken)
+    const newTokenData = await this.jwt.signIn(userAccessToken.user)
 
     return {
       accessToken: newTokenData.accessToken,

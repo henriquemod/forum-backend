@@ -14,7 +14,6 @@ export class TokenMongoRepository
     const token = new AccessTokenSchema({
       accessToken,
       refreshAccessToken,
-      invalid: false,
       user: new mongoose.Types.ObjectId(userId)
     })
     await token.save()
@@ -22,45 +21,21 @@ export class TokenMongoRepository
 
   async findByToken(
     accessToken: AccessToken
-  ): Promise<Token.FindResult | undefined> {
-    const token = await AccessTokenSchema.findOne({
-      accessToken,
-      invalid: false
-    })
-      .populate('user')
-
-    if (token) {
-      return {
-        accessToken: token.accessToken,
-        id: token.user.id.toString(),
-        username: token.user.username.toString(),
-        password: token.user.password,
-        email: token.user.email
-      }
-    }
+  ): Promise<Token.FindResult | null> {
+    return await AccessTokenSchema.findOne({
+      accessToken
+    }).populate('user')
   }
 
   async findByRefreshToken(
     refreshAccessToken: AccessToken
-  ): Promise<Token.FindResult | undefined> {
-    const token = await AccessTokenSchema.findOne({
-      refreshAccessToken,
-      invalid: false
-    })
-    .populate('user')
-
-    if (token) {
-      return {
-        accessToken: token.accessToken,
-        id: token.user.id.toString(),
-        username: token.user.username.toString(),
-        password: token.user.password,
-        email: token.user.email
-      }
-    }
+  ): Promise<Token.FindResult | null> {
+    return await AccessTokenSchema.findOne({
+      refreshAccessToken
+    }).populate('user')
   }
 
   async invalidate(accessToken: string): Promise<undefined> {
-    await AccessTokenSchema.findOneAndUpdate({ accessToken }, { invalid: true })
+    await AccessTokenSchema.deleteOne({ accessToken })
   }
 }

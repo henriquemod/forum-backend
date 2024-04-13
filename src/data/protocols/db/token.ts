@@ -34,15 +34,14 @@ export namespace Token {
     add: (params: AddParams) => Promise<void>
   }
 
-  export interface FindResult extends User {
+  export interface FindResult {
     accessToken: AccessToken
+    user: User
   }
   export interface Find {
-    findByToken: (
-      accessTokenToFind: AccessToken
-    ) => Promise<FindResult | undefined>
+    findByToken: (accessTokenToFind: AccessToken) => Promise<FindResult | null>
     findByRefreshToken: (
       accessTokenToFind: AccessToken
-    ) => Promise<FindResult | undefined>
+    ) => Promise<FindResult | null>
   }
 }

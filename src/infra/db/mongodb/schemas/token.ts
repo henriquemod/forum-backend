@@ -4,7 +4,6 @@ import mongoose, { Schema } from 'mongoose'
 export const accessTokenSchema = new mongoose.Schema<Token>({
   accessToken: { type: String, required: true },
   refreshAccessToken: { type: String, required: true },
-  invalid: { type: Boolean, required: true },
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User'
