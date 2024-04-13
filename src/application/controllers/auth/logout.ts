@@ -1,21 +1,27 @@
 import { Controller, noContent } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
+import type { Authentication } from '@/data/usecases'
 import type { Token } from '@/data/usecases/token'
-import type { Logout } from '@/domain/usecases/auth'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
+type TokenManager = Token.Invalidate
+
 export class LogoutController extends Controller {
-  constructor(private readonly token: Token.Invalidate) {
+  constructor(private readonly tokenManager: TokenManager) {
     super()
   }
 
-  async perform({ accessToken }: Logout.Params): Promise<HttpResponse<void>> {
-    await this.token.invalidate(accessToken)
+  async perform({
+    accessToken
+  }: Authentication.LogoutParams): Promise<HttpResponse<void>> {
+    await this.tokenManager.invalidate(accessToken)
 
     return noContent()
   }
 
-  override buildValidators({ accessToken }: Logout.Params): Validator[] {
+  override buildValidators({
+    accessToken
+  }: Authentication.LogoutParams): Validator[] {
     return [
       ...builder
         .of({

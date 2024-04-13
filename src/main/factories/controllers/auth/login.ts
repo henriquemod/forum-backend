@@ -1,5 +1,5 @@
 import { LoginController } from '@/application/controllers/auth'
-import { TokenManager } from '@/data/protocols/token'
+import { TokenManager, UserManagement } from '@/data/protocols'
 import {
   TokenMongoRepository,
   UserMongoRepository
@@ -11,7 +11,7 @@ export const makeLoginController = (): LoginController => {
   const userRepository = new UserMongoRepository(hash)
   const tokenRepo = new TokenMongoRepository()
   return new LoginController(
-    userRepository,
+    new UserManagement(userRepository),
     new TokenManager(tokenRepo, userRepository, new JWTEncryption(tokenRepo)),
     hash
   )

@@ -1,17 +1,19 @@
 import { Forbidden } from '@/application/errors'
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
+import type { Authentication, Token, User } from '@/data/usecases'
 import type { Hash } from '@/data/usecases/encryption'
-import type { Token } from '@/data/usecases/token'
-import type { Login } from '@/domain/usecases/auth'
-import type { DBUser } from '@/domain/usecases/db/user'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
+
+type UserManager = User.GetUser
+type TokenManager = Token.SignIn
+type HashComparer = Hash.Compare
 
 export class LoginController extends Controller {
   constructor(
-    private readonly userRepository: DBUser.Find,
-    private readonly tokenSignIn: Token.SignIn,
-    private readonly hashComparer: Hash.Compare
+    private readonly userManager: UserManager,
+    private readonly tokenManager: TokenManager,
+    private readonly hashManager: HashComparer
   ) {
     super()
   }
@@ -19,25 +21,26 @@ export class LoginController extends Controller {
   async perform({
     username,
     password
-  }: Login.Params): Promise<HttpResponse<Login.Result>> {
-    const user = await this.userRepository.findByUsername(username)
+  }: Authentication.LoginParams): Promise<
+    HttpResponse<Authentication.LoginResult>
+  > {
+    const user = await this.userManager.getUser(username)
 
-    if (!user) {
-      throw new Forbidden('Invalid credentials')
-    }
-
-    const isAllowed = await this.hashComparer.compare(password, user.password)
+    const isAllowed = await this.hashManager.compare(password, user.password)
 
     if (!isAllowed) {
       throw new Forbidden('Invalid credentials')
     }
 
-    const data = await this.tokenSignIn.signIn(user)
+    const data = await this.tokenManager.signIn(user)
 
     return ok(data)
   }
 
-  override buildValidators({ password, username }: Login.Params): Validator[] {
+  override buildValidators({
+    password,
+    username
+  }: Authentication.LoginParams): Validator[] {
     return [
       ...builder
         .of({

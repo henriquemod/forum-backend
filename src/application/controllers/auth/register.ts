@@ -1,12 +1,14 @@
 import { BadRequest } from '@/application/errors'
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
-import type { Register } from '@/domain/usecases/auth'
+import type { Authentication } from '@/data/usecases'
 import type { DBUser } from '@/domain/usecases/db/user'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
+type userRepository = DBUser.Add & DBUser.Find
+
 export class RegisterController extends Controller {
-  constructor(private readonly userRepository: DBUser.Add & DBUser.Find) {
+  constructor(private readonly userRepository: userRepository) {
     super()
   }
 
@@ -14,7 +16,9 @@ export class RegisterController extends Controller {
     username,
     password,
     email
-  }: Register.Params): Promise<HttpResponse<Register.Result>> {
+  }: Authentication.RegisterParams): Promise<
+    HttpResponse<Authentication.RegisterResult>
+  > {
     const hasUsername = !!(await this.userRepository.findByUsername(username))
     const hasEmail = !!(await this.userRepository.findByEmail(email))
 
@@ -41,7 +45,7 @@ export class RegisterController extends Controller {
     password,
     username,
     email
-  }: Register.Params): Validator[] {
+  }: Authentication.RegisterParams): Validator[] {
     return [
       ...builder
         .of({

@@ -1,5 +1,5 @@
 import { NotFound } from '@/application/errors'
-import type { Token } from '@/data/usecases/token'
+import type { Token } from '@/data/usecases'
 import type { User } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db/token'
 import type { DBUser } from '@/domain/usecases/db/user'
