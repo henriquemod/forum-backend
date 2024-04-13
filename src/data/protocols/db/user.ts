@@ -9,8 +9,8 @@ export namespace User {
   }
 
   export interface Find {
-    findByEmail: (email: string) => Promise<UserModel>
-    findByUsername: (username: string) => Promise<UserModel>
-    findByUserId: (userId: string) => Promise<UserModel>
+    findByEmail: (email: string) => Promise<UserModel | null>
+    findByUsername: (username: string) => Promise<UserModel | null>
+    findByUserId: (userId: string) => Promise<UserModel | null>
   }
 }

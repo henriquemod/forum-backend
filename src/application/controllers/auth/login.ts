@@ -4,12 +4,15 @@ import type { Token } from '@/data/protocols/db'
 import type { User } from '@/data/protocols/db/user'
 import type { Login } from '@/domain/usecases/auth'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
+import type { Hash } from '@/data/protocols/encryption'
+import { Forbidden } from '@/application/errors'
 
 export class LoginController extends Controller {
   constructor(
     private readonly userRepository: User.Find,
     private readonly tokenRepository: Token.Add & Token.Find & Token.Invalidate,
-    private readonly tokenGenerator: Token.SignIn
+    private readonly tokenGenerator: Token.SignIn,
+    private readonly hashComparer: Hash.Compare
   ) {
     super()
   }
@@ -20,9 +23,14 @@ export class LoginController extends Controller {
   }: Login.Params): Promise<HttpResponse<Login.Result>> {
     const user = await this.userRepository.findByUsername(username)
 
-    if (user.password !== password) {
-      // NOTE - Passwords should be hashed in a real-world application
-      throw new Error('Invalid credentials')
+    if (!user) {
+      throw new Forbidden('Invalid credentials')
+    }
+
+    const isAllowed = await this.hashComparer.compare(password, user.password)
+
+    if (!isAllowed) {
+      throw new Forbidden('Invalid credentials')
     }
 
     const correctToken = await this.tokenRepository.findByUserId(user.id)

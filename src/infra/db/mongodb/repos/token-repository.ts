@@ -37,9 +37,7 @@ export class TokenMongoRepository
 
   async findByUserId(userId: string): Promise<Token.FindResult | null> {
     const user = new mongoose.Types.ObjectId(userId)
-    const find = await AccessTokenSchema.findOne({ user }).populate('user')
-    console.log({ find, user })
-    return find
+    return await AccessTokenSchema.findOne({ user }).populate('user')
   }
 
   async invalidate(accessToken: string): Promise<undefined> {
