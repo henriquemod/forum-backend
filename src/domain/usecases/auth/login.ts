@@ -9,7 +9,7 @@ export namespace Login {
   }
 
   export interface Result {
-    email: string
+    userId: string
     accessToken: string
     refreshAccessToken: string
   }

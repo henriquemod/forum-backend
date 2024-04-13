@@ -1,15 +1,14 @@
-import type { SaveToken } from '@/domain/usecases/token'
 import type { Token } from '../../../protocols/db/token'
 import type { User } from '@/data/protocols/db'
 
-export class DbAddToken implements SaveToken {
+export class DbAddToken implements Token.Add {
   constructor(
     private readonly findYserByUsername: User.Find,
     private readonly addTokenRepository: Token.Add
   ) {}
 
-  async save(account: SaveToken.Params): Promise<undefined> {
-    const user = await this.findYserByUsername.findByEmail(account.email)
+  async add(account: Token.AddParams): Promise<void> {
+    const user = await this.findYserByUsername.findByUserId(account.userId)
 
     if (!user) {
       throw new Error('User not found')

@@ -4,12 +4,14 @@ import {
   TokenMongoRepository,
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
+import { JWTEncryption } from '@/infra/encryption'
 
 export const makeLoginController = (): LoginController => {
   const userRepository = new UserMongoRepository()
   const tokenRepo = new TokenMongoRepository()
   return new LoginController(
     userRepository,
-    new DbAddToken(userRepository, tokenRepo)
+    new DbAddToken(userRepository, tokenRepo),
+    new JWTEncryption()
   )
 }

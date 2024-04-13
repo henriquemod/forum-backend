@@ -54,4 +54,21 @@ export class UserMongoRepository implements User.Add, User.Find {
       password: user.password
     }
   }
+
+  async findByUserId(id: string): Promise<UserModel> {
+    const user = await UserSchema.findOne({
+      _id: id
+    })
+
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      password: user.password
+    }
+  }
 }

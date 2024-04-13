@@ -11,5 +11,6 @@ export namespace User {
   export interface Find {
     findByEmail: (email: string) => Promise<UserModel>
     findByUsername: (username: string) => Promise<UserModel>
+    findByUserId: (userId: string) => Promise<UserModel>
   }
 }

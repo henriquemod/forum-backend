@@ -36,13 +36,13 @@ export class JWTEncryption
     const accessToken = jwt.sign(
       { id: user.id, username: user.username },
       env.jwtSecret,
-      { expiresIn: '20d' }
+      { expiresIn: '3h' }
     )
 
     const refreshToken = jwt.sign(
       { id: user.id, username: user.username },
       env.refreshTokenSecret,
-      { expiresIn: '30d' }
+      { expiresIn: '3d' }
     )
 
     return {

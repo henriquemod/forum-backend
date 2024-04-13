@@ -1,15 +1,14 @@
 import { Controller, ok, type HttpResponse } from '@/application/protocols'
-import { ValidationBuilder as builder, type Validator } from '../../validation'
-import type { Login } from '@/domain/usecases/auth'
-import type { SaveToken } from '@/domain/usecases/token'
+import type { Token } from '@/data/protocols/db'
 import type { User } from '@/data/protocols/db/user'
-import { env } from '@/main/config/env'
-import jwt from 'jsonwebtoken'
+import type { Login } from '@/domain/usecases/auth'
+import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 export class LoginController extends Controller {
   constructor(
     private readonly userRepository: User.Find,
-    private readonly tokenSaver: SaveToken
+    private readonly tokenSaver: Token.Add,
+    private readonly tokenGenerator: Token.SignIn
   ) {
     super()
   }
@@ -25,31 +24,22 @@ export class LoginController extends Controller {
       throw new Error('Invalid credentials')
     }
 
-    // Access token is short-lived
-    const accessToken = jwt.sign(
-      { id: user.id, username: user.username },
-      env.jwtSecret,
-      { expiresIn: '3h' }
-    )
+    const { accessToken, refreshAccessToken } =
+      await this.tokenGenerator.signIn(user)
 
-    // Refresh token is long-lived
-    const refreshAccessToken = jwt.sign(
-      { id: user.id, username: user.username },
-      env.refreshTokenSecret,
-      { expiresIn: '3d' }
-    )
+    const entity = {
+      userId: user.id,
+      accessToken,
+      refreshAccessToken
+    }
 
-    await this.tokenSaver.save({
-      email: user.email,
+    await this.tokenSaver.add({
+      userId: user.id,
       accessToken,
       refreshAccessToken
     })
 
-    return ok({
-      email: user.email,
-      accessToken,
-      refreshAccessToken
-    })
+    return ok(entity)
   }
 
   override buildValidators({ password, username }: Login.Params): Validator[] {
