@@ -1,4 +1,4 @@
-import { AuthenticationError } from '@/application/errors/authentication-error'
+import { NotFound } from '@/application/errors'
 import type { User } from '@/data/protocols/db'
 import type { User as UserModel } from '@/domain/models'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
@@ -14,10 +14,10 @@ export class UserMongoRepository implements User.Add, User.Find {
       email,
       password
     })
-    const newUser = await accessToken.save()
+    const { id } = await accessToken.save()
 
     return {
-      id: newUser.id
+      id
     }
   }
 
@@ -27,7 +27,7 @@ export class UserMongoRepository implements User.Add, User.Find {
     })
 
     if (!user) {
-      throw new Error('User not found')
+      throw new NotFound('User not found')
     }
 
     return {
@@ -44,7 +44,7 @@ export class UserMongoRepository implements User.Add, User.Find {
     })
 
     if (!user) {
-      throw new AuthenticationError()
+      throw new NotFound('User not found')
     }
 
     return {
@@ -61,7 +61,7 @@ export class UserMongoRepository implements User.Add, User.Find {
     })
 
     if (!user) {
-      throw new Error('User not found')
+      throw new NotFound('User not found')
     }
 
     return {

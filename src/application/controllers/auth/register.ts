@@ -1,10 +1,12 @@
-import { Controller, ok, type HttpResponse } from '@/application/protocols'
+import { BadRequest } from '@/application/errors'
+import { Controller, ok } from '@/application/protocols'
+import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { User } from '@/data/protocols/db/user'
 import type { Register } from '@/domain/usecases/auth'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 export class RegisterController extends Controller {
-  constructor(private readonly userRepository: User.Add) {
+  constructor(private readonly userRepository: User.Add & User.Find) {
     super()
   }
 
@@ -13,14 +15,25 @@ export class RegisterController extends Controller {
     password,
     email
   }: Register.Params): Promise<HttpResponse<Register.Result>> {
-    const accessToken = await this.userRepository.add({
+    const hasUsername = !!(await this.userRepository.findByUsername(username))
+    const hasEmail = !!(await this.userRepository.findByEmail(email))
+
+    if (hasUsername) {
+      throw new BadRequest('Username already in use')
+    }
+
+    if (hasEmail) {
+      throw new BadRequest('Email already in use')
+    }
+
+    const { id } = await this.userRepository.add({
       username,
       password,
       email
     })
 
     return ok({
-      id: accessToken.id
+      id
     })
   }
 

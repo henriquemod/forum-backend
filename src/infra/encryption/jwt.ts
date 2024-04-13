@@ -4,8 +4,14 @@ import { env } from '@/main/config/env'
 import jwt from 'jsonwebtoken'
 
 export class JWTEncryption
-  implements Token.Validate, Token.SignIn, Token.Refresh
+  implements Token.Validate, Token.SignIn, Token.Refresh, Token.Invalidate
 {
+  constructor(private readonly tokenRepository: Token.Invalidate) {}
+
+  async invalidate(accessToken: string): Promise<void> {
+    await this.tokenRepository.invalidate(accessToken)
+  }
+
   async refresh(accessToken: string): Promise<Token.RefreshResult> {
     throw new Error('Method not implemented.')
   }

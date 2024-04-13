@@ -1,52 +1,33 @@
-import { ServerError, UnauthorizedError } from '../errors'
+import type {
+  BadRequest,
+  Forbidden,
+  InternalServerError,
+  NotFound,
+  Unauthorized
+} from '../errors'
+import type { HttpResponse } from './http/responses'
+import { HttpStatusCode } from './http/status-codes'
 
-export enum HttpStatusCode {
-  OK = 200,
-  NO_CONTENT = 204,
-  BAD_REQUEST = 400,
-  UNAUTHORIZED = 401,
-  FORBIDDEN = 403,
-  NOT_FOUND = 404,
-  SERVER_ERROR = 500
-}
-
-export type SuccessResponse = HttpStatusCode.OK | HttpStatusCode.NO_CONTENT
-
-export type ErrorResponse =
-  | HttpStatusCode.BAD_REQUEST
-  | HttpStatusCode.UNAUTHORIZED
-  | HttpStatusCode.FORBIDDEN
-  | HttpStatusCode.NOT_FOUND
-  | HttpStatusCode.SERVER_ERROR
-
-export type HttpResponse<T = any> =
-  | {
-      statusCode: SuccessResponse
-      data: T
-    }
-  | {
-      statusCode: ErrorResponse
-      error: Error
-    }
-
-export const forbidden = (error: Error): HttpResponse<Error> => ({
+export const forbidden = (error: Forbidden): HttpResponse<Error> => ({
   statusCode: HttpStatusCode.FORBIDDEN,
-  error
+  error: error.message
 })
 
-export const badRequest = (error: Error): HttpResponse<Error> => ({
-  statusCode: HttpStatusCode.BAD_REQUEST,
-  error
+export const badRequest = (error: BadRequest): HttpResponse<Error> => ({
+  statusCode: error.statusCode,
+  error: error.message
 })
 
-export const unauthorized = (): HttpResponse<Error> => ({
+export const unauthorized = (error: Unauthorized): HttpResponse<Error> => ({
   statusCode: HttpStatusCode.UNAUTHORIZED,
-  error: new UnauthorizedError()
+  error: error.message
 })
 
-export const serverError = (error: Error): HttpResponse<Error> => ({
+export const serverError = (
+  error: InternalServerError
+): HttpResponse<Error> => ({
   statusCode: HttpStatusCode.SERVER_ERROR,
-  error: new ServerError(error)
+  error: error.message
 })
 
 export const ok = <T = any>(data: T): HttpResponse<T> => ({
@@ -57,4 +38,9 @@ export const ok = <T = any>(data: T): HttpResponse<T> => ({
 export const noContent = (): HttpResponse => ({
   statusCode: HttpStatusCode.NO_CONTENT,
   data: null
+})
+
+export const notFound = (error: NotFound): HttpResponse<Error> => ({
+  statusCode: HttpStatusCode.NOT_FOUND,
+  error: error.message
 })

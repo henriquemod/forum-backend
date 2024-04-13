@@ -8,9 +8,7 @@ export const adaptExpressRoute = (controller: Controller): RequestHandler => {
     if ('data' in httpResponse) {
       res.status(httpResponse.statusCode).json(httpResponse.data)
     } else {
-      res
-        .status(httpResponse.statusCode)
-        .json({ error: httpResponse.error.message })
+      res.status(httpResponse.statusCode).json({ error: httpResponse.error })
     }
   }
 }

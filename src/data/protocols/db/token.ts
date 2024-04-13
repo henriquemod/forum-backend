@@ -43,5 +43,6 @@ export namespace Token {
     findByRefreshToken: (
       accessTokenToFind: AccessToken
     ) => Promise<FindResult | null>
+    findByUserId: (userId: string) => Promise<FindResult | null>
   }
 }

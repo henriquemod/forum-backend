@@ -1,8 +1,6 @@
-import {
-  Controller,
-  noContent,
-  type HttpResponse
-} from '@/application/protocols'
+import { NotFound } from '@/application/errors'
+import { Controller, noContent } from '@/application/protocols'
+import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Token } from '@/data/protocols/db/token'
 import type { Logout } from '@/domain/usecases/auth'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
@@ -16,7 +14,7 @@ export class LogoutController extends Controller {
     const token = await this.tokenRepository.findByToken(accessToken)
 
     if (!token) {
-      throw new Error('Invalid access token')
+      throw new NotFound('Invalid access token')
     }
 
     await this.tokenRepository.invalidate(token.accessToken)

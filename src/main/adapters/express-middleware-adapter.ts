@@ -19,9 +19,7 @@ export const adaptMiddleware: Adapter =
       }
     } else {
       res.status(requestData.statusCode).json({
-        error: requestData.error
-          ? requestData.error.message
-          : 'Internal server error'
+        error: requestData.error ? requestData.error : 'Internal server error'
       })
     }
   }

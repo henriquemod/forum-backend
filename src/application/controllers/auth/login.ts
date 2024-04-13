@@ -1,4 +1,5 @@
-import { Controller, ok, type HttpResponse } from '@/application/protocols'
+import { Controller, ok } from '@/application/protocols'
+import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Token } from '@/data/protocols/db'
 import type { User } from '@/data/protocols/db/user'
 import type { Login } from '@/domain/usecases/auth'
@@ -7,7 +8,7 @@ import { ValidationBuilder as builder, type Validator } from '../../validation'
 export class LoginController extends Controller {
   constructor(
     private readonly userRepository: User.Find,
-    private readonly tokenSaver: Token.Add,
+    private readonly tokenRepository: Token.Add & Token.Find & Token.Invalidate,
     private readonly tokenGenerator: Token.SignIn
   ) {
     super()
@@ -24,6 +25,12 @@ export class LoginController extends Controller {
       throw new Error('Invalid credentials')
     }
 
+    const correctToken = await this.tokenRepository.findByUserId(user.id)
+
+    if (correctToken) {
+      await this.tokenRepository.invalidate(correctToken.accessToken)
+    }
+
     const { accessToken, refreshAccessToken } =
       await this.tokenGenerator.signIn(user)
 
@@ -33,7 +40,7 @@ export class LoginController extends Controller {
       refreshAccessToken
     }
 
-    await this.tokenSaver.add({
+    await this.tokenRepository.add({
       userId: user.id,
       accessToken,
       refreshAccessToken

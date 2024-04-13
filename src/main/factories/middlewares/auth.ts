@@ -5,9 +5,10 @@ import { TokenMongoRepository } from '@/infra/db/mongodb/repos'
 import { JWTEncryption } from '@/infra/encryption'
 
 export const makeAuthMiddleware = (): Middleware => {
+  const tokenRepository = new TokenMongoRepository()
   const tokenValidator = new TokenManager(
-    new TokenMongoRepository(),
-    new JWTEncryption()
+    tokenRepository,
+    new JWTEncryption(tokenRepository)
   )
   return new AuthMiddleware(tokenValidator)
 }

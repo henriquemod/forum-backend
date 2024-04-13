@@ -12,6 +12,6 @@ export const makeLoginController = (): LoginController => {
   return new LoginController(
     userRepository,
     new DbAddToken(userRepository, tokenRepo),
-    new JWTEncryption()
+    new JWTEncryption(tokenRepo)
   )
 }

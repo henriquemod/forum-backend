@@ -1,6 +1,7 @@
-import { Controller, ok, type HttpResponse } from '@/application/protocols'
+import { Controller, ok } from '@/application/protocols'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 import type { TokenManager } from '@/data/usecases/token'
+import type { HttpResponse } from '@/application/protocols/http/responses'
 
 export class RefreshTokenController extends Controller {
   constructor(private readonly refreshTokenService: TokenManager) {
