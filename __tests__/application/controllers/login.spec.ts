@@ -121,4 +121,43 @@ describe('Login Controller', () => {
       error: error.message
     })
   })
+
+  it('should return statusCode 500 if user manager throws', async () => {
+    const { sut, userManager } = makeSut()
+
+    jest.spyOn(userManager, 'getUser').mockRejectedValueOnce(new Error())
+
+    const res = await sut.handle({
+      username: 'any_username',
+      password: 'any_password'
+    })
+
+    expect(res.statusCode).toBe(500)
+  })
+
+  it('should return statusCode 500 if token manager throws', async () => {
+    const { sut, tokenManager } = makeSut()
+
+    jest.spyOn(tokenManager, 'signIn').mockRejectedValueOnce(new Error())
+
+    const res = await sut.handle({
+      username: 'any_username',
+      password: 'any_password'
+    })
+
+    expect(res.statusCode).toBe(500)
+  })
+
+  it('should return statusCode 500 if hash manager throws', async () => {
+    const { sut, hashManager } = makeSut()
+
+    jest.spyOn(hashManager, 'compare').mockRejectedValueOnce(new Error())
+
+    const res = await sut.handle({
+      username: 'any_username',
+      password: 'any_password'
+    })
+
+    expect(res.statusCode).toBe(500)
+  })
 })

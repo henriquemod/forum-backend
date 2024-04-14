@@ -20,7 +20,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('Login Controller', () => {
+describe('Logout Controller', () => {
   it('should return statusCode 204 on success', async () => {
     const { sut } = makeSut()
 
@@ -29,7 +29,7 @@ describe('Login Controller', () => {
     expect(res.statusCode).toBe(204)
   })
 
-  it('should return statusCode 400 when no access token is provided', async () => {
+  it('should return statusCode 400 if no access token is provided', async () => {
     const { sut } = makeSut()
 
     const res = await sut.handle({})
@@ -37,7 +37,7 @@ describe('Login Controller', () => {
     expect(res.statusCode).toBe(400)
   })
 
-  it('should return statusCode 500 token manager throws', async () => {
+  it('should return statusCode 500 if token manager throws', async () => {
     const { sut, tokenManager } = makeSut()
 
     jest.spyOn(tokenManager, 'invalidate').mockRejectedValueOnce(new Error())
