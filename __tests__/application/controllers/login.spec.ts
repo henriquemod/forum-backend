@@ -77,7 +77,7 @@ describe('Login Controller', () => {
     })
 
     expect(response).toEqual({
-      statusCode: 401,
+      statusCode: 403,
       error: 'Invalid credentials'
     })
   })

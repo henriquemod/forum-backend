@@ -1,5 +1,17 @@
-import { Forbidden, NotFound, BadRequest } from '../errors'
-import { badRequest, serverError, unauthorized, notFound } from './http'
+import {
+  Forbidden,
+  NotFound,
+  BadRequest,
+  InternalServerError,
+  Unauthorized
+} from '../errors'
+import {
+  badRequest,
+  serverError,
+  unauthorized,
+  notFound,
+  forbidden
+} from './http'
 import type { HttpResponse } from './http/responses'
 
 export abstract class ApiError extends Error {
@@ -11,25 +23,31 @@ export abstract class ApiError extends Error {
   }
 
   public static errorHandler(error: unknown): HttpResponse {
-    if (!(error instanceof ApiError)) {
-      return {
-        statusCode: 500,
-        error: 'Internal server error'
+    if (error instanceof ApiError) {
+      if (error instanceof BadRequest) {
+        return badRequest(error)
+      }
+
+      if (error instanceof Forbidden) {
+        return forbidden(error)
+      }
+
+      if (error instanceof NotFound) {
+        return notFound(error)
+      }
+
+      if (error instanceof Unauthorized) {
+        return unauthorized(error)
+      }
+
+      if (error instanceof InternalServerError) {
+        return serverError(error)
       }
     }
 
-    if (error instanceof BadRequest) {
-      return badRequest(error)
+    return {
+      statusCode: 500,
+      error: 'Internal server error'
     }
-
-    if (error instanceof Forbidden) {
-      return unauthorized(error)
-    }
-
-    if (error instanceof NotFound) {
-      return notFound(error)
-    }
-
-    return serverError(error)
   }
 }
