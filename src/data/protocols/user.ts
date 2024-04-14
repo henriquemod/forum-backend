@@ -13,12 +13,8 @@ export class UserManagement implements User.Get, User.Register {
     ))
     const hasEmail = !!(await this.userRepository.findByEmail(user.email))
 
-    if (hasUsername) {
-      throw new BadRequest('Username already in use')
-    }
-
-    if (hasEmail) {
-      throw new BadRequest('Email already in use')
+    if (hasUsername || hasEmail) {
+      throw new BadRequest('Username or email already in use')
     }
 
     const { id } = await this.userRepository.add(user)
