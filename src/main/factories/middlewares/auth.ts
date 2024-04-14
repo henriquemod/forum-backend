@@ -10,10 +10,11 @@ import { BCryptHash, JWTEncryption } from '@/infra/encryption'
 export const makeAuthMiddleware = (): Middleware => {
   const tokenRepository = new TokenMongoRepository()
   const userRepository = new UserMongoRepository(new BCryptHash())
+  const jwtManager = new JWTEncryption(tokenRepository)
   const tokenValidator = new TokenManager(
     tokenRepository,
     userRepository,
-    new JWTEncryption(tokenRepository)
+    jwtManager
   )
   return new AuthMiddleware(tokenValidator)
 }

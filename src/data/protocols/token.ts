@@ -12,7 +12,7 @@ export class TokenManager
       DBToken.Delete &
       DBToken.Add,
     private readonly userRepository: DBUser.Find,
-    private readonly tokenEncryption: Token.SignIn
+    private readonly jwtManager: Token.SignIn
   ) {}
 
   async userHasToken(userId: string): Promise<boolean> {
@@ -55,7 +55,7 @@ export class TokenManager
       throw new NotFound('User not found')
     }
 
-    const tokenData = await this.tokenEncryption.signIn(user)
+    const tokenData = await this.jwtManager.signIn(user)
 
     await this.tokenRepository.add({
       accessToken: tokenData.accessToken,

@@ -5,7 +5,7 @@ import type { Authentication, Token, User } from '@/data/usecases'
 import type { Hash } from '@/data/usecases/encryption'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
-type UserManager = User.GetUser
+type UserManager = User.Get
 type TokenManager = Token.SignIn
 type HashComparer = Hash.Compare
 

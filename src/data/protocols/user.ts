@@ -1,10 +1,30 @@
-import { NotFound } from '@/application/errors'
+import { BadRequest, NotFound } from '@/application/errors'
 import type { User } from '@/data/usecases'
 import type { User as UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db/user'
 
-export class UserManagement implements User.GetUser {
-  constructor(private readonly userRepository: DBUser.Find) {}
+export class UserManagement implements User.Get, User.Register {
+  constructor(private readonly userRepository: DBUser.Find & DBUser.Add) {}
+  async registerUser(
+    user: Omit<UserModel, 'id'>
+  ): Promise<User.RegisterResult> {
+    const hasUsername = !!(await this.userRepository.findByUsername(
+      user.username
+    ))
+    const hasEmail = !!(await this.userRepository.findByEmail(user.email))
+
+    if (hasUsername) {
+      throw new BadRequest('Username already in use')
+    }
+
+    if (hasEmail) {
+      throw new BadRequest('Email already in use')
+    }
+
+    const { id } = await this.userRepository.add(user)
+
+    return { id }
+  }
 
   async getUser(
     value: string,
