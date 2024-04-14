@@ -14,7 +14,7 @@
 
     // Bundler mode
     "moduleResolution": "bundler",
-    "verbatimModuleSyntax": true,
+    // "verbatimModuleSyntax": true, // NOTE - Disabled for Jest
 
     // Best practices
     "strict": true,
@@ -34,5 +34,5 @@
       ],
     },
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "./__tests__/**/*.ts", "./jest.config.ts"],
 }

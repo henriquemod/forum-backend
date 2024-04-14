@@ -3,6 +3,7 @@ import { ValidationComposite, type Validator } from '@/application/validation'
 import { ApiError } from './api-error'
 import { BadRequest } from '../errors'
 import type { HttpResponse } from './http/responses'
+import { badRequest } from './http'
 
 export abstract class Controller {
   abstract perform(httpRequest: any): Promise<HttpResponse>
@@ -14,7 +15,7 @@ export abstract class Controller {
     const error = this.validate(httpRequest)
 
     if (error !== undefined) {
-      throw new BadRequest(error.message)
+      return badRequest(new BadRequest(error.message))
     }
 
     try {
