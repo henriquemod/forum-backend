@@ -1,4 +1,3 @@
-import type { TokenManager } from '@/data/protocols/token'
 import type { Request } from 'express'
 import { BadRequest, Forbidden } from '../errors'
 import {
@@ -9,6 +8,9 @@ import {
 } from '../protocols'
 import { ApiError } from '../protocols/api-error'
 import type { HttpResponse } from '../protocols/http/responses'
+import type { Token } from '@/data/usecases'
+
+type TokenManager = Token.Validate
 
 export class AuthMiddleware implements Middleware {
   constructor(private readonly tokenValidator: TokenManager) {}
