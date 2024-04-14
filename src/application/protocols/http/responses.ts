@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { HttpStatusCode } from './status-codes'
 
 type SuccessResponse = HttpStatusCode.OK | HttpStatusCode.NO_CONTENT

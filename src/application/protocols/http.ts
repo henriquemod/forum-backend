@@ -30,7 +30,7 @@ export const serverError = (
   error: error.message
 })
 
-export const ok = <T = any>(data: T): HttpResponse<T> => ({
+export const ok = <T = null>(data: T): HttpResponse<T> => ({
   statusCode: HttpStatusCode.OK,
   data
 })

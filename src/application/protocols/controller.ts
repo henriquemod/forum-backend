@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ValidationComposite, type Validator } from '@/application/validation'
-import { badRequest } from './http'
 import { ApiError } from './api-error'
 import { BadRequest } from '../errors'
 import type { HttpResponse } from './http/responses'
@@ -14,7 +14,7 @@ export abstract class Controller {
     const error = this.validate(httpRequest)
 
     if (error !== undefined) {
-      return badRequest(new BadRequest(error.message))
+      throw new BadRequest(error.message)
     }
 
     try {

@@ -1,10 +1,23 @@
 {
-  "extends": ["standard-with-typescript", "prettier"],
-  "plugins": ["prettier"],
+  "extends": [
+    "standard-with-typescript",
+    "@rocketseat/eslint-config/node",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier"
+  ],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
   "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "trailingComma": "none"
+      }
+    ],
+    "no-useless-constructor": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
