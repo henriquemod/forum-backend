@@ -8,8 +8,8 @@
     "build": "tsc --build",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
-    "test:integration": "jest --passWithNoTests --no-cache --runInBand",
-    "test:integration:watch": "jest --passWithNoTests --no-cache --runInBand --watch",
+    "test:unit": "jest --passWithNoTests --no-cache --runInBand",
+    "test:unit:watch": "jest --passWithNoTests --no-cache --runInBand --watch",
     "test:coverage": "jest --passWithNoTests --no-cache --runInBand --coverage ",
     "prepare": "husky",
     "postinstall": "husky install"
