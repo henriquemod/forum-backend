@@ -15,7 +15,7 @@ export namespace Token {
   }
 
   export interface Validate {
-    userHasToken: (userId: string) => Promise<boolean>
+    userHasToken: (userId: string) => Promise<ValidateResult>
     validate: (accessToken: AccessToken) => Promise<ValidateResult>
   }
 
