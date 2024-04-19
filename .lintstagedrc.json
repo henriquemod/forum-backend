@@ -1,6 +1,6 @@
 {
   "*.ts": [
     "bun lint",
-    "bun test"
+    "bun test:unit"
   ]
 }
