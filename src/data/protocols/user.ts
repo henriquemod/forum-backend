@@ -3,7 +3,7 @@ import type { User } from '@/data/usecases'
 import type { User as UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db/user'
 
-export class UserManagement implements User.Get, User.Register {
+export class UserManager implements User.Get, User.Register {
   constructor(private readonly userRepository: DBUser.Find & DBUser.Add) {}
   async registerUser(
     user: Omit<UserModel, 'id'>
