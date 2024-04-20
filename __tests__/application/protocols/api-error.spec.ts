@@ -33,8 +33,15 @@ describe('ApiError', () => {
       expect(response).toEqual(badRequest(error))
     })
 
+    it('should return 401 status code and the error message if error is an instance of Unauthorized with custom message', () => {
+      const error = new Unauthorized('Unauthorized')
+      const response = ApiError.errorHandler(error)
+
+      expect(response).toEqual(unauthorized(error))
+    })
+
     it('should return 401 status code and the error message if error is an instance of Unauthorized', () => {
-      const error = new Unauthorized('Forbidden')
+      const error = new Unauthorized()
       const response = ApiError.errorHandler(error)
 
       expect(response).toEqual(unauthorized(error))
@@ -47,8 +54,15 @@ describe('ApiError', () => {
       expect(response).toEqual(forbidden(error))
     })
 
-    it('should return 404 status code and the error message if error is an instance of NotFound', () => {
+    it('should return 404 status code and the error message if error is an instance of NotFound with custom message', () => {
       const error = new NotFound('Not found')
+      const response = ApiError.errorHandler(error)
+
+      expect(response).toEqual(notFound(error))
+    })
+
+    it('should return 404 status code and the error message if error is an instance of NotFound', () => {
+      const error = new NotFound()
       const response = ApiError.errorHandler(error)
 
       expect(response).toEqual(notFound(error))
