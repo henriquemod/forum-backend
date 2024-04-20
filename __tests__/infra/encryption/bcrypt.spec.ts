@@ -17,6 +17,10 @@ const makeSut = () => {
 }
 
 describe('BCryptHash', () => {
+  afterAll(() => {
+    jest.clearAllMocks()
+  })
+
   describe('generate', () => {
     it('should return hashed password on success', async () => {
       const { sut } = makeSut()
