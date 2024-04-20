@@ -26,7 +26,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('SignIn', () => {
+describe('JWTEncryption - SignIn', () => {
   afterAll(() => {
     jest.clearAllMocks()
   })

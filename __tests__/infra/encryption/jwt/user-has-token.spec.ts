@@ -16,7 +16,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('userHasToken', () => {
+describe('JWTEncryption - UserHasToken', () => {
   it('should return true if user has token', async () => {
     const { sut } = makeSut()
 

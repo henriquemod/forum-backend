@@ -27,7 +27,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('validateRefreshToken', () => {
+describe('JWTEncryption - ValidateRefreshToken', () => {
   afterAll(() => {
     jest.clearAllMocks()
   })

@@ -16,7 +16,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('invalidate', () => {
+describe('JWTEncryption - Invalidate', () => {
   it('should call delete with correct value', async () => {
     const { sut, userRepositoryStub } = makeSut()
     const mockAccessToken = 'any_access_token'
