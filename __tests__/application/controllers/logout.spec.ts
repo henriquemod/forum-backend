@@ -1,10 +1,6 @@
 import { LogoutController } from '@/application/controllers/auth'
 import type { Token } from '@/data/usecases/'
-import type { AccessToken } from '@/domain/models'
-
-class TokenInvalidateStub implements Token.Invalidate {
-  async invalidate(_accessToken: AccessToken): Promise<void> {}
-}
+import { TokenStub } from '../helpers'
 
 interface SutTypes {
   sut: LogoutController
@@ -12,7 +8,7 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const tokenManager = new TokenInvalidateStub()
+  const tokenManager = new TokenStub()
 
   return {
     sut: new LogoutController(tokenManager),

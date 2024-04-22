@@ -1,14 +1,6 @@
 import { RefreshTokenController } from '@/application/controllers/auth'
 import type { Token } from '@/data/usecases/'
-
-class TokenInvalidateStub implements Token.Refresh {
-  async refresh(accessToken: string): Promise<Token.RefreshResult> {
-    return await Promise.resolve({
-      accessToken: 'new_access_token',
-      accessRefreshToken: 'new_refresh_token'
-    })
-  }
-}
+import { TokenStub } from '../helpers'
 
 interface SutTypes {
   sut: RefreshTokenController
@@ -16,7 +8,7 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const tokenManager = new TokenInvalidateStub()
+  const tokenManager = new TokenStub()
 
   return {
     sut: new RefreshTokenController(tokenManager),

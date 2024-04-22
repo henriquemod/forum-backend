@@ -1,20 +1,9 @@
 import { LoginController } from '@/application/controllers/auth'
 import { ValidationComposite } from '@/application/validation'
 import type { Hash, Token, User } from '@/data/usecases/'
-import type { User as UserModel } from '@/domain/models'
-import { HashStub, UserStub } from '../helpers'
+import { HashStub, TokenStub, UserStub } from '../helpers'
 
 jest.mock('@/application/validation/composite')
-
-class TokenSignInStub implements Token.SignIn {
-  async signIn(user: UserModel): Promise<Token.SignResult> {
-    return await Promise.resolve({
-      userId: 'any_id',
-      accessToken: 'any_access',
-      refreshAccessToken: 'any_refresh'
-    })
-  }
-}
 
 interface SutTypes {
   sut: LoginController
@@ -25,7 +14,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   const userManager = new UserStub()
-  const tokenManager = new TokenSignInStub()
+  const tokenManager = new TokenStub()
   const hashManager = new HashStub()
 
   return {
