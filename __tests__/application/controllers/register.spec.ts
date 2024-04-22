@@ -1,14 +1,6 @@
 import { RegisterController } from '@/application/controllers/auth'
 import type { User } from '@/data/usecases/'
-import type { User as UserModel } from '@/domain/models'
-
-class UserRegisterStub implements User.Register {
-  async registerUser(
-    user: Omit<UserModel, 'id'>
-  ): Promise<User.RegisterResult> {
-    return { id: 'any_id' }
-  }
-}
+import { UserStub } from '../helpers'
 
 interface SutTypes {
   sut: RegisterController
@@ -16,7 +8,7 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const userManager = new UserRegisterStub()
+  const userManager = new UserStub()
 
   return {
     sut: new RegisterController(userManager),

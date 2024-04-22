@@ -1,23 +1,10 @@
 import { LoginController } from '@/application/controllers/auth'
 import { ValidationComposite } from '@/application/validation'
-import type { User, Token, Hash } from '@/data/usecases/'
+import type { Hash, Token, User } from '@/data/usecases/'
 import type { User as UserModel } from '@/domain/models'
+import { UserStub } from '../helpers'
 
 jest.mock('@/application/validation/composite')
-
-class UserGetStub implements User.Get {
-  async getUser(
-    value: string,
-    origin?: User.Origin | undefined
-  ): Promise<UserModel> {
-    return await Promise.resolve({
-      id: 'any_id',
-      email: 'any_email',
-      username: 'any_username',
-      password: 'any_password'
-    })
-  }
-}
 
 class TokenSignInStub implements Token.SignIn {
   async signIn(user: UserModel): Promise<Token.SignResult> {
@@ -43,7 +30,7 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const userManager = new UserGetStub()
+  const userManager = new UserStub()
   const tokenManager = new TokenSignInStub()
   const hashManager = new HashCompareStub()
 
