@@ -1,41 +1,5 @@
 import { UserManager } from '@/data/protocols'
-import type { User } from '@/domain/models'
-import type { DBUser } from '@/domain/usecases/db/user'
-
-type DBUserStub = DBUser.Find & DBUser.Add
-
-class UserRepositoryStub implements DBUserStub {
-  async findByEmail(email: string): Promise<User | null> {
-    return await Promise.resolve({
-      email: 'any_email',
-      id: 'any_id',
-      password: 'any_password',
-      username: 'any_username'
-    })
-  }
-
-  async findByUsername(username: string): Promise<User | null> {
-    return await Promise.resolve({
-      email: 'any_email',
-      id: 'any_id',
-      password: 'any_password',
-      username: 'any_username'
-    })
-  }
-
-  async findByUserId(userId: string): Promise<User | null> {
-    return await Promise.resolve({
-      email: 'any_email',
-      id: 'any_id',
-      password: 'any_password',
-      username: 'any_username'
-    })
-  }
-
-  async add(user: Omit<User, 'id'>): Promise<DBUser.AddResult> {
-    return await Promise.resolve({ id: 'any_id' })
-  }
-}
+import { type DBUserStub, MOCK_USER, UserRepositoryStub } from '../helpers'
 
 interface SutTypes {
   sut: UserManager
@@ -61,13 +25,9 @@ describe('UserManager', () => {
         .mockResolvedValueOnce(null)
       jest.spyOn(userRepositoryStub, 'findByEmail').mockResolvedValueOnce(null)
 
-      const res = await sut.registerUser({
-        email: 'any_email',
-        password: 'any_password',
-        username: 'any_username'
-      })
+      const res = await sut.registerUser(MOCK_USER)
 
-      expect(res).toEqual({ id: 'any_id' })
+      expect(res).toEqual({ id: MOCK_USER.id })
     })
 
     it('should throw BadRequest if email already exist', () => {
@@ -76,11 +36,7 @@ describe('UserManager', () => {
         .spyOn(userRepositoryStub, 'findByUsername')
         .mockResolvedValueOnce(null)
 
-      const promise = sut.registerUser({
-        email: 'any_email',
-        password: 'any_password',
-        username: 'any_username'
-      })
+      const promise = sut.registerUser(MOCK_USER)
 
       expect(promise).rejects.toThrow('Username or email already in use')
     })
@@ -89,11 +45,7 @@ describe('UserManager', () => {
       const { sut, userRepositoryStub } = makeSut()
       jest.spyOn(userRepositoryStub, 'findByEmail').mockResolvedValueOnce(null)
 
-      const promise = sut.registerUser({
-        email: 'any_email',
-        password: 'any_password',
-        username: 'any_username'
-      })
+      const promise = sut.registerUser(MOCK_USER)
 
       expect(promise).rejects.toThrow('Username or email already in use')
     })
@@ -101,11 +53,7 @@ describe('UserManager', () => {
     it('should throw BadRequest if both email and username already exist', () => {
       const { sut } = makeSut()
 
-      const promise = sut.registerUser({
-        email: 'any_email',
-        password: 'any_password',
-        username: 'any_username'
-      })
+      const promise = sut.registerUser(MOCK_USER)
 
       expect(promise).rejects.toThrow('Username or email already in use')
     })
@@ -115,47 +63,32 @@ describe('UserManager', () => {
     it('should return user on success from default origin', async () => {
       const { sut } = makeSut()
 
-      const res = await sut.getUser('any_username')
+      const res = await sut.getUser(MOCK_USER.username)
 
-      expect(res).toEqual({
-        email: 'any_email',
-        id: 'any_id',
-        password: 'any_password',
-        username: 'any_username'
-      })
+      expect(res).toEqual(MOCK_USER)
     })
 
     it('should return user on success from email origin', async () => {
       const { sut } = makeSut()
 
-      const res = await sut.getUser('any_email', 'email')
+      const res = await sut.getUser(MOCK_USER.email, 'email')
 
-      expect(res).toEqual({
-        email: 'any_email',
-        id: 'any_id',
-        password: 'any_password',
-        username: 'any_username'
-      })
+      expect(res).toEqual(MOCK_USER)
     })
     it('should throw NotFound if user not found from email origin', async () => {
       const { sut, userRepositoryStub } = makeSut()
       jest.spyOn(userRepositoryStub, 'findByEmail').mockResolvedValueOnce(null)
 
-      const promise = sut.getUser('any_email', 'email')
+      const promise = sut.getUser(MOCK_USER.email, 'email')
 
       expect(promise).rejects.toThrow('User not found')
     })
     it('should return user on success from username origin', async () => {
       const { sut } = makeSut()
 
-      const res = await sut.getUser('any_username', 'username')
+      const res = await sut.getUser(MOCK_USER.username, 'username')
 
-      expect(res).toEqual({
-        email: 'any_email',
-        id: 'any_id',
-        password: 'any_password',
-        username: 'any_username'
-      })
+      expect(res).toEqual(MOCK_USER)
     })
 
     it('should throw NotFound if user not found from username origin', async () => {
@@ -164,7 +97,7 @@ describe('UserManager', () => {
         .spyOn(userRepositoryStub, 'findByUsername')
         .mockResolvedValueOnce(null)
 
-      const promise = sut.getUser('any_username', 'username')
+      const promise = sut.getUser(MOCK_USER.username, 'username')
 
       expect(promise).rejects.toThrow('User not found')
     })

@@ -1,90 +1,21 @@
 import { NotFound } from '@/application/errors'
 import { TokenManager } from '@/data/protocols'
-import type { Token } from '@/data/usecases'
-import type { User } from '@/domain/models'
-import type { DBToken } from '@/domain/usecases/db/token'
-import type { DBUser } from '@/domain/usecases/db/user'
-
-type DBTokenStub = DBToken.Find & DBToken.Delete & DBToken.Add
-type DBUserStub = DBUser.Find
-type JWTStub = Token.SignIn
+import {
+  type DBTokenStub,
+  type DBUserStub,
+  type JWTStub,
+  JWTManagerStub,
+  MOCK_ACCESS_TOKEN,
+  MOCK_USER,
+  TokenRepositoryStub,
+  UserRepositoryStub
+} from '../helpers'
 
 interface SutTypes {
   sut: TokenManager
   tokenRepositoryStub: DBTokenStub
   userRepositoryStub: DBUserStub
   jwtManagerStub: JWTStub
-}
-
-class TokenRepositoryStub implements DBTokenStub {
-  async findByToken(
-    accessTokenToFind: string
-  ): Promise<DBToken.FindResult | null> {
-    return await Promise.resolve({
-      accessToken: 'any_token',
-      user: {
-        id: 'any_id',
-        email: 'any_email',
-        username: 'any_username',
-        password: 'any_hashed_password'
-      }
-    })
-  }
-
-  async findByRefreshToken(
-    accessTokenToFind: string
-  ): Promise<DBToken.FindResult | null> {
-    throw new Error('Method not implemented.')
-  }
-
-  async findByUserId(userId: string): Promise<DBToken.FindResult | null> {
-    return await Promise.resolve({
-      accessToken: 'any_token',
-      user: {
-        id: 'any_id',
-        email: 'any_email',
-        username: 'any_username',
-        password: 'any_hashed_password'
-      }
-    })
-  }
-
-  async delete(accessToken: string): Promise<void> {
-    await Promise.resolve()
-  }
-
-  async add(params: DBToken.AddParams): Promise<void> {
-    await Promise.resolve()
-  }
-}
-
-class UserRepositoryStub implements DBUserStub {
-  async findByEmail(email: string): Promise<User | null> {
-    throw new Error('Method not implemented.')
-  }
-
-  async findByUsername(username: string): Promise<User | null> {
-    throw new Error('Method not implemented.')
-  }
-
-  async findByUserId(userId: string): Promise<User | null> {
-    return await Promise.resolve({
-      id: 'any_id',
-      email: 'any_email',
-      username: 'any_username',
-      password: 'any_hashed_password'
-    })
-  }
-}
-
-class JWTManagerStub implements JWTStub {
-  async signIn(user: User): Promise<Token.SignResult> {
-    return await Promise.resolve({
-      accessToken: 'any_token',
-      refreshAccessToken: 'any_token',
-      userId: 'any_id'
-    })
-  }
 }
 
 const makeSut = (): SutTypes => {
@@ -205,7 +136,7 @@ describe('TokenManager', () => {
 
       await sut.invalidate('any_token')
 
-      expect(deleteSpy).toHaveBeenCalledWith('any_token')
+      expect(deleteSpy).toHaveBeenCalledWith(MOCK_ACCESS_TOKEN.accessToken)
     })
 
     it('should throw if delete throws', async () => {
@@ -225,37 +156,21 @@ describe('TokenManager', () => {
       const { sut, tokenRepositoryStub } = makeSut()
       const findByUserIdSpy = jest.spyOn(tokenRepositoryStub, 'findByUserId')
 
-      await sut.signIn({
-        id: 'any_id',
-        email: 'any_email',
-        username: 'any_username',
-        password: 'any_hashed_password'
-      })
+      await sut.signIn(MOCK_USER)
 
-      expect(findByUserIdSpy).toHaveBeenCalledWith('any_id')
+      expect(findByUserIdSpy).toHaveBeenCalledWith(MOCK_USER.id)
     })
 
     it('should call delete with correct values if user has token', async () => {
       const { sut, tokenRepositoryStub } = makeSut()
-      jest.spyOn(tokenRepositoryStub, 'findByUserId').mockResolvedValueOnce({
-        accessToken: 'any_token',
-        user: {
-          id: 'any_id',
-          email: 'any_email',
-          username: 'any_username',
-          password: 'any_hashed_password'
-        }
-      })
+      jest
+        .spyOn(tokenRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_ACCESS_TOKEN)
       const deleteSpy = jest.spyOn(tokenRepositoryStub, 'delete')
 
-      await sut.signIn({
-        id: 'any_id',
-        email: 'any_email',
-        username: 'any_username',
-        password: 'any_hashed_password'
-      })
+      await sut.signIn(MOCK_USER)
 
-      expect(deleteSpy).toHaveBeenCalledWith('any_token')
+      expect(deleteSpy).toHaveBeenCalledWith(MOCK_ACCESS_TOKEN.accessToken)
     })
 
     it('should throw if findByUserId throws', async () => {
@@ -264,12 +179,7 @@ describe('TokenManager', () => {
         .spyOn(tokenRepositoryStub, 'findByUserId')
         .mockRejectedValueOnce(new Error())
 
-      const promise = sut.signIn({
-        id: 'any_id',
-        email: 'any_email',
-        username: 'any_username',
-        password: 'any_hashed_password'
-      })
+      const promise = sut.signIn(MOCK_USER)
 
       await expect(promise).rejects.toThrow()
     })
@@ -278,12 +188,7 @@ describe('TokenManager', () => {
       const { sut, userRepositoryStub } = makeSut()
       jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
 
-      const promise = sut.signIn({
-        id: 'any_id',
-        email: 'any_email',
-        username: 'any_username',
-        password: 'any_hashed_password'
-      })
+      const promise = sut.signIn(MOCK_USER)
 
       await expect(promise).rejects.toThrow(NotFound)
     })
@@ -292,14 +197,9 @@ describe('TokenManager', () => {
       const { sut, userRepositoryStub } = makeSut()
       const findByUserIdSpy = jest.spyOn(userRepositoryStub, 'findByUserId')
 
-      await sut.signIn({
-        id: 'any_id',
-        email: 'any_email',
-        username: 'any_username',
-        password: 'any_hashed_password'
-      })
+      await sut.signIn(MOCK_USER)
 
-      expect(findByUserIdSpy).toHaveBeenCalledWith('any_id')
+      expect(findByUserIdSpy).toHaveBeenCalledWith(MOCK_USER.id)
     })
   })
 })
