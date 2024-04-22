@@ -3,16 +3,7 @@ import { AuthMiddleware } from '@/application/middlewares/auth-middleware'
 import { badRequest, noContent, unauthorized } from '@/application/protocols'
 import { ApiError } from '@/application/protocols/api-error'
 import type { Token } from '@/data/usecases'
-
-class TokenValidatorStub implements Token.Validate {
-  async userHasToken(_userId: string): Promise<boolean> {
-    return await Promise.resolve(true)
-  }
-
-  async validate(_accessToken: string): Promise<boolean> {
-    return await Promise.resolve(true)
-  }
-}
+import { TokenStub } from '../helpers'
 
 interface SutTypes {
   sut: AuthMiddleware
@@ -20,7 +11,7 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const tokenValidator = new TokenValidatorStub()
+  const tokenValidator = new TokenStub()
 
   return {
     sut: new AuthMiddleware(tokenValidator),
