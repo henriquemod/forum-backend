@@ -1,5 +1,5 @@
 import type { Token } from '@/data/usecases'
-import type { User as UserModel, AccessToken } from '@/domain/models'
+import type { UserModel, AccessTokenModel } from '@/domain/models'
 
 type TokenImplementation = Token.Validate &
   Token.SignIn &
@@ -23,7 +23,7 @@ export class TokenStub implements TokenImplementation {
     })
   }
 
-  async invalidate(_accessToken: AccessToken): Promise<void> {}
+  async invalidate(_accessToken: AccessTokenModel): Promise<void> {}
 
   async refresh(_accessToken: string): Promise<Token.RefreshResult> {
     return await Promise.resolve({

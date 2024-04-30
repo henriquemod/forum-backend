@@ -1,5 +1,5 @@
 import type { Token } from '@/data/usecases/token'
-import type { User } from '@/domain/models'
+import type { UserModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db/token'
 import { env } from '@/main/config/env'
 import jwt from 'jsonwebtoken'
@@ -16,7 +16,7 @@ export class JWTEncryption
     return !!token
   }
 
-  async signIn(user: User): Promise<Token.SignResult> {
+  async signIn(user: UserModel): Promise<Token.SignResult> {
     const accessToken = jwt.sign(
       { id: user.id, username: user.username },
       env.jwtSecret,

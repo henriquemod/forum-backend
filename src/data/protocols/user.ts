@@ -1,6 +1,6 @@
 import { BadRequest, NotFound } from '@/application/errors'
 import type { User } from '@/data/usecases'
-import type { User as UserModel } from '@/domain/models'
+import type { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db/user'
 
 export class UserManager implements User.Get, User.Register {

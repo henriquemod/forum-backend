@@ -1,4 +1,4 @@
-import type { AccessToken } from '@/domain/models'
+import type { AccessTokenModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db/token'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 import mongoose from 'mongoose'
@@ -20,7 +20,7 @@ export class TokenMongoRepository
   }
 
   async findByToken(
-    accessToken: AccessToken
+    accessToken: AccessTokenModel
   ): Promise<DBToken.FindResult | null> {
     return await AccessTokenSchema.findOne({
       accessToken
@@ -28,7 +28,7 @@ export class TokenMongoRepository
   }
 
   async findByRefreshToken(
-    refreshAccessToken: AccessToken
+    refreshAccessToken: AccessTokenModel
   ): Promise<DBToken.FindResult | null> {
     return await AccessTokenSchema.findOne({
       refreshAccessToken

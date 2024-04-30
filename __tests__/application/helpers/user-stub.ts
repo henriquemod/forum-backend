@@ -1,5 +1,5 @@
 import type { User } from '@/data/usecases/'
-import type { User as UserModel } from '@/domain/models'
+import type { UserModel } from '@/domain/models'
 
 export class UserStub implements User.Get, User.Register {
   async getUser(

@@ -1,1 +1,1 @@
-export type AccessToken = string
+export type AccessTokenModel = string

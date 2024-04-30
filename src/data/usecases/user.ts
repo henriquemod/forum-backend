@@ -1,4 +1,4 @@
-import type { User as UserModel } from '@/domain/models'
+import type { UserModel } from '@/domain/models'
 
 export namespace User {
   export type Origin = 'username' | 'email'

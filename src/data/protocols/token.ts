@@ -1,6 +1,6 @@
 import { NotFound } from '@/application/errors'
 import type { Token } from '@/data/usecases'
-import type { User } from '@/domain/models'
+import type { UserModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db/token'
 import type { DBUser } from '@/domain/usecases/db/user'
 
@@ -42,7 +42,7 @@ export class TokenManager
     await this.tokenRepository.delete(accessToken)
   }
 
-  async signIn(user: User): Promise<Token.SignResult> {
+  async signIn(user: UserModel): Promise<Token.SignResult> {
     const userData = await this.tokenRepository.findByUserId(user.id)
 
     if (userData) {

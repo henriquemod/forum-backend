@@ -1,4 +1,4 @@
-import type { AccessToken } from '@/domain/models'
+import type { AccessTokenModel } from '@/domain/models'
 
 export namespace Authentication {
   export interface LoginParams {
@@ -7,7 +7,7 @@ export namespace Authentication {
   }
 
   export interface LogoutParams {
-    accessToken: AccessToken
+    accessToken: AccessTokenModel
   }
 
   export interface RegisterParams {
@@ -18,8 +18,8 @@ export namespace Authentication {
 
   export interface LoginResult {
     userId: string
-    accessToken: AccessToken
-    refreshAccessToken: AccessToken
+    accessToken: AccessTokenModel
+    refreshAccessToken: AccessTokenModel
   }
 
   export interface RegisterResult {

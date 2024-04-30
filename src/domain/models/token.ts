@@ -1,9 +1,9 @@
-import type { AccessToken } from './access-token'
-import type { User } from './user'
+import type { AccessTokenModel } from './access-token'
+import type { UserModel } from './user'
 
-export interface Token {
-  accessToken: AccessToken
-  refreshAccessToken: AccessToken
+export interface TokenModel {
+  accessToken: AccessTokenModel
+  refreshAccessToken: AccessTokenModel
   invalid: boolean
-  user: User
+  user: UserModel
 }
