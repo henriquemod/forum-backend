@@ -1,5 +1,5 @@
 import type { UserModel } from '@/domain/models'
-import type { DBUser } from '@/domain/usecases/db/user'
+import type { DBUser } from '@/domain/usecases/db'
 
 export type DBUserStub = DBUser.Find & DBUser.Add
 

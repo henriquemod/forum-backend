@@ -1,8 +1,7 @@
 import { NotFound } from '@/application/errors'
 import type { Token } from '@/data/usecases'
 import type { UserModel } from '@/domain/models'
-import type { DBToken } from '@/domain/usecases/db/token'
-import type { DBUser } from '@/domain/usecases/db/user'
+import type { DBToken, DBUser } from '@/domain/usecases/db'
 
 export class TokenManager
   implements Token.SignIn, Token.Invalidate, Token.Refresh, Token.Validate

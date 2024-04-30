@@ -1,7 +1,7 @@
 import { BadRequest, NotFound } from '@/application/errors'
 import type { User } from '@/data/usecases'
 import type { UserModel } from '@/domain/models'
-import type { DBUser } from '@/domain/usecases/db/user'
+import type { DBUser } from '@/domain/usecases/db'
 
 export class UserManager implements User.Get, User.Register {
   constructor(private readonly userRepository: DBUser.Find & DBUser.Add) {}

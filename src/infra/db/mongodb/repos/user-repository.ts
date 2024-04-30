@@ -1,6 +1,6 @@
 import type { Hash } from '@/data/usecases/encryption'
 import type { UserModel } from '@/domain/models'
-import type { DBUser } from '@/domain/usecases/db/user'
+import type { DBUser } from '@/domain/usecases/db'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
 
 export class UserMongoRepository implements DBUser.Add, DBUser.Find {

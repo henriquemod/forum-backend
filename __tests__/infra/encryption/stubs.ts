@@ -1,4 +1,4 @@
-import type { DBToken } from '@/domain/usecases/db/token'
+import type { DBToken } from '@/domain/usecases/db'
 
 type UserRepository = DBToken.Delete & DBToken.Find
 

@@ -1,5 +1,5 @@
 import type { AccessTokenModel } from '@/domain/models'
-import type { DBToken } from '@/domain/usecases/db/token'
+import type { DBToken } from '@/domain/usecases/db'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 import mongoose from 'mongoose'
 

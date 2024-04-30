@@ -1,4 +1,4 @@
-import type { DBToken } from '@/domain/usecases/db/token'
+import type { DBToken } from '@/domain/usecases/db'
 import { MOCK_USER } from './user-repository-stub'
 
 export type DBTokenStub = DBToken.Find & DBToken.Delete & DBToken.Add

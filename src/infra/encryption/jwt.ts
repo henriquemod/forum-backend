@@ -1,6 +1,6 @@
 import type { Token } from '@/data/usecases/token'
 import type { UserModel } from '@/domain/models'
-import type { DBToken } from '@/domain/usecases/db/token'
+import type { DBToken } from '@/domain/usecases/db'
 import { env } from '@/main/config/env'
 import jwt from 'jsonwebtoken'
 
