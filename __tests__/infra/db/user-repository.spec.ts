@@ -2,6 +2,7 @@ import type { Hash } from '@/data/usecases'
 import { UserMongoRepository } from '@/infra/db/mongodb/repos/user-repository'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
 import { ObjectId } from 'mongodb'
+import { UserModel } from '@/domain/models'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 
@@ -45,15 +46,59 @@ describe('UserMongoRepository', () => {
     it('should add a new user and return the user id', async () => {
       const { sut } = makeSut()
 
+      const result = await sut.add({
+        username: 'test_user1',
+        email: 'test_user1@example.com',
+        password: 'password'
+      })
+
+      expect(result.id).toBeTruthy()
+    })
+
+    it('should add a new user with user level if no level is provided', async () => {
+      const { sut } = makeSut()
+
       const user = {
-        username: 'testuser',
-        email: 'test@example.com',
+        username: 'test_user2',
+        email: 'test_user2@example.com',
         password: 'password'
       }
 
-      const result = await sut.add(user)
+      await UserSchema.create(user)
 
-      expect(result.id).toBeTruthy()
+      const result = await sut.findByEmail('test_user2@example.com')
+
+      expect(result?.level).toEqual('user')
+    })
+
+    it('should add a new user with user level if user level is provided', async () => {
+      const { sut } = makeSut()
+
+      await UserSchema.create({
+        username: 'test_user3',
+        email: 'test_user3@example.com',
+        password: 'password',
+        level: UserModel.Level.USER
+      })
+
+      const result = await sut.findByEmail('test_user3@example.com')
+
+      expect(result?.level).toEqual('user')
+    })
+
+    it('should add a new user with admin level if admin level is provided', async () => {
+      const { sut } = makeSut()
+
+      await UserSchema.create({
+        username: 'admin_user',
+        email: 'admin_user@example.com',
+        password: 'password',
+        level: UserModel.Level.ADMIN
+      })
+
+      const result = await sut.findByEmail('admin_user@example.com')
+
+      expect(result?.level).toEqual('admin')
     })
   })
 

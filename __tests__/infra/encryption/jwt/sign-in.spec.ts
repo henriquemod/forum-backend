@@ -2,6 +2,7 @@ import { JWTEncryption } from '@/infra/encryption'
 import { UserRepositoryStub } from '../stubs'
 import '@/main/config/env'
 import jwt from 'jsonwebtoken'
+import { UserModel } from '@/domain/models'
 
 jest.mock('jsonwebtoken')
 jest.mock('@/main/config/env', () => ({
@@ -35,7 +36,8 @@ describe('JWTEncryption - SignIn', () => {
     id: 'any_id',
     username: 'any_username',
     password: 'any_password',
-    email: 'any_email'
+    email: 'any_email',
+    level: UserModel.Level.USER
   }
 
   it('should return new access token on success', async () => {

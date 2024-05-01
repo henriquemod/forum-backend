@@ -1,3 +1,4 @@
+import { UserModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db'
 
 type UserRepository = DBToken.Delete & DBToken.Find
@@ -16,7 +17,8 @@ export class UserRepositoryStub implements UserRepository {
         id: 'any_id',
         email: 'any_email',
         username: 'any_username',
-        password: 'any_password'
+        password: 'any_password',
+        level: UserModel.Level.USER
       }
     })
   }
@@ -30,7 +32,8 @@ export class UserRepositoryStub implements UserRepository {
         id: 'any_id',
         email: 'any_email',
         username: 'any_username',
-        password: 'any_password'
+        password: 'any_password',
+        level: UserModel.Level.USER
       }
     })
   }
@@ -42,7 +45,8 @@ export class UserRepositoryStub implements UserRepository {
         id: 'any_id',
         email: 'any_email',
         username: 'any_username',
-        password: 'any_password'
+        password: 'any_password',
+        level: UserModel.Level.USER
       }
     })
   }
