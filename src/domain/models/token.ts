@@ -5,5 +5,5 @@ export interface TokenModel {
   accessToken: AccessTokenModel
   refreshAccessToken: AccessTokenModel
   invalid: boolean
-  user: UserModel
+  user: UserModel.Model
 }

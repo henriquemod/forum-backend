@@ -28,6 +28,6 @@ export namespace Token {
   }
 
   export interface SignIn {
-    signIn: (user: UserModel) => Promise<SignResult>
+    signIn: (user: UserModel.Model) => Promise<SignResult>
   }
 }

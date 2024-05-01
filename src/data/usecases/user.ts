@@ -8,10 +8,13 @@ export namespace User {
   }
 
   export interface Get {
-    getUser: (value: string, origin?: Origin) => Promise<UserModel>
+    getUser: (value: string, origin?: Origin) => Promise<UserModel.Model>
   }
 
+  export type RegisterParams = Omit<UserModel.Model, 'id' | 'level'> &
+    Partial<Pick<UserModel.Model, 'level'>>
+
   export interface Register {
-    registerUser: (user: Omit<UserModel, 'id'>) => Promise<RegisterResult>
+    registerUser: (user: RegisterParams) => Promise<RegisterResult>
   }
 }

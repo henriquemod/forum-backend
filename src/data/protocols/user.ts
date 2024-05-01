@@ -5,9 +5,7 @@ import type { DBUser } from '@/domain/usecases/db'
 
 export class UserManager implements User.Get, User.Register {
   constructor(private readonly userRepository: DBUser.Find & DBUser.Add) {}
-  async registerUser(
-    user: Omit<UserModel, 'id'>
-  ): Promise<User.RegisterResult> {
+  async registerUser(user: User.RegisterParams): Promise<User.RegisterResult> {
     const hasUsername = !!(await this.userRepository.findByUsername(
       user.username
     ))
@@ -25,7 +23,7 @@ export class UserManager implements User.Get, User.Register {
   async getUser(
     value: string,
     origin: User.Origin = 'username'
-  ): Promise<UserModel> {
+  ): Promise<UserModel.Model> {
     const functionToGetEntity =
       origin === 'username'
         ? this.userRepository.findByUsername

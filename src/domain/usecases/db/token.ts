@@ -16,7 +16,7 @@ export namespace DBToken {
 
   export interface FindResult {
     accessToken: AccessTokenModel
-    user: UserModel
+    user: UserModel.Model
   }
   export interface Find {
     findByToken: (

@@ -16,7 +16,7 @@ export class JWTEncryption
     return !!token
   }
 
-  async signIn(user: UserModel): Promise<Token.SignResult> {
+  async signIn(user: UserModel.Model): Promise<Token.SignResult> {
     const accessToken = jwt.sign(
       { id: user.id, username: user.username },
       env.jwtSecret,

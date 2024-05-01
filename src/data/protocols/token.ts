@@ -41,7 +41,7 @@ export class TokenManager
     await this.tokenRepository.delete(accessToken)
   }
 
-  async signIn(user: UserModel): Promise<Token.SignResult> {
+  async signIn(user: UserModel.Model): Promise<Token.SignResult> {
     const userData = await this.tokenRepository.findByUserId(user.id)
 
     if (userData) {

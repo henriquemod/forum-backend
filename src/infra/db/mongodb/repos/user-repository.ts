@@ -1,3 +1,4 @@
+import type { User } from '@/data/usecases'
 import type { Hash } from '@/data/usecases/encryption'
 import type { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
@@ -10,7 +11,7 @@ export class UserMongoRepository implements DBUser.Add, DBUser.Find {
     username,
     email,
     password
-  }: Omit<UserModel, 'id'>): Promise<DBUser.AddResult> {
+  }: User.RegisterParams): Promise<DBUser.AddResult> {
     const hashedPassword = await this.hash.generate(password)
 
     const accessToken = new UserSchema({
@@ -26,19 +27,19 @@ export class UserMongoRepository implements DBUser.Add, DBUser.Find {
     }
   }
 
-  async findByEmail(email: string): Promise<UserModel | null> {
+  async findByEmail(email: string): Promise<UserModel.Model | null> {
     return await UserSchema.findOne({
       email
     })
   }
 
-  async findByUsername(username: string): Promise<UserModel | null> {
+  async findByUsername(username: string): Promise<UserModel.Model | null> {
     return await UserSchema.findOne({
       username
     })
   }
 
-  async findByUserId(id: string): Promise<UserModel | null> {
+  async findByUserId(id: string): Promise<UserModel.Model | null> {
     return await UserSchema.findOne({
       _id: id
     })
