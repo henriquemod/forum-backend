@@ -2,7 +2,10 @@ import type { User } from '@/data/usecases'
 import { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
 
-export type DBUserStub = DBUser.Find & DBUser.Add
+type FindUser = DBUser.FindUserByEmail &
+  DBUser.FindUserByUsername &
+  DBUser.FindUserByUserId
+export type DBUserStub = FindUser & DBUser.Add
 
 export const MOCK_USER = {
   id: 'any_id',

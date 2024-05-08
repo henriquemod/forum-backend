@@ -10,7 +10,7 @@ export class TokenManager
     private readonly tokenRepository: DBToken.Find &
       DBToken.Delete &
       DBToken.Add,
-    private readonly userRepository: DBUser.Find,
+    private readonly userRepository: DBUser.FindUserByUserId,
     private readonly jwtManager: Token.SignIn
   ) {}
 

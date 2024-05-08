@@ -5,13 +5,21 @@ export namespace DBUser {
   export interface AddResult {
     id: string
   }
+
+  export type FindUserResult = UserModel.Model | null
   export interface Add {
     add: (user: User.RegisterParams) => Promise<AddResult>
   }
 
-  export interface Find {
-    findByEmail: (email: string) => Promise<UserModel.Model | null>
-    findByUsername: (username: string) => Promise<UserModel.Model | null>
-    findByUserId: (userId: string) => Promise<UserModel.Model | null>
+  export interface FindUserByEmail {
+    findByEmail: (email: string) => Promise<FindUserResult>
+  }
+
+  export interface FindUserByUsername {
+    findByUsername: (username: string) => Promise<FindUserResult>
+  }
+
+  export interface FindUserByUserId {
+    findByUserId: (userId: string) => Promise<FindUserResult>
   }
 }
