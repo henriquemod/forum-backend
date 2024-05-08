@@ -1,14 +1,14 @@
-import { JWTEncryption } from '@/infra/encryption'
+import { JwtTokenEncryption } from '@/infra/encryption'
 import { UserRepositoryStub } from '../stubs'
 
 interface SutTypes {
-  sut: JWTEncryption
+  sut: JwtTokenEncryption
   userRepositoryStub: UserRepositoryStub
 }
 
 const makeSut = (): SutTypes => {
   const userRepositoryStub = new UserRepositoryStub()
-  const sut = new JWTEncryption(userRepositoryStub)
+  const sut = new JwtTokenEncryption(userRepositoryStub)
 
   return {
     sut,

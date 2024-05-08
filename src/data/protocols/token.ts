@@ -3,13 +3,19 @@ import type { Token } from '@/data/usecases'
 import type { UserModel } from '@/domain/models'
 import type { DBToken, DBUser } from '@/domain/usecases/db'
 
-export class TokenManager
-  implements Token.SignIn, Token.Invalidate, Token.Refresh, Token.Validate
-{
+type TokenDBUsecases = DBToken.FindTokenByUserId &
+  DBToken.FindTokenByToken &
+  DBToken.Delete &
+  DBToken.Add
+
+type TokenDataUsecases = Token.SignIn &
+  Token.Invalidate &
+  Token.Refresh &
+  Token.Validate
+
+export class TokenManager implements TokenDataUsecases {
   constructor(
-    private readonly tokenRepository: DBToken.Find &
-      DBToken.Delete &
-      DBToken.Add,
+    private readonly tokenRepository: TokenDBUsecases,
     private readonly userRepository: DBUser.FindUserByUserId,
     private readonly jwtManager: Token.SignIn
   ) {}

@@ -4,12 +4,11 @@ import type { DBToken } from '@/domain/usecases/db'
 import { env } from '@/main/config/env'
 import jwt from 'jsonwebtoken'
 
-export class JWTEncryption
-  implements Token.SignIn, Token.Invalidate, Token.Validate
-{
-  constructor(
-    private readonly tokenRepository: DBToken.Delete & DBToken.Find
-  ) {}
+type TokenDBUsecases = DBToken.Delete & DBToken.FindTokenByUserId
+type TokenDataUsecases = Token.SignIn & Token.Invalidate & Token.Validate
+
+export class JwtTokenEncryption implements TokenDataUsecases {
+  constructor(private readonly tokenRepository: TokenDBUsecases) {}
 
   async userHasToken(userId: string): Promise<boolean> {
     const token = await this.tokenRepository.findByUserId(userId)

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { JWTEncryption } from '@/infra/encryption'
+import { JwtTokenEncryption } from '@/infra/encryption'
 import { UserRepositoryStub } from '../stubs'
 import '@/main/config/env'
 import jwt from 'jsonwebtoken'
@@ -13,13 +13,13 @@ jest.mock('@/main/config/env', () => ({
 }))
 
 interface SutTypes {
-  sut: JWTEncryption
+  sut: JwtTokenEncryption
   userRepositoryStub: UserRepositoryStub
 }
 
 const makeSut = (): SutTypes => {
   const userRepositoryStub = new UserRepositoryStub()
-  const sut = new JWTEncryption(userRepositoryStub)
+  const sut = new JwtTokenEncryption(userRepositoryStub)
 
   return {
     sut,

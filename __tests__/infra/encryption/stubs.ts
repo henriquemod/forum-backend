@@ -1,7 +1,10 @@
 import { UserModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db'
 
-type UserRepository = DBToken.Delete & DBToken.Find
+type UserRepository = DBToken.Delete &
+  DBToken.FindTokenByRefreshToken &
+  DBToken.FindTokenByToken &
+  DBToken.FindTokenByUserId
 
 export class UserRepositoryStub implements UserRepository {
   async delete(accessToken: string): Promise<void> {

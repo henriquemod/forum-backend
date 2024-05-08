@@ -1,7 +1,11 @@
 import type { DBToken } from '@/domain/usecases/db'
 import { MOCK_USER } from './user-repository-stub'
 
-export type DBTokenStub = DBToken.Find & DBToken.Delete & DBToken.Add
+export type DBTokenStub = DBToken.FindTokenByRefreshToken &
+  DBToken.FindTokenByToken &
+  DBToken.FindTokenByUserId &
+  DBToken.Delete &
+  DBToken.Add
 
 export const MOCK_ACCESS_TOKEN = {
   accessToken: 'any_token',

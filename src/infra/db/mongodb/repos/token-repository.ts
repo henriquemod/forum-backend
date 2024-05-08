@@ -3,9 +3,13 @@ import type { DBToken } from '@/domain/usecases/db'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 import mongoose from 'mongoose'
 
-export class TokenMongoRepository
-  implements DBToken.Add, DBToken.Find, DBToken.Delete
-{
+type TokenDBUsecases = DBToken.FindTokenByToken &
+  DBToken.FindTokenByUserId &
+  DBToken.FindTokenByRefreshToken &
+  DBToken.Add &
+  DBToken.Delete
+
+export class TokenMongoRepository implements TokenDBUsecases {
   async add({
     accessToken,
     refreshAccessToken,
