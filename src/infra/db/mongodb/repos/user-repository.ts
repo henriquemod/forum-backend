@@ -4,12 +4,15 @@ import type { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
 
-type FindUser = DBUser.FindUserByEmail &
+type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
-  DBUser.FindUserByUserId
+  DBUser.FindUserByUserId &
+  DBUser.Add
 
-export class UserMongoRepository implements DBUser.Add, FindUser {
-  constructor(private readonly hash: Hash.Generate) {}
+type EncryptionDataUsecases = Hash.Generate
+
+export class UserMongoRepository implements UserDBUsecases {
+  constructor(private readonly hash: EncryptionDataUsecases) {}
 
   async add({
     username,

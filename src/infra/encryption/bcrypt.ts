@@ -3,7 +3,9 @@ import type { Hash } from '@/data/usecases/encryption'
 import { env } from '@/main/config/env'
 import bcrypt from 'bcrypt'
 
-export class BCryptHash implements Hash.Generate, Hash.Compare {
+type EncryptionDataUsecases = Hash.Generate & Hash.Compare
+
+export class BCryptHash implements EncryptionDataUsecases {
   async generate(value: string): Promise<string> {
     return await new Promise((resolve) => {
       bcrypt.hash(value, env.bcryptSalt, function (err, hash) {
