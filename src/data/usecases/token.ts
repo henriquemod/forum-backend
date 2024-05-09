@@ -19,6 +19,10 @@ export namespace Token {
     validate: (accessToken: AccessTokenModel) => Promise<ValidateResult>
   }
 
+  export interface GetUser {
+    getUser: (token: AccessTokenModel) => Promise<string>
+  }
+
   export interface Invalidate {
     invalidate: (accessToken: AccessTokenModel) => Promise<void>
   }

@@ -4,9 +4,14 @@ import type { UserModel, AccessTokenModel } from '@/domain/models'
 type TokenImplementation = Token.Validate &
   Token.SignIn &
   Token.Invalidate &
-  Token.Refresh
+  Token.Refresh &
+  Token.GetUser
 
 export class TokenStub implements TokenImplementation {
+  async getUser(token: string): Promise<string> {
+    return await Promise.resolve('any_id')
+  }
+
   async userHasToken(_userId: string): Promise<boolean> {
     return await Promise.resolve(true)
   }

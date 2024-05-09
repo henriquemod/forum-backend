@@ -10,17 +10,17 @@ import { ApiError } from '../protocols/api-error'
 import type { HttpResponse } from '../protocols/http/responses'
 import type { Token } from '@/data/usecases'
 
-type TokenManager = Token.Validate
+type TokenManager = Token.Validate & Token.GetUser
 
 export class AuthMiddleware implements Middleware {
   constructor(private readonly tokenValidator: TokenManager) {}
-  async handle({ authorization }: Request['headers']): Promise<HttpResponse> {
+  async handle(req: Partial<Request>): Promise<HttpResponse> {
     try {
-      if (!authorization) {
+      if (!req.headers?.authorization) {
         return unauthorized(new Forbidden())
       }
 
-      const token = authorization.split(' ')[1] // Bearer TOKEN
+      const token = req.headers.authorization.split(' ')[1] // Bearer TOKEN
 
       if (!token) {
         return badRequest(new BadRequest('Malformed token'))
@@ -31,6 +31,14 @@ export class AuthMiddleware implements Middleware {
       if (!authenticated) {
         return unauthorized(new Forbidden())
       }
+
+      const user = await this.tokenValidator.getUser(token)
+
+      if (!user) {
+        return unauthorized(new Forbidden())
+      }
+
+      req = { ...req, body: { ...req.body, user } }
 
       return noContent()
     } catch (error) {

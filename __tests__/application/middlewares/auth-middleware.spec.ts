@@ -32,7 +32,9 @@ describe('AuthMiddleware', () => {
     const { sut } = makeSut()
 
     const res = await sut.handle({
-      authorization: 'Bearer'
+      headers: {
+        authorization: 'Bearer'
+      }
     })
 
     expect(res).toEqual(badRequest(new BadRequest('Malformed token')))
@@ -44,7 +46,9 @@ describe('AuthMiddleware', () => {
     jest.spyOn(tokenValidator, 'validate').mockResolvedValueOnce(false)
 
     const res = await sut.handle({
-      authorization: 'Bearer invalid_token'
+      headers: {
+        authorization: 'Bearer invalid_token'
+      }
     })
 
     expect(res).toEqual(unauthorized(new Forbidden()))
@@ -54,7 +58,9 @@ describe('AuthMiddleware', () => {
     const { sut } = makeSut()
 
     const res = await sut.handle({
-      authorization: 'Bearer valid_token'
+      headers: {
+        authorization: 'Bearer valid_token'
+      }
     })
 
     expect(res).toEqual(noContent())
@@ -66,7 +72,9 @@ describe('AuthMiddleware', () => {
     jest.spyOn(tokenValidator, 'validate').mockRejectedValueOnce(new Error())
 
     const res = await sut.handle({
-      authorization: 'Bearer valid_token'
+      headers: {
+        authorization: 'Bearer valid_token'
+      }
     })
 
     expect(res).toEqual(ApiError.errorHandler(new Error()))

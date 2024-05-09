@@ -1,4 +1,5 @@
 export * from './auth'
 export * from './encryption'
+export * from './post'
 export * from './token'
 export * from './user'

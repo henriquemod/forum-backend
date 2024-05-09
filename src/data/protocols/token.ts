@@ -11,7 +11,8 @@ type TokenDBUsecases = DBToken.FindTokenByUserId &
 type TokenDataUsecases = Token.SignIn &
   Token.Invalidate &
   Token.Refresh &
-  Token.Validate
+  Token.Validate &
+  Token.GetUser
 
 export class TokenManager implements TokenDataUsecases {
   constructor(
@@ -19,6 +20,14 @@ export class TokenManager implements TokenDataUsecases {
     private readonly userRepository: DBUser.FindUserByUserId,
     private readonly jwtManager: Token.SignIn
   ) {}
+
+  async getUser(token: string): Promise<string> {
+    const tokenData = await this.tokenRepository.findByToken(token)
+    if (!tokenData) {
+      throw new NotFound('Token not found')
+    }
+    return tokenData.user.id
+  }
 
   async userHasToken(userId: string): Promise<boolean> {
     const token = await this.tokenRepository.findByUserId(userId)
