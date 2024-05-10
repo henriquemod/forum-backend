@@ -2,10 +2,6 @@ import type { PostModel } from '@/domain/models'
 import mongoose, { Schema } from 'mongoose'
 
 export const postSchema = new mongoose.Schema<PostModel.Model>({
-  id: {
-    type: String,
-    required: true
-  },
   title: {
     type: String,
     required: true

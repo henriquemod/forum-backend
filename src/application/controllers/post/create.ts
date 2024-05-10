@@ -1,6 +1,6 @@
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
-import type { Authentication, Post } from '@/data/usecases'
+import type { Post } from '@/data/usecases'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.CreatePost
@@ -11,34 +11,42 @@ export class CreatePostController extends Controller {
   }
 
   async perform({
-    user,
+    userId,
     title,
     content
   }: Post.CreateParams): Promise<HttpResponse<Post.CreateResult>> {
     const newPost = await this.postManager.createPost({
       content,
       title,
-      user
+      userId
     })
 
     return ok(newPost)
   }
 
   override buildValidators({
-    password,
-    username
-  }: Authentication.LoginParams): Validator[] {
+    title,
+    content,
+    userId
+  }: Post.CreateParams): Validator[] {
     return [
       ...builder
         .of({
-          value: password,
+          value: userId,
+          fieldName: 'userId'
+        })
+        .required()
+        .build(),
+      ...builder
+        .of({
+          value: title,
           fieldName: 'title'
         })
         .required()
         .build(),
       ...builder
         .of({
-          value: username,
+          value: content,
           fieldName: 'content'
         })
         .required()

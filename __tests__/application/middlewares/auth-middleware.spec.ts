@@ -1,6 +1,6 @@
 import { BadRequest, Forbidden } from '@/application/errors'
 import { AuthMiddleware } from '@/application/middlewares/auth-middleware'
-import { badRequest, noContent, unauthorized } from '@/application/protocols'
+import { badRequest, ok, unauthorized } from '@/application/protocols'
 import { ApiError } from '@/application/protocols/api-error'
 import type { Token } from '@/data/usecases'
 import { TokenStub } from '../helpers'
@@ -54,7 +54,7 @@ describe('AuthMiddleware', () => {
     expect(res).toEqual(unauthorized(new Forbidden()))
   })
 
-  it('should return 204 if token is valid', async () => {
+  it('should return 200 if token is valid', async () => {
     const { sut } = makeSut()
 
     const res = await sut.handle({
@@ -63,7 +63,7 @@ describe('AuthMiddleware', () => {
       }
     })
 
-    expect(res).toEqual(noContent())
+    expect(res).toEqual(ok({ userId: 'any_id' }))
   })
 
   it('should return 500 if an error occurs', async () => {

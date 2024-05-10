@@ -7,15 +7,21 @@ export namespace Post {
     id: string
   }
 
+  export type FindAllResult = PostModel.Model[]
+
   export interface Get {
     getUser: (value: string, origin?: Origin) => Promise<UserModel.Model>
   }
 
   export type CreateParams = Omit<PostModel.Model, 'id' | 'user'> & {
-    user: string
+    userId: string
   }
 
   export interface CreatePost {
     createPost: (params: CreateParams) => Promise<CreateResult>
+  }
+
+  export interface FindAll {
+    findAll: () => Promise<FindAllResult>
   }
 }

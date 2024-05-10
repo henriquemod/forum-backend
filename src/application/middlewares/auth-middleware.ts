@@ -1,14 +1,9 @@
+import type { Token } from '@/data/usecases'
 import type { Request } from 'express'
 import { BadRequest, Forbidden } from '../errors'
-import {
-  badRequest,
-  noContent,
-  unauthorized,
-  type Middleware
-} from '../protocols'
+import { badRequest, ok, unauthorized, type Middleware } from '../protocols'
 import { ApiError } from '../protocols/api-error'
 import type { HttpResponse } from '../protocols/http/responses'
-import type { Token } from '@/data/usecases'
 
 type TokenManager = Token.Validate & Token.GetUser
 
@@ -32,15 +27,13 @@ export class AuthMiddleware implements Middleware {
         return unauthorized(new Forbidden())
       }
 
-      const user = await this.tokenValidator.getUser(token)
+      const userId = await this.tokenValidator.getUser(token)
 
-      if (!user) {
+      if (!userId) {
         return unauthorized(new Forbidden())
       }
 
-      req = { ...req, body: { ...req.body, user } }
-
-      return noContent()
+      return ok({ userId })
     } catch (error) {
       return ApiError.errorHandler(error)
     }
