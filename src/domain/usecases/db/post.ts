@@ -7,16 +7,25 @@ export namespace DBPost {
     content: string
   }
 
+  export interface UpdateParams {
+    id: string
+    updateContent: Partial<Omit<AddParams, 'userId'>>
+  }
+
   export interface AddResult {
     id: string
   }
 
-  export interface Add {
-    add: (params: AddParams) => Promise<AddResult>
+  export interface Create {
+    create: (params: AddParams) => Promise<AddResult>
   }
 
   export interface Delete {
     delete: (id: string) => Promise<void>
+  }
+
+  export interface Update {
+    update: (params: UpdateParams) => Promise<void>
   }
 
   export interface FindById {
