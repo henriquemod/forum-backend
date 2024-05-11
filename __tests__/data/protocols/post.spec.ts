@@ -23,7 +23,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('UserManager', () => {
+describe('PostManager', () => {
   describe('createPost', () => {
     it('should return id on success', () => {
       const { sut } = makeSut()
