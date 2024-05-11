@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { HttpStatusCode } from './status-codes'
 
-type SuccessResponse = HttpStatusCode.OK | HttpStatusCode.NO_CONTENT
+export type SuccessResponse = HttpStatusCode.OK | HttpStatusCode.NO_CONTENT
 
 type ErrorResponse =
   | HttpStatusCode.BAD_REQUEST
@@ -12,10 +12,10 @@ type ErrorResponse =
 
 export type HttpResponse<T = any> =
   | {
-      statusCode: SuccessResponse
-      data: T
-    }
-  | {
       statusCode: ErrorResponse
       error: string
+    }
+  | {
+      statusCode: SuccessResponse
+      data: T
     }

@@ -10,7 +10,7 @@ export const MOCK_POST = {
 }
 
 export class PostStub
-  implements Post.CreatePost, Post.FindPost, Post.FindAllPosts
+  implements Post.CreatePost, Post.FindPost, Post.FindAllPosts, Post.UpdatePost
 {
   async createPost(params: Post.CreateParams): Promise<Post.CreateResult> {
     return pick(['id'], MOCK_POST)
@@ -23,4 +23,6 @@ export class PostStub
   async findAllPosts(): Promise<Post.FindAllResult> {
     return [MOCK_POST]
   }
+
+  async updatePost(params: Post.UpdateParams): Promise<void> {}
 }

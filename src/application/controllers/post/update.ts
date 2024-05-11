@@ -8,7 +8,7 @@ import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.UpdatePost & Post.FindPost
 type UserManager = User.FindUserByIdOrFail
-type PerformParams = AuthenticatedRequest<Post.CreateResult>
+type PerformParams = AuthenticatedRequest<Post.UpdateParams>
 
 export class UpdatePostController extends Controller {
   constructor(
@@ -31,10 +31,10 @@ export class UpdatePostController extends Controller {
     }
 
     const user = await this.userManager.findUserByIdOrFail(userId)
-    const isUserAllowedToDeletePost = post.user.id === user.id
+    const isUserAllowedToUpdatePost = post.user.id === user.id
     const isUserAdmin = user.level === UserModel.Level.ADMIN
 
-    if (isUserAdmin || isUserAllowedToDeletePost) {
+    if (isUserAdmin || isUserAllowedToUpdatePost) {
       await this.postManager.updatePost(params)
 
       return noContent()
