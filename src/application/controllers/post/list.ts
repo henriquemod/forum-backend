@@ -5,7 +5,7 @@ import { type Validator } from '../../validation'
 
 type PostManager = Post.FindAllPosts
 
-export class FindAllPostController extends Controller {
+export class ListPostsController extends Controller {
   constructor(private readonly postManager: PostManager) {
     super()
   }
