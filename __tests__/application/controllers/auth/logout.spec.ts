@@ -1,6 +1,6 @@
 import { LogoutController } from '@/application/controllers/auth'
 import type { Token } from '@/data/usecases/'
-import { TokenStub } from '../helpers'
+import { TokenStub } from '../../helpers'
 
 interface SutTypes {
   sut: LogoutController

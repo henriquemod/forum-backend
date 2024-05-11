@@ -1,6 +1,6 @@
 import { RegisterController } from '@/application/controllers/auth'
 import type { User } from '@/data/usecases/'
-import { UserStub } from '../helpers'
+import { UserStub } from '../../helpers'
 
 interface SutTypes {
   sut: RegisterController
