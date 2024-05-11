@@ -10,7 +10,12 @@ export const MOCK_POST = {
 }
 
 export class PostStub
-  implements Post.CreatePost, Post.FindPost, Post.FindAllPosts, Post.UpdatePost
+  implements
+    Post.CreatePost,
+    Post.FindPost,
+    Post.FindAllPosts,
+    Post.UpdatePost,
+    Post.DeletePost
 {
   async createPost(params: Post.CreateParams): Promise<Post.CreateResult> {
     return pick(['id'], MOCK_POST)
@@ -25,4 +30,6 @@ export class PostStub
   }
 
   async updatePost(params: Post.UpdateParams): Promise<void> {}
+
+  async deletePost(params: Post.DeleteParams): Promise<void> {}
 }
