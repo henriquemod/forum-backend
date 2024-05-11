@@ -11,6 +11,14 @@ export namespace User {
     getUser: (value: string, origin?: Origin) => Promise<UserModel.Model>
   }
 
+  export interface FindUserById {
+    findUserById: (id: string) => Promise<UserModel.Model | null>
+  }
+
+  export interface FindUserByIdOrFail {
+    findUserByIdOrFail: (id: string) => Promise<UserModel.Model>
+  }
+
   export type RegisterParams = Omit<UserModel.Model, 'id' | 'level'> &
     Partial<Pick<UserModel.Model, 'level'>>
 

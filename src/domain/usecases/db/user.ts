@@ -22,4 +22,8 @@ export namespace DBUser {
   export interface FindUserByUserId {
     findByUserId: (userId: string) => Promise<FindUserResult>
   }
+
+  export interface FindUserByIdOrFail {
+    findUserByIdOrFail: (userId: string) => Promise<UserModel.Model>
+  }
 }

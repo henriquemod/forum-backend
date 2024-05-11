@@ -1,4 +1,4 @@
-import { FindAllPostController } from '@/application/controllers/post/find-all'
+import { FindAllPostController } from '@/application/controllers/post/list'
 import { PostManager } from '@/data/protocols'
 import { PostMongoRepository } from '@/infra/db/mongodb/repos'
 

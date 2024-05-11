@@ -5,12 +5,24 @@ import type { DBUser } from '@/domain/usecases/db'
 
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
-  DBUser.Add
+  DBUser.Add &
+  DBUser.FindUserByUserId
 
-type UserDataUsecases = User.Get & User.Register
+type UserDataUsecases = User.Get & User.Register & User.FindUserByIdOrFail
 
 export class UserManager implements UserDataUsecases {
   constructor(private readonly userRepository: UserDBUsecases) {}
+
+  async findUserByIdOrFail(id: string): Promise<UserModel.Model> {
+    const user = await this.userRepository.findByUserId(id)
+
+    if (!user) {
+      throw new NotFound('User not found')
+    }
+
+    return user
+  }
+
   async registerUser(user: User.RegisterParams): Promise<User.RegisterResult> {
     const hasUsername = !!(await this.userRepository.findByUsername(
       user.username
