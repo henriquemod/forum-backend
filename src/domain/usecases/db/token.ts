@@ -1,4 +1,4 @@
-import type { AccessTokenModel, UserModel } from '@/domain/models'
+import type { AccessTokenModel, TokenModel } from '@/domain/models'
 
 export namespace DBToken {
   export interface AddParams {
@@ -15,22 +15,19 @@ export namespace DBToken {
     delete: (accessToken: AccessTokenModel) => Promise<void>
   }
 
-  export type FindResult = {
-    accessToken: AccessTokenModel
-    user: UserModel.Model
-  } | null
-
   export interface FindTokenByToken {
-    findByToken: (accessTokenToFind: AccessTokenModel) => Promise<FindResult>
+    findByToken: (
+      accessTokenToFind: AccessTokenModel
+    ) => Promise<TokenModel | null>
   }
 
   export interface FindTokenByRefreshToken {
     findByRefreshToken: (
       accessTokenToFind: AccessTokenModel
-    ) => Promise<FindResult>
+    ) => Promise<TokenModel | null>
   }
 
   export interface FindTokenByUserId {
-    findByUserId: (userId: string) => Promise<FindResult>
+    findByUserId: (userId: string) => Promise<TokenModel | null>
   }
 }

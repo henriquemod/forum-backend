@@ -1,7 +1,7 @@
 import type { UserModel } from '@/domain/models'
 
 export namespace User {
-  export type Origin = 'username' | 'email'
+  export type Origin = 'username' | 'email' | 'id'
 
   export interface RegisterResult {
     id: string
@@ -9,14 +9,6 @@ export namespace User {
 
   export interface Get {
     getUser: (value: string, origin?: Origin) => Promise<UserModel.Model>
-  }
-
-  export interface FindUserById {
-    findUserById: (id: string) => Promise<UserModel.Model | null>
-  }
-
-  export interface FindUserByIdOrFail {
-    findUserByIdOrFail: (id: string) => Promise<UserModel.Model>
   }
 
   export type RegisterParams = Omit<UserModel.Model, 'id' | 'level'> &

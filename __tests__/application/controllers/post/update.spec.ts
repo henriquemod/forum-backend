@@ -9,7 +9,7 @@ jest.mock('@/application/validation/composite')
 interface SutTypes {
   sut: UpdatePostController
   postManager: Post.UpdatePost & Post.FindPost
-  userManager: User.FindUserByIdOrFail
+  userManager: User.Get
 }
 
 const makeSut = (): SutTypes => {
@@ -73,7 +73,7 @@ describe('Update Post Controller', () => {
   it('should return statusCode 204 if user do not owns de post but is an admin', async () => {
     const { sut, userManager } = makeSut()
 
-    jest.spyOn(userManager, 'findUserByIdOrFail').mockResolvedValueOnce({
+    jest.spyOn(userManager, 'getUser').mockResolvedValueOnce({
       ...MOCK_USER,
       id: 'other_id',
       level: UserModel.Level.ADMIN

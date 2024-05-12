@@ -1,4 +1,3 @@
-import { NotFound } from '@/application/errors'
 import type { User } from '@/data/usecases'
 import type { Hash } from '@/data/usecases/encryption'
 import type { UserModel } from '@/domain/models'
@@ -8,8 +7,7 @@ import { UserSchema } from '@/infra/db/mongodb/schemas'
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
   DBUser.FindUserByUserId &
-  DBUser.Add &
-  DBUser.FindUserByIdOrFail
+  DBUser.Add
 
 type EncryptionDataUsecases = Hash.Generate
 
@@ -52,17 +50,5 @@ export class UserMongoRepository implements UserDBUsecases {
     return await UserSchema.findOne({
       _id: id
     })
-  }
-
-  async findUserByIdOrFail(userId: string): Promise<UserModel.Model> {
-    const user = await UserSchema.findOne({
-      _id: userId
-    })
-
-    if (!user) {
-      throw new NotFound('User not found')
-    }
-
-    return user
   }
 }

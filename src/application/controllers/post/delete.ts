@@ -10,7 +10,7 @@ import type { Post, User } from '@/data/usecases'
 import { UserModel } from '@/domain/models'
 
 type PostManager = Post.DeletePost & Post.FindPost
-type UserManager = User.FindUserByIdOrFail
+type UserManager = User.Get
 type PerformParams = AuthenticatedRequest<Post.DeleteParams>
 
 export class DeletePostController extends Controller {
@@ -33,7 +33,7 @@ export class DeletePostController extends Controller {
       throw new NotFound('Post not found')
     }
 
-    const user = await this.userManager.findUserByIdOrFail(userId)
+    const user = await this.userManager.getUser(userId, 'id')
     const isUserAllowedToDeletePost = post.user.id === user.id
     const isUserAdmin = user.level === UserModel.Level.ADMIN
 

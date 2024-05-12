@@ -9,9 +9,7 @@ export const MOCK_USER: UserModel.Model = {
   level: UserModel.Level.USER
 }
 
-export class UserStub
-  implements User.Get, User.Register, User.FindUserByIdOrFail
-{
+export class UserStub implements User.Get, User.Register {
   async getUser(
     value: string,
     origin?: User.Origin | undefined

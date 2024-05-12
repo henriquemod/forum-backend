@@ -1,15 +1,21 @@
 import type { Token } from '@/data/usecases'
-import type { UserModel, AccessTokenModel } from '@/domain/models'
+import type { UserModel, AccessTokenModel, TokenModel } from '@/domain/models'
+import { MOCK_USER } from './user-stub'
 
 type TokenImplementation = Token.Validate &
   Token.SignIn &
   Token.Invalidate &
   Token.Refresh &
-  Token.GetUser
+  Token.GetToken
 
 export class TokenStub implements TokenImplementation {
-  async getUser(token: string): Promise<string> {
-    return await Promise.resolve('any_id')
+  async getToken(token: string): Promise<TokenModel> {
+    return await Promise.resolve({
+      accessToken: 'any_access',
+      refreshAccessToken: 'any_refresh',
+      invalid: false,
+      user: MOCK_USER
+    })
   }
 
   async userHasToken(_userId: string): Promise<boolean> {

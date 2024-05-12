@@ -1,5 +1,5 @@
 import { UpdatePostController } from '@/application/controllers/post'
-import { PostManager } from '@/data/protocols'
+import { PostManager, UserManager } from '@/data/protocols'
 import {
   PostMongoRepository,
   UserMongoRepository
@@ -9,7 +9,8 @@ import { BCryptHash } from '@/infra/encryption'
 export const makeUpdatePostController = (): UpdatePostController => {
   const postRepository = new PostMongoRepository()
   const userRepository = new UserMongoRepository(new BCryptHash())
-  const postManagement = new PostManager(postRepository)
+  const userManager = new UserManager(userRepository)
+  const postManager = new PostManager(postRepository)
 
-  return new UpdatePostController(postManagement, userRepository)
+  return new UpdatePostController(postManager, userManager)
 }

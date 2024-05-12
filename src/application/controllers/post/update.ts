@@ -7,7 +7,7 @@ import { UserModel } from '@/domain/models'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.UpdatePost & Post.FindPost
-type UserManager = User.FindUserByIdOrFail
+type UserManager = User.Get
 type PerformParams = AuthenticatedRequest<Post.UpdateParams>
 
 export class UpdatePostController extends Controller {
@@ -30,7 +30,7 @@ export class UpdatePostController extends Controller {
       throw new NotFound('Post not found')
     }
 
-    const user = await this.userManager.findUserByIdOrFail(userId)
+    const user = await this.userManager.getUser(userId, 'id')
     const isUserAllowedToUpdatePost = post.user.id === user.id
     const isUserAdmin = user.level === UserModel.Level.ADMIN
 
