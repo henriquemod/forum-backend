@@ -37,6 +37,25 @@ const makeSut = (): SutTypes => {
 }
 
 describe('TokenManager', () => {
+  describe('getToken', () => {
+    it('should return token model on success', async () => {
+      const { sut } = makeSut()
+
+      const res = await sut.getToken('any_token')
+
+      expect(res).toEqual(MOCK_ACCESS_TOKEN)
+    })
+
+    it('should return statusCode 404 when no token were found', () => {
+      const { sut, tokenRepositoryStub } = makeSut()
+
+      jest.spyOn(tokenRepositoryStub, 'findByToken').mockResolvedValueOnce(null)
+
+      const promise = sut.getToken('any_token')
+
+      expect(promise).rejects.toThrow(NotFound)
+    })
+  })
   describe('userHasToken', () => {
     it('should return true if user has token available', async () => {
       const { sut } = makeSut()

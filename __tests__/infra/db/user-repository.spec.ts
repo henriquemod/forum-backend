@@ -32,12 +32,12 @@ const makeSut = (): {
 describe('UserMongoRepository', () => {
   let mongoServer: MongoMemoryServer
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     mongoServer = await MongoMemoryServer.create()
     await mongoose.connect(mongoServer.getUri())
   })
 
-  afterAll(async () => {
+  afterEach(async () => {
     await mongoose.disconnect()
     mongoServer.stop()
   })

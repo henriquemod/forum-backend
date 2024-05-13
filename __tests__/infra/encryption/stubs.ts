@@ -1,4 +1,4 @@
-import { UserModel } from '@/domain/models'
+import { type TokenModel, UserModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db'
 
 type UserRepository = DBToken.Delete &
@@ -11,10 +11,10 @@ export class UserRepositoryStub implements UserRepository {
     await Promise.resolve()
   }
 
-  async findByToken(
-    accessTokenToFind: string
-  ): Promise<DBToken.FindResult | null> {
+  async findByToken(accessTokenToFind: string): Promise<TokenModel | null> {
     return await Promise.resolve({
+      invalid: false,
+      refreshAccessToken: 'any_refresh',
       accessToken: 'any_access_token',
       user: {
         id: 'any_id',
@@ -28,8 +28,10 @@ export class UserRepositoryStub implements UserRepository {
 
   async findByRefreshToken(
     accessTokenToFind: string
-  ): Promise<DBToken.FindResult | null> {
+  ): Promise<TokenModel | null> {
     return await Promise.resolve({
+      invalid: false,
+      refreshAccessToken: 'any_refresh',
       accessToken: 'any_access_token',
       user: {
         id: 'any_id',
@@ -41,8 +43,10 @@ export class UserRepositoryStub implements UserRepository {
     })
   }
 
-  async findByUserId(userId: string): Promise<DBToken.FindResult | null> {
+  async findByUserId(userId: string): Promise<TokenModel | null> {
     return await Promise.resolve({
+      invalid: false,
+      refreshAccessToken: 'any_refresh',
       accessToken: 'any_access_token',
       user: {
         id: 'any_id',

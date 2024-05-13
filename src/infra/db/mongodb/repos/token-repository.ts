@@ -1,4 +1,4 @@
-import type { AccessTokenModel } from '@/domain/models'
+import type { AccessTokenModel, TokenModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 import mongoose from 'mongoose'
@@ -23,9 +23,7 @@ export class TokenMongoRepository implements TokenDBUsecases {
     await token.save()
   }
 
-  async findByToken(
-    accessToken: AccessTokenModel
-  ): Promise<DBToken.FindResult | null> {
+  async findByToken(accessToken: AccessTokenModel): Promise<TokenModel | null> {
     return await AccessTokenSchema.findOne({
       accessToken
     }).populate('user')
@@ -33,13 +31,13 @@ export class TokenMongoRepository implements TokenDBUsecases {
 
   async findByRefreshToken(
     refreshAccessToken: AccessTokenModel
-  ): Promise<DBToken.FindResult | null> {
+  ): Promise<TokenModel | null> {
     return await AccessTokenSchema.findOne({
       refreshAccessToken
     }).populate('user')
   }
 
-  async findByUserId(userId: string): Promise<DBToken.FindResult | null> {
+  async findByUserId(userId: string): Promise<TokenModel | null> {
     const user = new mongoose.Types.ObjectId(userId)
     return await AccessTokenSchema.findOne({ user }).populate('user')
   }

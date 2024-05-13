@@ -2,8 +2,8 @@ import { UserModel } from '@/domain/models'
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema<UserModel.Model>({
-  username: { type: String, required: true },
-  email: { type: String, required: true },
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   level: {
     type: String,
@@ -12,4 +12,4 @@ const userSchema = new mongoose.Schema<UserModel.Model>({
   }
 })
 
-export const UserSchema = mongoose.model('User', userSchema)
+export const UserSchema = mongoose.model<UserModel.Model>('User', userSchema)

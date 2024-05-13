@@ -101,5 +101,21 @@ describe('UserManager', () => {
 
       expect(promise).rejects.toThrow('User not found')
     })
+    it('should return user on success from id origin', async () => {
+      const { sut } = makeSut()
+
+      const res = await sut.getUser(MOCK_USER.username, 'id')
+
+      expect(res).toEqual(MOCK_USER)
+    })
+
+    it('should throw NotFound if user not found from id origin', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+      jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
+
+      const promise = sut.getUser(MOCK_USER.username, 'id')
+
+      expect(promise).rejects.toThrow('User not found')
+    })
   })
 })

@@ -1,7 +1,7 @@
 import { LoginController } from '@/application/controllers/auth'
 import { ValidationComposite } from '@/application/validation'
 import type { Hash, Token, User } from '@/data/usecases/'
-import { HashStub, TokenStub, UserStub } from '../helpers'
+import { HashStub, TokenStub, UserStub } from '../../helpers'
 
 jest.mock('@/application/validation/composite')
 

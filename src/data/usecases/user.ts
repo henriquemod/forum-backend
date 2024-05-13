@@ -1,7 +1,7 @@
 import type { UserModel } from '@/domain/models'
 
 export namespace User {
-  export type Origin = 'username' | 'email'
+  export type Origin = 'username' | 'email' | 'id'
 
   export interface RegisterResult {
     id: string

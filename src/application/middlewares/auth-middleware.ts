@@ -1,38 +1,37 @@
+import type { Token } from '@/data/usecases'
 import type { Request } from 'express'
 import { BadRequest, Forbidden } from '../errors'
-import {
-  badRequest,
-  noContent,
-  unauthorized,
-  type Middleware
-} from '../protocols'
+import { badRequest, ok, unauthorized, type Middleware } from '../protocols'
 import { ApiError } from '../protocols/api-error'
 import type { HttpResponse } from '../protocols/http/responses'
-import type { Token } from '@/data/usecases'
 
-type TokenManager = Token.Validate
+type TokenManager = Token.Validate & Token.GetToken
 
 export class AuthMiddleware implements Middleware {
-  constructor(private readonly tokenValidator: TokenManager) {}
-  async handle({ authorization }: Request['headers']): Promise<HttpResponse> {
+  constructor(private readonly tokenManager: TokenManager) {}
+  async handle(req: Partial<Request>): Promise<HttpResponse> {
     try {
-      if (!authorization) {
+      if (!req.headers?.authorization) {
         return unauthorized(new Forbidden())
       }
 
-      const token = authorization.split(' ')[1] // Bearer TOKEN
+      const token = req.headers.authorization.split(' ')[1] // Bearer TOKEN
 
       if (!token) {
         return badRequest(new BadRequest('Malformed token'))
       }
 
-      const authenticated = await this.tokenValidator.validate(token)
+      const userToken = await this.tokenManager.getToken(token)
+
+      const authenticated = await this.tokenManager.validate(
+        userToken.accessToken
+      )
 
       if (!authenticated) {
         return unauthorized(new Forbidden())
       }
 
-      return noContent()
+      return ok({ userId: userToken.user.id })
     } catch (error) {
       return ApiError.errorHandler(error)
     }

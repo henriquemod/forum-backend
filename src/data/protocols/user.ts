@@ -5,12 +5,14 @@ import type { DBUser } from '@/domain/usecases/db'
 
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
-  DBUser.Add
+  DBUser.Add &
+  DBUser.FindUserByUserId
 
 type UserDataUsecases = User.Get & User.Register
 
 export class UserManager implements UserDataUsecases {
   constructor(private readonly userRepository: UserDBUsecases) {}
+
   async registerUser(user: User.RegisterParams): Promise<User.RegisterResult> {
     const hasUsername = !!(await this.userRepository.findByUsername(
       user.username
@@ -30,10 +32,20 @@ export class UserManager implements UserDataUsecases {
     value: string,
     origin: User.Origin = 'username'
   ): Promise<UserModel.Model> {
-    const functionToGetEntity =
-      origin === 'username'
-        ? this.userRepository.findByUsername
-        : this.userRepository.findByEmail
+    let functionToGetEntity
+
+    switch (origin) {
+      case 'username':
+        functionToGetEntity = this.userRepository.findByUsername
+        break
+      case 'email':
+        functionToGetEntity = this.userRepository.findByEmail
+        break
+      case 'id':
+        functionToGetEntity = this.userRepository.findByUserId
+        break
+    }
+
     const user = await functionToGetEntity(value)
 
     if (!user) {

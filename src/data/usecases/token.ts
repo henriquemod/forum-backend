@@ -1,4 +1,4 @@
-import type { AccessTokenModel, UserModel } from '@/domain/models'
+import type { AccessTokenModel, UserModel, TokenModel } from '@/domain/models'
 
 export namespace Token {
   export type ValidateResult = boolean
@@ -17,6 +17,10 @@ export namespace Token {
   export interface Validate {
     userHasToken: (userId: string) => Promise<ValidateResult>
     validate: (accessToken: AccessTokenModel) => Promise<ValidateResult>
+  }
+
+  export interface GetToken {
+    getToken: (token: AccessTokenModel) => Promise<TokenModel>
   }
 
   export interface Invalidate {
