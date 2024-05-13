@@ -11,7 +11,7 @@
     "test:unit": "jest --passWithNoTests --no-cache --runInBand",
     "test:unit:watch": "jest --passWithNoTests --no-cache --runInBand --watch",
     "test:coverage": "jest --passWithNoTests --no-cache --runInBand --coverage ",
-    "test-integration": "jest --config jest.integration.config.ts --passWithNoTests --no-cache --runInBand",
+    "test:integration": "jest --config jest.integration.config.ts --passWithNoTests --no-cache --runInBand",
     "prepare": "husky",
     "postinstall": "husky install"
   },
