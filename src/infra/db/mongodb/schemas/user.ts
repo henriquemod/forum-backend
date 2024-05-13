@@ -9,7 +9,9 @@ const userSchema = new mongoose.Schema<UserModel.Model>({
     type: String,
     default: UserModel.Level.USER,
     enum: Object.values(UserModel.Level)
-  }
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 })
 
 export const UserSchema = mongoose.model<UserModel.Model>('User', userSchema)

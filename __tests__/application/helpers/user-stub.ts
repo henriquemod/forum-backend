@@ -6,7 +6,9 @@ export const MOCK_USER: UserModel.Model = {
   email: 'any_email',
   username: 'any_username',
   password: 'any_password',
-  level: UserModel.Level.USER
+  level: UserModel.Level.USER,
+  createdAt: new Date(),
+  updatedAt: new Date()
 }
 
 export class UserStub implements User.Get, User.Register {
