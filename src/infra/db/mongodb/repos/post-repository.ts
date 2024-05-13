@@ -10,6 +10,24 @@ type PostDBUsecases = DBPost.Create &
   DBPost.Update
 
 export class PostMongoRepository implements PostDBUsecases {
+  async create({
+    userId,
+    content,
+    title
+  }: DBPost.AddParams): Promise<DBPost.AddResult> {
+    const post = new PostSchema({
+      user: new mongoose.Types.ObjectId(userId),
+      content,
+      title
+    })
+
+    const { id } = await post.save()
+
+    return {
+      id
+    }
+  }
+
   async update({ id, updateContent }: DBPost.UpdateParams): Promise<void> {
     await PostSchema.findByIdAndUpdate(
       new mongoose.Types.ObjectId(id),
@@ -22,46 +40,10 @@ export class PostMongoRepository implements PostDBUsecases {
   }
 
   async findById(id: string): Promise<PostModel.Model | null> {
-    const post = await PostSchema.findById(id).populate('user')
-
-    if (post) {
-      return {
-        id: post._id.toString(),
-        title: post.title,
-        content: post.content,
-        user: post.user
-      }
-    }
-
-    return null
+    return await PostSchema.findById(id).populate('user')
   }
 
   async findAll(): Promise<PostModel.Model[]> {
-    const posts = await PostSchema.find().populate('user')
-
-    return posts.map((post) => ({
-      id: post._id.toString(),
-      title: post.title,
-      content: post.content,
-      user: post.user
-    }))
-  }
-
-  async create({
-    userId,
-    content,
-    title
-  }: DBPost.AddParams): Promise<DBPost.AddResult> {
-    const accessToken = new PostSchema({
-      user: new mongoose.Types.ObjectId(userId),
-      content,
-      title
-    })
-
-    const { id } = await accessToken.save()
-
-    return {
-      id
-    }
+    return await PostSchema.find().populate('user')
   }
 }
