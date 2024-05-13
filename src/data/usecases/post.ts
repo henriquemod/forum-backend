@@ -1,7 +1,7 @@
 import type { PostModel } from '@/domain/models'
 
 export namespace Post {
-  type Model = Omit<PostModel.Model, 'user' | 'id'>
+  type Model = Omit<PostModel.Model, 'user' | 'id' | 'createdAt' | 'updatedAt'>
   export interface CreateResult {
     id: string
   }

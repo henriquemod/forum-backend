@@ -37,7 +37,9 @@ describe('JWTEncryption - SignIn', () => {
     username: 'any_username',
     password: 'any_password',
     email: 'any_email',
-    level: UserModel.Level.USER
+    level: UserModel.Level.USER,
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 
   it('should return new access token on success', async () => {
