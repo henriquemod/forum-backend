@@ -1,10 +1,10 @@
-import type { UserModel } from './user'
+import type { WithDates, UserModel } from '.'
 
 export namespace PostModel {
-  export interface Model {
+  export type Model = WithDates<{
     id: string
     user: UserModel.Model
     title: string
     content: string
-  }
+  }>
 }

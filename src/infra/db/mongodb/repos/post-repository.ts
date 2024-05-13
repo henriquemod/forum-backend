@@ -29,10 +29,10 @@ export class PostMongoRepository implements PostDBUsecases {
   }
 
   async update({ id, updateContent }: DBPost.UpdateParams): Promise<void> {
-    await PostSchema.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(id),
-      updateContent
-    )
+    await PostSchema.findByIdAndUpdate(new mongoose.Types.ObjectId(id), {
+      ...updateContent,
+      updatedAt: new Date()
+    })
   }
 
   async delete(id: string): Promise<void> {

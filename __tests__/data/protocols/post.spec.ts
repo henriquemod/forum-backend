@@ -118,11 +118,11 @@ describe('PostManager', () => {
 
       expect(spy).toHaveBeenCalledWith({
         id: 'any_id',
-        updateContent: {
+        updateContent: expect.objectContaining({
           content: MOCK_BODY.content,
           title: MOCK_BODY.title,
           userId: MOCK_BODY.userId
-        }
+        })
       })
     })
 

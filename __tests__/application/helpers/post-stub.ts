@@ -6,7 +6,9 @@ export const MOCK_POST = {
   id: 'any_id',
   user: MOCK_USER,
   title: 'any_title',
-  content: 'any_content'
+  content: 'any_content',
+  createdAt: new Date(),
+  updatedAt: new Date()
 }
 
 export class PostStub
