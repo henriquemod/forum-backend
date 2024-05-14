@@ -5,6 +5,7 @@ import type { DBToken, DBUser } from '@/domain/usecases/db'
 
 type TokenDBUsecases = DBToken.FindTokenByUserId &
   DBToken.FindTokenByToken &
+  DBToken.FindTokenByRefreshToken &
   DBToken.Delete &
   DBToken.Add
 
@@ -40,7 +41,7 @@ export class TokenManager implements TokenDataUsecases {
   }
 
   async refresh(accessToken: string): Promise<Token.RefreshResult> {
-    const token = await this.tokenRepository.findByToken(accessToken)
+    const token = await this.tokenRepository.findByRefreshToken(accessToken)
     if (!token) {
       throw new NotFound('Token not found')
     }
@@ -61,12 +62,6 @@ export class TokenManager implements TokenDataUsecases {
 
     if (userData) {
       await this.tokenRepository.delete(userData.accessToken)
-    }
-
-    const findUser = await this.userRepository.findByUserId(user.id)
-
-    if (!findUser) {
-      throw new NotFound('User not found')
     }
 
     const tokenData = await this.jwtManager.signIn(user)

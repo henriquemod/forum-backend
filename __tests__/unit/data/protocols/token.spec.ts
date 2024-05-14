@@ -131,7 +131,9 @@ describe('TokenManager', () => {
 
     it('should throw if token is not found', async () => {
       const { sut, tokenRepositoryStub } = makeSut()
-      jest.spyOn(tokenRepositoryStub, 'findByToken').mockResolvedValueOnce(null)
+      jest
+        .spyOn(tokenRepositoryStub, 'findByRefreshToken')
+        .mockResolvedValueOnce(null)
 
       const promise = sut.refresh('any_token')
 
@@ -171,15 +173,6 @@ describe('TokenManager', () => {
   })
 
   describe('signIn', () => {
-    it('should call findByUserId with correct values', async () => {
-      const { sut, tokenRepositoryStub } = makeSut()
-      const findByUserIdSpy = jest.spyOn(tokenRepositoryStub, 'findByUserId')
-
-      await sut.signIn(MOCK_USER)
-
-      expect(findByUserIdSpy).toHaveBeenCalledWith(MOCK_USER.id)
-    })
-
     it('should call delete with correct values if user has token', async () => {
       const { sut, tokenRepositoryStub } = makeSut()
       jest
@@ -201,24 +194,6 @@ describe('TokenManager', () => {
       const promise = sut.signIn(MOCK_USER)
 
       await expect(promise).rejects.toThrow()
-    })
-
-    it('should throw if findByUserId returns null', async () => {
-      const { sut, userRepositoryStub } = makeSut()
-      jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
-
-      const promise = sut.signIn(MOCK_USER)
-
-      await expect(promise).rejects.toThrow(NotFound)
-    })
-
-    it('should call findByUserId with correct values', async () => {
-      const { sut, userRepositoryStub } = makeSut()
-      const findByUserIdSpy = jest.spyOn(userRepositoryStub, 'findByUserId')
-
-      await sut.signIn(MOCK_USER)
-
-      expect(findByUserIdSpy).toHaveBeenCalledWith(MOCK_USER.id)
     })
   })
 })

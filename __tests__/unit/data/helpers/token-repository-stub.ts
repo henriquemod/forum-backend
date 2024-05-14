@@ -23,7 +23,7 @@ export class TokenRepositoryStub implements DBTokenStub {
   async findByRefreshToken(
     accessTokenToFind: string
   ): Promise<TokenModel | null> {
-    throw new Error('Method not implemented.')
+    return await Promise.resolve(MOCK_ACCESS_TOKEN)
   }
 
   async findByUserId(userId: string): Promise<TokenModel | null> {
