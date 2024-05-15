@@ -1,12 +1,16 @@
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
-import type { Authentication, User } from '@/data/usecases'
+import type { Authentication, Mail, User } from '@/data/usecases'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type UserManager = User.Register
+type MailService = Mail.SendActivationMail
 
 export class RegisterController extends Controller {
-  constructor(private readonly userManager: UserManager) {
+  constructor(
+    private readonly userManager: UserManager,
+    private readonly mailService: MailService
+  ) {
     super()
   }
 
@@ -22,6 +26,8 @@ export class RegisterController extends Controller {
       password,
       email
     })
+
+    await this.mailService.sendActivationMail(email)
 
     return ok({
       id

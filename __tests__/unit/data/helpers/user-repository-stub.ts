@@ -13,6 +13,7 @@ export const MOCK_USER = {
   username: 'any_username',
   password: 'any_password',
   level: UserModel.Level.USER,
+  verifiedEmail: false,
   createdAt: new Date(),
   updatedAt: new Date()
 }

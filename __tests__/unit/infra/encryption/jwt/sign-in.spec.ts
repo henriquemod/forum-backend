@@ -38,6 +38,7 @@ describe('JWTEncryption - SignIn', () => {
     password: 'any_password',
     email: 'any_email',
     level: UserModel.Level.USER,
+    verifiedEmail: false,
     createdAt: new Date(),
     updatedAt: new Date()
   }
