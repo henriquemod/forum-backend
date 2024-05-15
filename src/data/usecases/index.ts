@@ -1,3 +1,4 @@
+export * from './activation'
 export * from './auth'
 export * from './encryption'
 export * from './mail'

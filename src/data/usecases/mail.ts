@@ -1,5 +1,5 @@
 export namespace Mail {
   export interface SendActivationMail {
-    sendActivationMail: (email: string) => Promise<void>
+    sendActivationMail: (email: string, activationCode: string) => Promise<void>
   }
 }

@@ -1,6 +1,6 @@
 import { RegisterController } from '@/application/controllers/auth'
 import type { User } from '@/data/usecases/'
-import { MailServiceStub, UserStub } from '../../helpers'
+import { ActivationStub, MailServiceStub, UserStub } from '../../helpers'
 
 interface SutTypes {
   sut: RegisterController
@@ -10,9 +10,10 @@ interface SutTypes {
 const makeSut = (): SutTypes => {
   const userManager = new UserStub()
   const mailService = new MailServiceStub()
+  const activationStub = new ActivationStub()
 
   return {
-    sut: new RegisterController(userManager, mailService),
+    sut: new RegisterController(userManager, activationStub, mailService),
     userManager
   }
 }

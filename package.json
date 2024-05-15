@@ -27,6 +27,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/ramda": "^0.30.0",
     "@types/supertest": "^6.0.2",
+    "@types/uuid": "^9.0.8",
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -53,6 +54,7 @@
     "mailgun.js": "^10.2.1",
     "mongodb": "^6.5.0",
     "mongoose": "^8.3.0",
-    "ramda": "^0.30.0"
+    "ramda": "^0.30.0",
+    "uuid": "^9.0.1"
   }
 }

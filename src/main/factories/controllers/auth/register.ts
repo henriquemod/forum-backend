@@ -1,6 +1,9 @@
 import { RegisterController } from '@/application/controllers/auth'
-import { UserManager } from '@/data/protocols'
-import { UserMongoRepository } from '@/infra/db/mongodb/repos'
+import { ActivationManager, UserManager } from '@/data/protocols'
+import {
+  ActivationMongoRepository,
+  UserMongoRepository
+} from '@/infra/db/mongodb/repos'
 import { BCryptHash } from '@/infra/encryption'
 import { MailgunMailService } from '@/infra/mail/mailgun'
 
@@ -9,6 +12,10 @@ export const makeRegisterController = (): RegisterController => {
   const userMongoRepository = new UserMongoRepository(bCryptHashInfra)
   const userManager = new UserManager(userMongoRepository)
   const mailService = new MailgunMailService()
+  const activationManager = new ActivationManager(
+    new ActivationMongoRepository(),
+    userMongoRepository
+  )
 
-  return new RegisterController(userManager, mailService)
+  return new RegisterController(userManager, activationManager, mailService)
 }
