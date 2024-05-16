@@ -5,13 +5,13 @@ import {
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
 import { BCryptHash } from '@/infra/encryption'
-import { MailgunMailService } from '@/infra/mail/mailgun'
+import { MailjetMailService } from '@/infra/mail'
 
 export const makeRegisterController = (): RegisterController => {
   const bCryptHashInfra = new BCryptHash()
   const userMongoRepository = new UserMongoRepository(bCryptHashInfra)
   const userManager = new UserManager(userMongoRepository)
-  const mailService = new MailgunMailService()
+  const mailService = new MailjetMailService()
   const activationManager = new ActivationManager(
     new ActivationMongoRepository(),
     userMongoRepository

@@ -54,6 +54,7 @@
     "mailgun.js": "^10.2.1",
     "mongodb": "^6.5.0",
     "mongoose": "^8.3.0",
+    "node-mailjet": "^6.0.5",
     "ramda": "^0.30.0",
     "uuid": "^9.0.1"
   }
