@@ -20,4 +20,8 @@ export namespace User {
   export interface Register {
     registerUser: (user: RegisterParams) => Promise<RegisterResult>
   }
+
+  export interface ActivateUser {
+    activate: (userId: string) => Promise<void>
+  }
 }

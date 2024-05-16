@@ -1,4 +1,5 @@
+export * from './activate-user'
 export * from './login'
 export * from './logout'
-export * from './register'
 export * from './refresh-token'
+export * from './register'
