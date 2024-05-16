@@ -118,4 +118,31 @@ describe('UserManager', () => {
       expect(promise).rejects.toThrow('User not found')
     })
   })
+
+  describe('activate', () => {
+    it('should call update with correct values', () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      const updateSpy = jest.spyOn(userRepositoryStub, 'update')
+
+      sut.activate(MOCK_USER.id)
+
+      expect(updateSpy).toHaveBeenCalledWith({
+        userId: MOCK_USER.id,
+        userData: { verifiedEmail: true }
+      })
+    })
+
+    it('should throw if update throws', () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      jest
+        .spyOn(userRepositoryStub, 'update')
+        .mockRejectedValueOnce(new Error())
+
+      const promise = sut.activate(MOCK_USER.id)
+
+      expect(promise).rejects.toThrow()
+    })
+  })
 })
