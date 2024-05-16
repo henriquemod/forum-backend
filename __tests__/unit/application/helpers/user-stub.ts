@@ -12,7 +12,9 @@ export const MOCK_USER: UserModel.Model = {
   updatedAt: new Date()
 }
 
-export class UserStub implements User.Get, User.Register {
+export class UserStub implements User.Get, User.Register, User.ActivateUser {
+  async activate(userId: string): Promise<void> {}
+
   async getUser(
     value: string,
     origin?: User.Origin | undefined

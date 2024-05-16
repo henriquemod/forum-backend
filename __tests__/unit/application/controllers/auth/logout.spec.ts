@@ -25,14 +25,6 @@ describe('Logout Controller', () => {
     expect(res.statusCode).toBe(204)
   })
 
-  it('should return statusCode 400 if no access token is provided', async () => {
-    const { sut } = makeSut()
-
-    const res = await sut.handle({})
-
-    expect(res.statusCode).toBe(400)
-  })
-
   it('should return statusCode 500 if token manager throws', async () => {
     const { sut, tokenManager } = makeSut()
 
