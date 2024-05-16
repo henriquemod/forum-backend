@@ -22,6 +22,7 @@ export class UserRepositoryStub implements UserRepository {
         username: 'any_username',
         password: 'any_password',
         level: UserModel.Level.USER,
+        verifiedEmail: false,
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -41,6 +42,7 @@ export class UserRepositoryStub implements UserRepository {
         username: 'any_username',
         password: 'any_password',
         level: UserModel.Level.USER,
+        verifiedEmail: false,
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -58,6 +60,7 @@ export class UserRepositoryStub implements UserRepository {
         username: 'any_username',
         password: 'any_password',
         level: UserModel.Level.USER,
+        verifiedEmail: false,
         createdAt: new Date(),
         updatedAt: new Date()
       }

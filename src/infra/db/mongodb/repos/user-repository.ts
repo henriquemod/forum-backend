@@ -7,12 +7,24 @@ import { UserSchema } from '@/infra/db/mongodb/schemas'
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
   DBUser.FindUserByUserId &
-  DBUser.Add
+  DBUser.Add &
+  DBUser.UpdateUser
 
 type EncryptionDataUsecases = Hash.Generate
 
 export class UserMongoRepository implements UserDBUsecases {
   constructor(private readonly hash: EncryptionDataUsecases) {}
+
+  async update({ userId, userData }: DBUser.UpdateUserParams): Promise<void> {
+    await UserSchema.updateOne(
+      {
+        _id: userId
+      },
+      {
+        $set: userData
+      }
+    )
+  }
 
   async add({
     username,

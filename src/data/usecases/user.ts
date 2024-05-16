@@ -13,11 +13,15 @@ export namespace User {
 
   export type RegisterParams = Omit<
     UserModel.Model,
-    'id' | 'level' | 'createdAt' | 'updatedAt'
+    'id' | 'level' | 'createdAt' | 'updatedAt' | 'verifiedEmail'
   > &
     Partial<Pick<UserModel.Model, 'level'>>
 
   export interface Register {
     registerUser: (user: RegisterParams) => Promise<RegisterResult>
+  }
+
+  export interface ActivateUser {
+    activate: (userId: string) => Promise<void>
   }
 }

@@ -12,5 +12,6 @@ export namespace UserModel {
     email: string
     password: string
     level: Level
+    verifiedEmail: boolean
   }>
 }

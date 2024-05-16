@@ -6,12 +6,20 @@ import type { DBUser } from '@/domain/usecases/db'
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
   DBUser.Add &
-  DBUser.FindUserByUserId
+  DBUser.FindUserByUserId &
+  DBUser.UpdateUser
 
-type UserDataUsecases = User.Get & User.Register
+type UserDataUsecases = User.Get & User.Register & User.ActivateUser
 
 export class UserManager implements UserDataUsecases {
   constructor(private readonly userRepository: UserDBUsecases) {}
+
+  async activate(userId: string): Promise<void> {
+    await this.userRepository.update({
+      userId,
+      userData: { verifiedEmail: true }
+    })
+  }
 
   async registerUser(user: User.RegisterParams): Promise<User.RegisterResult> {
     const hasUsername = !!(await this.userRepository.findByUsername(

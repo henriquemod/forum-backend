@@ -6,6 +6,13 @@ export namespace DBUser {
     id: string
   }
 
+  export interface UpdateUserParams {
+    userId: string
+    userData: Partial<
+      Pick<UserModel.Model, 'password' | 'verifiedEmail' | 'email'>
+    >
+  }
+
   export type FindUserResult = UserModel.Model | null
   export interface Add {
     add: (user: User.RegisterParams) => Promise<AddResult>
@@ -25,5 +32,9 @@ export namespace DBUser {
 
   export interface FindUserByIdOrFail {
     findUserByIdOrFail: (userId: string) => Promise<UserModel.Model>
+  }
+
+  export interface UpdateUser {
+    update: (params: UpdateUserParams) => Promise<void>
   }
 }
