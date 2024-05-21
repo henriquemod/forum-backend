@@ -22,11 +22,7 @@ const makeSut = (): SutTypes => {
   const tokenRepositoryStub = new TokenRepositoryStub()
   const jwtManagerStub = new JWTManagerStub()
   const userRepositoryStub = new UserRepositoryStub()
-  const sut = new TokenManager(
-    tokenRepositoryStub,
-    userRepositoryStub,
-    jwtManagerStub
-  )
+  const sut = new TokenManager(tokenRepositoryStub, jwtManagerStub)
 
   return {
     sut,

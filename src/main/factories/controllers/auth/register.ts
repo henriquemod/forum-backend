@@ -6,10 +6,15 @@ import {
 } from '@/infra/db/mongodb/repos'
 import { BCryptHash } from '@/infra/encryption'
 import { MailjetMailService } from '@/infra/mail'
+import type { ClientSession } from 'mongoose'
+import { mongoSessionFactory } from '../../sessions/mongo-session'
 
-export const makeRegisterController = (): RegisterController => {
+export const makeRegisterController = (
+  session: ClientSession
+): RegisterController => {
   const bCryptHashInfra = new BCryptHash()
-  const userMongoRepository = new UserMongoRepository(bCryptHashInfra)
+  const mongoSession = mongoSessionFactory(session)
+  const userMongoRepository = new UserMongoRepository(bCryptHashInfra, session)
   const userManager = new UserManager(userMongoRepository)
   const mailService = new MailjetMailService()
   const activationManager = new ActivationManager(
@@ -17,5 +22,10 @@ export const makeRegisterController = (): RegisterController => {
     userMongoRepository
   )
 
-  return new RegisterController(userManager, activationManager, mailService)
+  return new RegisterController(
+    userManager,
+    activationManager,
+    mailService,
+    mongoSession
+  )
 }

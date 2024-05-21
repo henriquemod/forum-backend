@@ -1,6 +1,7 @@
 import { Forbidden } from '@/application/errors'
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
+import type { Session } from '@/application/protocols/session'
 import type { Authentication, Token, User } from '@/data/usecases'
 import type { Hash } from '@/data/usecases/encryption'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
@@ -13,9 +14,10 @@ export class LoginController extends Controller {
   constructor(
     private readonly userManager: UserManager,
     private readonly tokenManager: TokenManager,
-    private readonly hashManager: HashComparer
+    private readonly hashManager: HashComparer,
+    protected readonly session?: Session
   ) {
-    super()
+    super(session)
   }
 
   async perform({

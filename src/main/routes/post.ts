@@ -1,5 +1,6 @@
 import { adaptExpressRoute } from '@/main/adapters'
 import type { Router } from 'express'
+import type { ClientSession } from 'mongoose'
 import {
   makeCreatePostController,
   makeDeletePostController,
@@ -9,10 +10,22 @@ import {
 } from '../factories/controllers/post'
 import { auth } from '../middlewares'
 
-export default (router: Router): void => {
-  router.post('/post', auth, adaptExpressRoute(makeCreatePostController()))
-  router.put('/post', auth, adaptExpressRoute(makeUpdatePostController()))
-  router.delete('/post', auth, adaptExpressRoute(makeDeletePostController()))
+export default (router: Router, session: ClientSession): void => {
+  router.post(
+    '/post',
+    auth,
+    adaptExpressRoute(makeCreatePostController(session))
+  )
+  router.put(
+    '/post',
+    auth,
+    adaptExpressRoute(makeUpdatePostController(session))
+  )
+  router.delete(
+    '/post',
+    auth,
+    adaptExpressRoute(makeDeletePostController(session))
+  )
   router.get('/posts', auth, adaptExpressRoute(makeFindAllPostController()))
   router.get('/post', auth, adaptExpressRoute(makeFindPostController()))
 }

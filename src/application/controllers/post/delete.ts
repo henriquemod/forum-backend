@@ -2,6 +2,7 @@ import { Forbidden, NotFound } from '@/application/errors'
 import { Controller, noContent } from '@/application/protocols'
 import type { AuthenticatedRequest } from '@/application/protocols/http/authenticated-request'
 import type { HttpResponse } from '@/application/protocols/http/responses'
+import type { Session } from '@/application/protocols/session'
 import {
   ValidationBuilder as builder,
   type Validator
@@ -16,9 +17,10 @@ type PerformParams = AuthenticatedRequest<Post.DeleteParams>
 export class DeletePostController extends Controller {
   constructor(
     private readonly postManager: PostManager,
-    private readonly userManager: UserManager
+    private readonly userManager: UserManager,
+    protected readonly session?: Session
   ) {
-    super()
+    super(session)
   }
 
   async perform({

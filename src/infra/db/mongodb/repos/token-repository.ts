@@ -1,6 +1,7 @@
 import type { AccessTokenModel, TokenModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
+import type { ClientSession } from 'mongoose'
 import mongoose from 'mongoose'
 
 type TokenDBUsecases = DBToken.FindTokenByToken &
@@ -10,17 +11,26 @@ type TokenDBUsecases = DBToken.FindTokenByToken &
   DBToken.Delete
 
 export class TokenMongoRepository implements TokenDBUsecases {
+  constructor(private readonly session?: ClientSession) {}
+
   async add({
     accessToken,
     refreshAccessToken,
     userId
   }: DBToken.AddParams): Promise<void> {
-    const token = new AccessTokenSchema({
-      accessToken,
-      refreshAccessToken,
-      user: new mongoose.Types.ObjectId(userId)
+    const token = new AccessTokenSchema(
+      {
+        accessToken,
+        refreshAccessToken,
+        user: new mongoose.Types.ObjectId(userId)
+      },
+      {
+        session: this.session
+      }
+    )
+    await token.save({
+      session: this.session
     })
-    await token.save()
   }
 
   async findByToken(accessToken: AccessTokenModel): Promise<TokenModel | null> {
@@ -43,6 +53,9 @@ export class TokenMongoRepository implements TokenDBUsecases {
   }
 
   async delete(accessToken: string): Promise<undefined> {
-    await AccessTokenSchema.deleteOne({ accessToken })
+    await AccessTokenSchema.deleteOne(
+      { accessToken },
+      { session: this.session }
+    )
   }
 }

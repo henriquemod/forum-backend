@@ -8,11 +8,15 @@ import {
   makeRegisterController
 } from '../factories/controllers/auth'
 import { auth } from '../middlewares'
+import type { ClientSession } from 'mongoose'
 
-export default (router: Router): void => {
-  router.post('/login', adaptExpressRoute(makeLoginController()))
-  router.post('/token', adaptExpressRoute(makeRefreshTokenController()))
-  router.post('/register', adaptExpressRoute(makeRegisterController()))
-  router.post('/activate-user', adaptExpressRoute(makeActivateUserController()))
-  router.post('/logout', auth, adaptExpressRoute(makeLogoutController()))
+export default (router: Router, session: ClientSession): void => {
+  router.post('/login', adaptExpressRoute(makeLoginController(session)))
+  router.post('/token', adaptExpressRoute(makeRefreshTokenController(session)))
+  router.post('/register', adaptExpressRoute(makeRegisterController(session)))
+  router.post(
+    '/activate-user',
+    adaptExpressRoute(makeActivateUserController(session))
+  )
+  router.post('/logout', auth, adaptExpressRoute(makeLogoutController(session)))
 }

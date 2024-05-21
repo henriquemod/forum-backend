@@ -5,18 +5,19 @@ import {
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
 import { BCryptHash, JwtTokenEncryption } from '@/infra/encryption'
+import type { ClientSession } from 'mongoose'
+import { mongoSessionFactory } from '../../sessions/mongo-session'
 
-export const makeLoginController = (): LoginController => {
+export const makeLoginController = (
+  session: ClientSession
+): LoginController => {
+  const mongoSession = mongoSessionFactory(session)
   const hash = new BCryptHash()
-  const userRepository = new UserMongoRepository(hash)
-  const tokenRepository = new TokenMongoRepository()
+  const userRepository = new UserMongoRepository(hash, session)
+  const tokenRepository = new TokenMongoRepository(session)
   const jwtManager = new JwtTokenEncryption(tokenRepository)
   const userManagement = new UserManager(userRepository)
-  const tokenManager = new TokenManager(
-    tokenRepository,
-    userRepository,
-    jwtManager
-  )
+  const tokenManager = new TokenManager(tokenRepository, jwtManager)
 
-  return new LoginController(userManagement, tokenManager, hash)
+  return new LoginController(userManagement, tokenManager, hash, mongoSession)
 }

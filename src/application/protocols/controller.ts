@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ValidationComposite, type Validator } from '@/application/validation'
-import { ApiError } from './api-error'
 import { BadRequest } from '../errors'
-import type { HttpResponse } from './http/responses'
+import { ApiError } from './api-error'
 import { badRequest } from './http'
+import type { HttpResponse } from './http/responses'
+import type { Session } from './session'
 
 export abstract class Controller {
   abstract perform(httpRequest: any): Promise<HttpResponse>
+
+  constructor(protected readonly session?: Session) {}
+
   buildValidators(_httpRequest: any): Validator[] {
     return []
   }
@@ -19,8 +23,13 @@ export abstract class Controller {
     }
 
     try {
-      return await this.perform(httpRequest)
+      this.session?.startTransaction()
+      const res = await this.perform(httpRequest)
+      this.session?.commitTransaction()
+
+      return res
     } catch (error) {
+      this.session?.abortTransaction()
       return ApiError.errorHandler(error)
     }
   }

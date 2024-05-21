@@ -5,14 +5,23 @@ import {
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
 import { BCryptHash } from '@/infra/encryption'
+import type { ClientSession } from 'mongoose'
+import { mongoSessionFactory } from '../../sessions/mongo-session'
 
-export const makeActivateUserController = (): ActivateUserController => {
-  const userRepository = new UserMongoRepository(new BCryptHash())
+export const makeActivateUserController = (
+  session: ClientSession
+): ActivateUserController => {
+  const mongoSession = mongoSessionFactory(session)
+  const userRepository = new UserMongoRepository(new BCryptHash(), session)
   const userManagement = new UserManager(userRepository)
   const activationManager = new ActivationManager(
-    new ActivationMongoRepository(),
+    new ActivationMongoRepository(session),
     userRepository
   )
 
-  return new ActivateUserController(userManagement, activationManager)
+  return new ActivateUserController(
+    userManagement,
+    activationManager,
+    mongoSession
+  )
 }
