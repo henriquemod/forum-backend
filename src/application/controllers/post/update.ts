@@ -2,6 +2,7 @@ import { Forbidden, NotFound } from '@/application/errors'
 import { Controller, noContent } from '@/application/protocols'
 import type { AuthenticatedRequest } from '@/application/protocols/http/authenticated-request'
 import type { HttpResponse } from '@/application/protocols/http/responses'
+import type { Session } from '@/application/protocols/session'
 import type { Post, User } from '@/data/usecases'
 import { UserModel } from '@/domain/models'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
@@ -13,9 +14,10 @@ type PerformParams = AuthenticatedRequest<Post.UpdateParams>
 export class UpdatePostController extends Controller {
   constructor(
     private readonly postManager: PostManager,
-    private readonly userManager: UserManager
+    private readonly userManager: UserManager,
+    protected readonly session?: Session
   ) {
-    super()
+    super(session)
   }
 
   async perform({

@@ -1,13 +1,13 @@
 import { type Express, Router } from 'express'
 import { readdirSync } from 'fs'
+import type { ClientSession } from 'mongoose'
 import { join } from 'path'
-// import type { DataSource } from 'typeorm'
 
-export const setupRoutes = (app: Express): void => {
+export const setupRoutes = (app: Express, session?: ClientSession): void => {
   const router = Router()
   readdirSync(join(__dirname, '../routes')).map(async (file) => {
     const curImport = await import(`../routes/${file}`)
-    curImport.default(router)
+    curImport.default(router, session)
   })
   app.use('/api', router)
 }

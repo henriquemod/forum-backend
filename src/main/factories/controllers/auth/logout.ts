@@ -1,21 +1,17 @@
 import { LogoutController } from '@/application/controllers/auth'
 import { TokenManager } from '@/data/protocols/token'
-import {
-  TokenMongoRepository,
-  UserMongoRepository
-} from '@/infra/db/mongodb/repos'
-import { BCryptHash, JwtTokenEncryption } from '@/infra/encryption'
+import { TokenMongoRepository } from '@/infra/db/mongodb/repos'
+import { JwtTokenEncryption } from '@/infra/encryption'
+import type { ClientSession } from 'mongoose'
+import { mongoSessionFactory } from '../../sessions/mongo-session'
 
-export const makeLogoutController = (): LogoutController => {
-  const bCryptHash = new BCryptHash()
-  const tokenRepository = new TokenMongoRepository()
-  const userRepository = new UserMongoRepository(bCryptHash)
+export const makeLogoutController = (
+  session: ClientSession
+): LogoutController => {
+  const mongoSession = mongoSessionFactory(session)
+  const tokenRepository = new TokenMongoRepository(session)
   const jwtManager = new JwtTokenEncryption(tokenRepository)
-  const tokenManager = new TokenManager(
-    tokenRepository,
-    userRepository,
-    jwtManager
-  )
+  const tokenManager = new TokenManager(tokenRepository, jwtManager)
 
-  return new LogoutController(tokenManager)
+  return new LogoutController(tokenManager, mongoSession)
 }

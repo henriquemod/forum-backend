@@ -1,13 +1,17 @@
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
+import type { Session } from '@/application/protocols/session'
 import type { Post } from '@/data/usecases'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.CreatePost
 
 export class CreatePostController extends Controller {
-  constructor(private readonly postManager: PostManager) {
-    super()
+  constructor(
+    private readonly postManager: PostManager,
+    protected readonly session?: Session
+  ) {
+    super(session)
   }
 
   async perform({

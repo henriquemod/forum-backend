@@ -5,8 +5,8 @@ const MAILJET_TEMPLATE_ID = 5972199
 
 export class MailjetMailService implements Mail.SendActivationMail {
   private readonly mailjet: Client = Mailjet.apiConnect(
-    process.env.MJ_APIKEY_PUBLIC || '',
-    process.env.MJ_APIKEY_PRIVATE || ''
+    process.env.MJ_APIKEY_PUBLIC || '1',
+    process.env.MJ_APIKEY_PRIVATE || '2'
   )
 
   async sendActivationMail(email: string): Promise<void> {

@@ -1,7 +1,7 @@
 import { NotFound } from '@/application/errors'
 import type { Token } from '@/data/usecases'
 import type { TokenModel, UserModel } from '@/domain/models'
-import type { DBToken, DBUser } from '@/domain/usecases/db'
+import type { DBToken } from '@/domain/usecases/db'
 
 type TokenDBUsecases = DBToken.FindTokenByUserId &
   DBToken.FindTokenByToken &
@@ -18,7 +18,6 @@ type TokenDataUsecases = Token.SignIn &
 export class TokenManager implements TokenDataUsecases {
   constructor(
     private readonly tokenRepository: TokenDBUsecases,
-    private readonly userRepository: DBUser.FindUserByUserId,
     private readonly jwtManager: Token.SignIn
   ) {}
 
@@ -58,10 +57,10 @@ export class TokenManager implements TokenDataUsecases {
   }
 
   async signIn(user: UserModel.Model): Promise<Token.SignResult> {
-    const userData = await this.tokenRepository.findByUserId(user.id)
+    const token = await this.tokenRepository.findByUserId(user.id)
 
-    if (userData) {
-      await this.tokenRepository.delete(userData.accessToken)
+    if (token) {
+      await this.tokenRepository.delete(token.accessToken)
     }
 
     const tokenData = await this.jwtManager.signIn(user)
