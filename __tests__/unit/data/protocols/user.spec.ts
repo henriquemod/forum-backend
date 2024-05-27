@@ -18,7 +18,7 @@ const makeSut = (): SutTypes => {
 
 describe('UserManager', () => {
   describe('registerUser', () => {
-    it('should return user id on success', async () => {
+    it('should return user on success', async () => {
       const { sut, userRepositoryStub } = makeSut()
       jest
         .spyOn(userRepositoryStub, 'findByUsername')
@@ -27,7 +27,7 @@ describe('UserManager', () => {
 
       const res = await sut.registerUser(MOCK_USER)
 
-      expect(res).toEqual({ id: MOCK_USER.id })
+      expect(res).toEqual(MOCK_USER)
     })
 
     it('should throw BadRequest if email already exist', () => {

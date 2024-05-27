@@ -21,7 +21,7 @@ export class UserManager implements UserDataUsecases {
     })
   }
 
-  async registerUser(user: User.RegisterParams): Promise<User.RegisterResult> {
+  async registerUser(user: User.RegisterParams): Promise<UserModel.Model> {
     const hasUsername = !!(await this.userRepository.findByUsername(
       user.username
     ))
@@ -31,9 +31,9 @@ export class UserManager implements UserDataUsecases {
       throw new BadRequest('Username or email already in use')
     }
 
-    const { id } = await this.userRepository.add(user)
+    const createdUser = await this.userRepository.add(user)
 
-    return { id }
+    return createdUser
   }
 
   async getUser(

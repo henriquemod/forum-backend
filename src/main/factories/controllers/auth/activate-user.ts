@@ -15,8 +15,7 @@ export const makeActivateUserController = (
   const userRepository = new UserMongoRepository(new BCryptHash(), session)
   const userManagement = new UserManager(userRepository)
   const activationManager = new ActivationManager(
-    new ActivationMongoRepository(session),
-    userRepository
+    new ActivationMongoRepository(session)
   )
 
   return new ActivateUserController(

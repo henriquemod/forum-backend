@@ -5,6 +5,17 @@ import mongoose from 'mongoose'
 import { isEmpty, omit } from 'ramda'
 import request from 'supertest'
 
+jest.mock('@/main/config/env', () => {
+  const currentEnv = jest.requireActual('@/main/config/env')
+  return {
+    ...currentEnv,
+    env: {
+      ...currentEnv.env,
+      mongoUrl: `mongodb://127.0.0.1:27017/e2eTesting?replicaSet=rs0`
+    }
+  }
+})
+
 const user = {
   username: faker.internet.userName(),
   password: faker.internet.password(),
@@ -14,9 +25,15 @@ const user = {
 describe('Controller - Post', () => {
   const apiRequest = request(makeApp())
   let accessToken: string
+  let db: typeof mongoose
 
   beforeAll(async () => {
-    await mongoose.connect(env.mongoUrl)
+    db = await mongoose.connect(env.mongoUrl)
+  })
+
+  beforeEach(async () => {
+    await db.connection.dropDatabase()
+
     await apiRequest.post('/api/register').send(user)
     const res = await apiRequest.post('/api/login').send(omit(['email'], user))
 
@@ -25,6 +42,8 @@ describe('Controller - Post', () => {
 
   afterAll(async () => {
     await mongoose.disconnect()
+    await db.connection.dropDatabase()
+    jest.clearAllMocks()
   })
 
   it('Should create post', async () => {
@@ -113,6 +132,6 @@ describe('Controller - Post', () => {
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(res.status).toBe(200)
-    expect(res.body.length).toBeGreaterThan(0)
+    expect(res.body.length).toBe(1)
   })
 })

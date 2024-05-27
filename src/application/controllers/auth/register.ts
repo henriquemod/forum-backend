@@ -25,19 +25,17 @@ export class RegisterController extends Controller {
   }: Authentication.RegisterParams): Promise<
     HttpResponse<Authentication.RegisterResult>
   > {
-    const { id } = await this.userManager.registerUser({
+    const user = await this.userManager.registerUser({
       username,
       password,
       email
     })
 
-    const { code } = await this.activationManager.createActivationCode(id)
+    const { code } = await this.activationManager.createActivationCode(user)
 
     await this.mailService.sendActivationMail(email, code)
 
-    return ok({
-      id
-    })
+    return ok(user)
   }
 
   override buildValidators({

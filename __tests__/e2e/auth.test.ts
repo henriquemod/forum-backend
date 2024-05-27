@@ -4,27 +4,49 @@ import mongoose from 'mongoose'
 import request from 'supertest'
 import { faker } from '@faker-js/faker'
 import { isEmpty, omit } from 'ramda'
+import type TestAgent from 'supertest/lib/agent'
+
+jest.mock('@/main/config/env', () => {
+  const currentEnv = jest.requireActual('@/main/config/env')
+  return {
+    ...currentEnv,
+    env: {
+      ...currentEnv.env,
+      mongoUrl: `mongodb://127.0.0.1:27017/e2eTesting?replicaSet=rs0`
+    }
+  }
+})
 
 describe('Controller - Auth', () => {
-  const apiRequest = request(makeApp())
+  const apiRequest: TestAgent = request(makeApp())
+  let db: typeof mongoose
 
   beforeAll(async () => {
-    await mongoose.connect(env.mongoUrl)
+    db = await mongoose.connect(env.mongoUrl)
+  })
+
+  beforeEach(() => {
+    db.connection.dropDatabase()
   })
 
   afterAll(async () => {
     await mongoose.disconnect()
+    await db.connection.dropDatabase()
+    jest.clearAllMocks()
   })
 
   it('Should create account', async () => {
-    const responseUpdated = await apiRequest.post('/api/register').send({
+    const params = {
       username: faker.internet.userName(),
       password: faker.internet.password(),
       email: faker.internet.email()
-    })
+    }
+    const responseUpdated = await apiRequest.post('/api/register').send(params)
 
     expect(responseUpdated.status).toBe(200)
-    expect(responseUpdated.body.id).toBeDefined()
+    expect(responseUpdated.body.email).toBe(params.email)
+    expect(responseUpdated.body.username).toBe(params.username)
+    expect(responseUpdated.body.password).not.toBe(params.password)
   })
 
   it('Should login', async () => {

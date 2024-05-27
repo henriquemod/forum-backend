@@ -3,7 +3,10 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET ?? 'your_access_token_secret',
   refreshTokenSecret:
     process.env.REFRESH_TOKEN_SECRET ?? 'your_refresh_token_secret',
-  mongoUrl:
-    process.env.MONGO_URL ?? 'mongodb://rootuser:rootpass@localhost:27017',
-  bcryptSalt: process.env.BCRYPT_SALT ?? 12
+  mongoUrl: `mongodb://127.0.0.1:27017/${process.env.MONGO_DB_NAME ?? 'petqa'}?retryWrites=true&loadBalanced=false&replicaSet=rs0&readPreference=primary&connectTimeoutMS=10000`,
+  bcryptSalt: process.env.BCRYPT_SALT ?? 12,
+  features: {
+    userActivationByEmail:
+      (process.env.USER_ACTIVATION_BY_EMAIL ?? 'false') === 'true'
+  }
 }

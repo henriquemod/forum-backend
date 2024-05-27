@@ -6,6 +6,8 @@ import { UserModel } from '@/domain/models'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 
+const MOCK_USER_ID = '123456789012345678901234'
+
 const makeHashStub = (): Hash.Generate => {
   class HashStub implements Hash.Generate {
     async generate(value: string): Promise<string> {
@@ -99,6 +101,40 @@ describe('UserMongoRepository', () => {
       const result = await sut.findByEmail('admin_user@example.com')
 
       expect(result?.level).toEqual('admin')
+    })
+  })
+
+  describe('update', () => {
+    it('should call update with correct values', async () => {
+      const { sut } = makeSut()
+
+      const spy = jest.spyOn(UserSchema, 'updateOne')
+
+      const user = {
+        username: 'test_user2',
+        email: 'test_user2@example.com',
+        password: 'password'
+      }
+
+      await sut.update({ userId: MOCK_USER_ID, userData: user })
+
+      expect(spy).toHaveBeenCalledWith(
+        { _id: MOCK_USER_ID },
+        { $set: expect.objectContaining(user) },
+        { session: undefined }
+      )
+    })
+
+    it('should throw if updateOne throws', () => {
+      const { sut } = makeSut()
+
+      jest.spyOn(UserSchema, 'updateOne').mockImplementationOnce(() => {
+        throw new Error('test error')
+      })
+
+      expect(
+        sut.update({ userId: MOCK_USER_ID, userData: {} })
+      ).rejects.toThrow()
     })
   })
 

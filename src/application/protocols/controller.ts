@@ -25,11 +25,11 @@ export abstract class Controller {
     try {
       this.session?.startTransaction()
       const res = await this.perform(httpRequest)
-      this.session?.commitTransaction()
+      await this.session?.commitTransaction()
 
       return res
     } catch (error) {
-      this.session?.abortTransaction()
+      await this.session?.abortTransaction()
       return ApiError.errorHandler(error)
     }
   }
