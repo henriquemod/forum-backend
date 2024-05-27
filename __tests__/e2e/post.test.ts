@@ -41,8 +41,8 @@ describe('Controller - Post', () => {
   })
 
   afterAll(async () => {
-    await mongoose.disconnect()
     await db.connection.dropDatabase()
+    await mongoose.disconnect()
     jest.clearAllMocks()
   })
 
