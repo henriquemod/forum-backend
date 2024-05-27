@@ -1,9 +1,10 @@
 import type { User } from '@/data/usecases'
 import type { Hash } from '@/data/usecases/encryption'
-import type { UserModel } from '@/domain/models'
+import { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
 import type { ClientSession } from 'mongoose'
+import mongoose from 'mongoose'
 
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
@@ -35,25 +36,24 @@ export class UserMongoRepository implements UserDBUsecases {
     username,
     email,
     password
-  }: User.RegisterParams): Promise<DBUser.AddResult> {
+  }: User.RegisterParams): Promise<UserModel.Model> {
     const hashedPassword = await this.hash.generate(password)
 
     const accessToken = new UserSchema(
       {
+        _id: new mongoose.Types.ObjectId(),
         username,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        level: UserModel.Level.USER,
+        verifiedEmail: false
       },
       {
         session: this.session
       }
     )
 
-    const { id } = await accessToken.save({ session: this.session })
-
-    return {
-      id
-    }
+    return await accessToken.save({ session: this.session })
   }
 
   async findByEmail(email: string): Promise<UserModel.Model | null> {
@@ -69,8 +69,10 @@ export class UserMongoRepository implements UserDBUsecases {
   }
 
   async findByUserId(id: string): Promise<UserModel.Model | null> {
-    return await UserSchema.findOne({
+    const user = await UserSchema.findOne({
       _id: id
     })
+
+    return user
   }
 }

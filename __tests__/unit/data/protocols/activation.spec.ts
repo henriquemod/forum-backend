@@ -17,10 +17,7 @@ interface SutTypes {
 const makeSut = (): SutTypes => {
   const activationRepositoryStub = new ActivationRepositoryStub()
   const userRepositoryStub = new UserRepositoryStub()
-  const sut = new ActivationManager(
-    activationRepositoryStub,
-    userRepositoryStub
-  )
+  const sut = new ActivationManager(activationRepositoryStub)
 
   return {
     sut,
@@ -34,7 +31,7 @@ describe('ActivationManager', () => {
     it('should return user on success', async () => {
       const { sut } = makeSut()
 
-      const res = await sut.getUser({ code: MOCK_ACTIVATION.code })
+      const res = await sut.getUser(MOCK_ACTIVATION.code)
 
       expect(res).toEqual(MOCK_USER)
     })
@@ -45,7 +42,7 @@ describe('ActivationManager', () => {
         .spyOn(activationRepositoryStub, 'findByCode')
         .mockResolvedValueOnce(null)
 
-      const promise = sut.getUser({ code: MOCK_ACTIVATION.code })
+      const promise = sut.getUser(MOCK_ACTIVATION.code)
 
       expect(promise).rejects.toThrow('Activation code not found')
     })
@@ -61,18 +58,18 @@ describe('ActivationManager', () => {
         .spyOn(activationRepositoryStub, 'create')
         .mockResolvedValueOnce(MOCK_ACTIVATION)
 
-      const res = await sut.createActivationCode(MOCK_USER.id)
+      const res = await sut.createActivationCode(MOCK_USER)
 
       expect(res).toEqual(MOCK_ACTIVATION)
     })
 
-    it('should throw NotFound if user not found', () => {
-      const { sut, userRepositoryStub } = makeSut()
-      jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
+    // it('should throw NotFound if user not found', () => {
+    //   const { sut, userRepositoryStub } = makeSut()
+    //   jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
 
-      const promise = sut.createActivationCode(MOCK_USER.id)
+    //   const promise = sut.createActivationCode(MOCK_USER)
 
-      expect(promise).rejects.toThrow('User not found')
-    })
+    //   expect(promise).rejects.toThrow('User not found')
+    // })
   })
 })

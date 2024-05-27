@@ -2,32 +2,26 @@ import type { User } from '@/data/usecases'
 import type { UserModel } from '@/domain/models'
 
 export namespace DBUser {
-  export interface AddResult {
-    id: string
-  }
-
   export interface UpdateUserParams {
     userId: string
     userData: Partial<
       Pick<UserModel.Model, 'password' | 'verifiedEmail' | 'email'>
     >
   }
-
-  export type FindUserResult = UserModel.Model | null
   export interface Add {
-    add: (user: User.RegisterParams) => Promise<AddResult>
+    add: (user: User.RegisterParams) => Promise<UserModel.Model>
   }
 
   export interface FindUserByEmail {
-    findByEmail: (email: string) => Promise<FindUserResult>
+    findByEmail: (email: string) => Promise<UserModel.Model | null>
   }
 
   export interface FindUserByUsername {
-    findByUsername: (username: string) => Promise<FindUserResult>
+    findByUsername: (username: string) => Promise<UserModel.Model | null>
   }
 
   export interface FindUserByUserId {
-    findByUserId: (userId: string) => Promise<FindUserResult>
+    findByUserId: (userId: string) => Promise<UserModel.Model | null>
   }
 
   export interface FindUserByIdOrFail {

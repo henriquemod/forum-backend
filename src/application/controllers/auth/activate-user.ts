@@ -21,9 +21,7 @@ export class ActivateUserController extends Controller {
   }: Activation.GetUserByActivationCodeParams): Promise<
     HttpResponse<Authentication.RegisterResult>
   > {
-    const { id } = await this.activationManager.getUser({
-      code
-    })
+    const { id } = await this.activationManager.getUser(code)
 
     await this.userManager.activate(id)
 

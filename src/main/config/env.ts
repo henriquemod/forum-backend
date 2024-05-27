@@ -4,6 +4,6 @@ export const env = {
   refreshTokenSecret:
     process.env.REFRESH_TOKEN_SECRET ?? 'your_refresh_token_secret',
   mongoUrl:
-    process.env.MONGO_URL ?? 'mongodb://rootuser:rootpass@localhost:27017',
+    'mongodb://127.0.0.1:27017/petqa?retryWrites=true&loadBalanced=false&replicaSet=rs0&readPreference=primary&connectTimeoutMS=10000',
   bcryptSalt: process.env.BCRYPT_SALT ?? 12
 }

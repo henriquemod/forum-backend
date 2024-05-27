@@ -33,7 +33,7 @@ export class UserRepositoryStub implements DBUserStub {
     return await Promise.resolve(MOCK_USER)
   }
 
-  async add(user: User.RegisterParams): Promise<DBUser.AddResult> {
-    return await Promise.resolve({ id: MOCK_USER.id })
+  async add(user: User.RegisterParams): Promise<UserModel.Model> {
+    return await Promise.resolve(MOCK_USER)
   }
 }

@@ -22,15 +22,21 @@ describe('Register Controller', () => {
   it('should return statusCode 200 on success', async () => {
     const { sut } = makeSut()
 
-    const res = await sut.handle({
+    const params = {
       email: 'any_email',
       username: 'any_username',
       password: 'any_password'
-    })
+    }
+
+    const res = await sut.handle(params)
 
     expect(res).toEqual({
       statusCode: 200,
-      data: { id: 'any_id' }
+      data: expect.objectContaining({
+        id: 'any_id',
+        ...params,
+        password: 'hashed_password'
+      })
     })
   })
 

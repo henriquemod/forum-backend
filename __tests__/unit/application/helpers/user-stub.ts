@@ -22,8 +22,8 @@ export class UserStub implements User.Get, User.Register, User.ActivateUser {
     return await Promise.resolve(MOCK_USER)
   }
 
-  async registerUser(user: User.RegisterParams): Promise<User.RegisterResult> {
-    return { id: 'any_id' }
+  async registerUser(user: User.RegisterParams): Promise<UserModel.Model> {
+    return await Promise.resolve({ ...MOCK_USER, password: 'hashed_password' })
   }
 
   async findUserByIdOrFail(id: string): Promise<UserModel.Model> {

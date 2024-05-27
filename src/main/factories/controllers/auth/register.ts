@@ -18,8 +18,7 @@ export const makeRegisterController = (
   const userManager = new UserManager(userMongoRepository)
   const mailService = new MailjetMailService()
   const activationManager = new ActivationManager(
-    new ActivationMongoRepository(),
-    userMongoRepository
+    new ActivationMongoRepository(session)
   )
 
   return new RegisterController(

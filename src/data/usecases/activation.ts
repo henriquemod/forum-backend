@@ -5,9 +5,9 @@ export namespace Activation {
     code: string
   }
   export interface CreateActivationCode {
-    createActivationCode: (userId: string) => Promise<ActivationModel>
+    createActivationCode: (user: UserModel.Model) => Promise<ActivationModel>
   }
   export interface GetUserByActivationCode {
-    getUser: (params: GetUserByActivationCodeParams) => Promise<UserModel.Model>
+    getUser: (code: string) => Promise<UserModel.Model>
   }
 }
