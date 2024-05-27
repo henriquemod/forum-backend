@@ -20,6 +20,7 @@ export class TokenMongoRepository implements TokenDBUsecases {
   }: DBToken.AddParams): Promise<void> {
     const token = new AccessTokenSchema(
       {
+        _id: new mongoose.Types.ObjectId(),
         accessToken,
         refreshAccessToken,
         user: new mongoose.Types.ObjectId(userId)

@@ -30,8 +30,8 @@ describe('Controller - Auth', () => {
   })
 
   afterAll(async () => {
-    await mongoose.disconnect()
     await db.connection.dropDatabase()
+    await mongoose.disconnect()
     jest.clearAllMocks()
   })
 
