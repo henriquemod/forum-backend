@@ -200,6 +200,13 @@ describe('UserMongoRepository', () => {
       expect(result).toBeNull()
     })
 
+    it('should return null if invalid id is provided', async () => {
+      const { sut } = makeSut()
+      const result = await sut.findByUserId('invalid')
+
+      expect(result).toBeNull()
+    })
+
     it('should return the user if found with the given user id', async () => {
       const { sut } = makeSut()
 

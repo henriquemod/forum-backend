@@ -119,6 +119,78 @@ describe('UserManager', () => {
     })
   })
 
+  describe('getPublicUser', () => {
+    it('should return user on success from default origin', async () => {
+      const { sut } = makeSut()
+
+      const res = await sut.getPublicUser(MOCK_USER.username)
+
+      expect(res).toMatchObject({
+        username: MOCK_USER.username,
+        createdAt: MOCK_USER.createdAt
+      })
+    })
+
+    it('should return user on success from email origin', async () => {
+      const { sut } = makeSut()
+
+      const res = await sut.getPublicUser(MOCK_USER.email, 'email')
+
+      expect(res).toMatchObject({
+        username: MOCK_USER.username,
+        createdAt: MOCK_USER.createdAt
+      })
+    })
+    it('should throw NotFound if user not found from email origin', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+      jest.spyOn(userRepositoryStub, 'findByEmail').mockResolvedValueOnce(null)
+
+      const promise = sut.getPublicUser(MOCK_USER.email, 'email')
+
+      expect(promise).rejects.toThrow('User not found')
+    })
+    it('should return user on success from username origin', async () => {
+      const { sut } = makeSut()
+
+      const res = await sut.getPublicUser(MOCK_USER.username, 'username')
+
+      expect(res).toMatchObject({
+        username: MOCK_USER.username,
+        createdAt: MOCK_USER.createdAt
+      })
+    })
+
+    it('should throw NotFound if user not found from username origin', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+      jest
+        .spyOn(userRepositoryStub, 'findByUsername')
+        .mockResolvedValueOnce(null)
+
+      const promise = sut.getPublicUser(MOCK_USER.username, 'username')
+
+      expect(promise).rejects.toThrow('User not found')
+    })
+    it('should return user on success from id origin', async () => {
+      const { sut } = makeSut()
+
+      const res = await sut.getPublicUser(MOCK_USER.username, 'id')
+
+      expect(res).toMatchObject({
+        username: MOCK_USER.username,
+        createdAt: MOCK_USER.createdAt
+      })
+    })
+
+    it('should throw NotFound if user not found from id origin', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+      jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
+
+      const promise = sut.getPublicUser(MOCK_USER.username, 'id')
+
+      expect(promise).rejects.toThrow('User not found')
+    })
+  })
+
   describe('activate', () => {
     it('should call update with correct values', () => {
       const { sut, userRepositoryStub } = makeSut()

@@ -17,7 +17,7 @@ type UserDataUsecases = User.Get &
 export class UserManager implements UserDataUsecases {
   constructor(private readonly userRepository: UserDBUsecases) {}
 
-  async functionToGetEntity(origin: string) {
+  async functionToGetEntity(origin: User.Origin) {
     let functionToGetEntity
     switch (origin) {
       case 'username':
@@ -29,8 +29,6 @@ export class UserManager implements UserDataUsecases {
       case 'id':
         functionToGetEntity = this.userRepository.findByUserId
         break
-      default:
-        throw new Error('Invalid origin')
     }
     return functionToGetEntity
   }
