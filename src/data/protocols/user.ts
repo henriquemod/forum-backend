@@ -9,10 +9,48 @@ type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUserId &
   DBUser.UpdateUser
 
-type UserDataUsecases = User.Get & User.Register & User.ActivateUser
+type UserDataUsecases = User.Get &
+  User.Register &
+  User.ActivateUser &
+  User.GetPublic
 
 export class UserManager implements UserDataUsecases {
   constructor(private readonly userRepository: UserDBUsecases) {}
+
+  async functionToGetEntity(origin: string) {
+    let functionToGetEntity
+    switch (origin) {
+      case 'username':
+        functionToGetEntity = this.userRepository.findByUsername
+        break
+      case 'email':
+        functionToGetEntity = this.userRepository.findByEmail
+        break
+      case 'id':
+        functionToGetEntity = this.userRepository.findByUserId
+        break
+      default:
+        throw new Error('Invalid origin')
+    }
+    return functionToGetEntity
+  }
+
+  async getPublicUser(
+    value: string,
+    origin: User.Origin = 'username'
+  ): Promise<User.PublicUserData> {
+    const fn = await this.functionToGetEntity(origin)
+    const user = await fn(value)
+    if (!user) {
+      throw new NotFound('User not found')
+    }
+    const publicUserData: User.PublicUserData = {
+      username: user.username,
+      createdAt: user.createdAt
+    }
+
+    return publicUserData
+  }
 
   async activate(userId: string): Promise<void> {
     await this.userRepository.update({
@@ -40,21 +78,8 @@ export class UserManager implements UserDataUsecases {
     value: string,
     origin: User.Origin = 'username'
   ): Promise<UserModel.Model> {
-    let functionToGetEntity
-
-    switch (origin) {
-      case 'username':
-        functionToGetEntity = this.userRepository.findByUsername
-        break
-      case 'email':
-        functionToGetEntity = this.userRepository.findByEmail
-        break
-      case 'id':
-        functionToGetEntity = this.userRepository.findByUserId
-        break
-    }
-
-    const user = await functionToGetEntity(value)
+    const fn = await this.functionToGetEntity(origin)
+    const user = await fn(value)
 
     if (!user) {
       throw new NotFound('User not found')

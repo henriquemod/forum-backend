@@ -2,9 +2,14 @@ import type { UserModel } from '@/domain/models'
 
 export namespace User {
   export type Origin = 'username' | 'email' | 'id'
+  export type PublicUserData = Pick<UserModel.Model, 'username' | 'createdAt'>
 
   export interface Get {
     getUser: (value: string, origin?: Origin) => Promise<UserModel.Model>
+  }
+
+  export interface GetPublic {
+    getPublicUser: (value: string, origin?: Origin) => Promise<PublicUserData>
   }
 
   export type RegisterParams = Omit<

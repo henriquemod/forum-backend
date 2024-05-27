@@ -69,6 +69,9 @@ export class UserMongoRepository implements UserDBUsecases {
   }
 
   async findByUserId(id: string): Promise<UserModel.Model | null> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null
+    }
     const user = await UserSchema.findOne({
       _id: id
     })
