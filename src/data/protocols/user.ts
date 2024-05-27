@@ -1,21 +1,59 @@
 import { BadRequest, NotFound } from '@/application/errors'
 import type { User } from '@/data/usecases'
-import type { UserModel } from '@/domain/models'
+import { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
 
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
   DBUser.Add &
   DBUser.FindUserByUserId &
-  DBUser.UpdateUser
+  DBUser.UpdateUser &
+  DBUser.Delete
 
 type UserDataUsecases = User.Get &
   User.Register &
   User.ActivateUser &
-  User.GetPublic
+  User.GetPublic &
+  User.DeleteUser
 
 export class UserManager implements UserDataUsecases {
   constructor(private readonly userRepository: UserDBUsecases) {}
+
+  async delete(authenticatedUserId: string, userId: string): Promise<void> {
+    const requestUser =
+      await this.userRepository.findByUserId(authenticatedUserId)
+    const user = await this.userRepository.findByUserId(userId)
+
+    const areSameUser = requestUser?.username === user?.username
+    const isRequestUserAdmin = requestUser?.level === UserModel.Level.ADMIN
+    const isRequestUserMaster = requestUser?.level === UserModel.Level.MASTER
+    const isUserAdmin = user?.level === UserModel.Level.ADMIN
+
+    if (isRequestUserMaster && areSameUser) {
+      throw new BadRequest('You cannot delete yourself')
+    }
+
+    if (isRequestUserMaster) {
+      await this.userRepository.delete(userId)
+      return
+    }
+
+    if (isRequestUserAdmin && (isUserAdmin || !areSameUser)) {
+      throw new BadRequest('You cannot delete an admin user')
+    }
+
+    if (isRequestUserAdmin && !areSameUser) {
+      await this.userRepository.delete(userId)
+      return
+    }
+
+    if (authenticatedUserId === userId) {
+      await this.userRepository.delete(userId)
+      return
+    }
+
+    throw new BadRequest('You are not authorized to delete this user')
+  }
 
   async functionToGetEntity(origin: User.Origin) {
     let functionToGetEntity

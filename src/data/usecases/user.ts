@@ -25,4 +25,8 @@ export namespace User {
   export interface ActivateUser {
     activate: (userId: string) => Promise<void>
   }
+
+  export interface DeleteUser {
+    delete: (authenticatedUserId: string, userId: string) => Promise<void>
+  }
 }

@@ -1,2 +1,3 @@
-export * from './find-authenticated'
+export * from './delete'
 export * from './find'
+export * from './find-authenticated'

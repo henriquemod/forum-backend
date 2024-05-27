@@ -10,7 +10,8 @@ type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
   DBUser.FindUserByUserId &
   DBUser.Add &
-  DBUser.UpdateUser
+  DBUser.UpdateUser &
+  DBUser.Delete
 
 type EncryptionDataUsecases = Hash.Generate
 
@@ -19,6 +20,10 @@ export class UserMongoRepository implements UserDBUsecases {
     private readonly hash: EncryptionDataUsecases,
     private readonly session?: ClientSession
   ) {}
+
+  async delete(id: string): Promise<void> {
+    await UserSchema.deleteOne({ _id: id }, { session: this.session })
+  }
 
   async update({ userId, userData }: DBUser.UpdateUserParams): Promise<void> {
     await UserSchema.updateOne(
