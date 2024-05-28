@@ -1,7 +1,9 @@
-export interface PromptLevel {
-  level: number
-}
+export namespace Prompt {
+  export interface Level {
+    level: number
+  }
 
-export interface Prompt {
-  prompt: (text: string) => Promise<PromptLevel>
+  export interface JSONFromPrompt {
+    JSONFromPrompt: <T = Record<string, unknown>>(text: string) => Promise<T>
+  }
 }
