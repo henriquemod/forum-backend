@@ -28,7 +28,7 @@
     "@types/ramda": "0.30.0",
     "@types/supertest": "6.0.2",
     "@types/uuid": "9.0.8",
-    "dotenv": "16.4.5",
+    "dotenv": "^16.4.5",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard-with-typescript": "43.0.1",
@@ -55,6 +55,7 @@
     "mongodb": "6.5.0",
     "mongoose": "8.3.0",
     "node-mailjet": "6.0.5",
+    "openai": "^4.47.1",
     "ramda": "0.30.0",
     "uuid": "9.0.1"
   }
