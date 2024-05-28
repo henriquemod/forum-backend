@@ -1,9 +1,9 @@
-import { RegisterController } from '@/application/controllers/auth'
+import { CreateUserController } from '@/application/controllers/user'
 import type { User } from '@/data/usecases/'
 import { ActivationStub, MailServiceStub, UserStub } from '../../helpers'
 
 interface SutTypes {
-  sut: RegisterController
+  sut: CreateUserController
   userManager: User.Register
 }
 
@@ -13,12 +13,12 @@ const makeSut = (): SutTypes => {
   const activationStub = new ActivationStub()
 
   return {
-    sut: new RegisterController(userManager, activationStub, mailService),
+    sut: new CreateUserController(userManager, activationStub, mailService),
     userManager
   }
 }
 
-describe('Register Controller', () => {
+describe('Create User Controller', () => {
   it('should return statusCode 200 on success', async () => {
     const { sut } = makeSut()
 

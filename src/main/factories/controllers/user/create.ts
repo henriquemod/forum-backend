@@ -1,4 +1,4 @@
-import { RegisterController } from '@/application/controllers/auth'
+import { CreateUserController } from '@/application/controllers/user'
 import { ActivationManager, UserManager } from '@/data/protocols'
 import {
   ActivationMongoRepository,
@@ -9,9 +9,9 @@ import { MailjetMailService } from '@/infra/mail'
 import type { ClientSession } from 'mongoose'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
-export const makeRegisterController = (
+export const makeCreateUserController = (
   session: ClientSession
-): RegisterController => {
+): CreateUserController => {
   const bCryptHashInfra = new BCryptHash()
   const mongoSession = mongoSessionFactory(session)
   const userMongoRepository = new UserMongoRepository(bCryptHashInfra, session)
@@ -21,7 +21,7 @@ export const makeRegisterController = (
     new ActivationMongoRepository(session)
   )
 
-  return new RegisterController(
+  return new CreateUserController(
     userManager,
     activationManager,
     mailService,

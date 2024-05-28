@@ -8,7 +8,7 @@ type UserManager = User.Register
 type MailService = Mail.SendActivationMail
 type ActivationManager = Activation.CreateActivationCode
 
-export class RegisterController extends Controller {
+export class CreateUserController extends Controller {
   constructor(
     private readonly userManager: UserManager,
     private readonly activationManager: ActivationManager,
