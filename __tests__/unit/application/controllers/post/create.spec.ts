@@ -1,8 +1,8 @@
 import { CreatePostController } from '@/application/controllers/post'
 import { ValidationComposite } from '@/application/validation'
-import type { Post, AI } from '@/data/usecases/'
-import { AiStub, PostStub } from '../../helpers'
+import type { AI, Post } from '@/data/usecases/'
 import { omit } from 'ramda'
+import { AiStub, PostStub } from '../../helpers'
 
 jest.mock('@/application/validation/composite')
 
@@ -103,6 +103,20 @@ describe('Create Post Controller', () => {
     expect(httpResponse).toEqual({
       statusCode: 400,
       error: error.message
+    })
+  })
+
+  it('should return 400 if content fails on AI validation', async () => {
+    const { sut, aiManager } = makeSut()
+
+    jest.spyOn(aiManager, 'validateContent').mockResolvedValueOnce(false)
+
+    const httpResponse = await sut.handle(MOCK_BODY)
+
+    expect(httpResponse).toEqual({
+      statusCode: 400,
+      error:
+        'Your post contains inappropriate content. Please review it and try again.'
     })
   })
 })
