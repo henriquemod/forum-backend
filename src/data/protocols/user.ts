@@ -24,7 +24,7 @@ export class UserManager implements UserDataUsecases {
       await this.userRepository.findByUserId(authenticatedUserId)
     const user = await this.userRepository.findByUserId(userId)
 
-    const areSameUser = requestUser?.username === user?.username
+    const areSameUser = requestUser?.id === user?.id
     const isRequestUserAdmin = requestUser?.level === UserModel.Level.ADMIN
     const isRequestUserMaster = requestUser?.level === UserModel.Level.MASTER
     const isUserAdmin = user?.level === UserModel.Level.ADMIN
@@ -38,13 +38,8 @@ export class UserManager implements UserDataUsecases {
       return
     }
 
-    if (isRequestUserAdmin && (isUserAdmin || !areSameUser)) {
+    if (isRequestUserAdmin && isUserAdmin && !areSameUser) {
       throw new BadRequest('You cannot delete an admin user')
-    }
-
-    if (isRequestUserAdmin && !areSameUser) {
-      await this.userRepository.delete(userId)
-      return
     }
 
     if (authenticatedUserId === userId) {

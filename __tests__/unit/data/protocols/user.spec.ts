@@ -1,5 +1,19 @@
 import { UserManager } from '@/data/protocols'
 import { type DBUserStub, MOCK_USER, UserRepositoryStub } from '../helpers'
+import { UserModel } from '@/domain/models'
+import { BadRequest } from '@/application/errors'
+
+const MOCK_REGULAR_USER = MOCK_USER
+const MOCK_ADMIN_USER = {
+  ...MOCK_USER,
+  id: 'admin_user_id',
+  level: UserModel.Level.ADMIN
+}
+const MOCK_MASTER_USER = {
+  ...MOCK_USER,
+  id: 'master_user_id',
+  level: UserModel.Level.MASTER
+}
 
 interface SutTypes {
   sut: UserManager
@@ -17,6 +31,115 @@ const makeSut = (): SutTypes => {
 }
 
 describe('UserManager', () => {
+  describe('delete', () => {
+    it('should not allow master user to delete himself', () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_MASTER_USER)
+        .mockResolvedValueOnce(MOCK_MASTER_USER)
+
+      const promise = sut.delete('master_user_id', 'master_user_id')
+
+      expect(promise).rejects.toThrow('You cannot delete yourself')
+      expect(promise).rejects.toBeInstanceOf(BadRequest)
+    })
+
+    it('should allow master user to delete admin users', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      const deleteSpy = jest.spyOn(userRepositoryStub, 'delete')
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_MASTER_USER)
+        .mockResolvedValueOnce(MOCK_ADMIN_USER)
+
+      await sut.delete('master_user_id', 'admin_user_id')
+
+      expect(deleteSpy).toHaveBeenCalledWith('admin_user_id')
+    })
+
+    it('should allow master user to delete regular users', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      const deleteSpy = jest.spyOn(userRepositoryStub, 'delete')
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_MASTER_USER)
+        .mockResolvedValueOnce(MOCK_REGULAR_USER)
+
+      await sut.delete('master_user_id', 'regular_user_id')
+
+      expect(deleteSpy).toHaveBeenCalledWith('regular_user_id')
+    })
+
+    it('should not allow admin user to delete another admin', () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_ADMIN_USER)
+        .mockResolvedValueOnce({ ...MOCK_ADMIN_USER, id: 'another_admin_id' })
+
+      const promise = sut.delete('admin_user_id', 'another_admin_id')
+
+      expect(promise).rejects.toThrow('You cannot delete an admin user')
+      expect(promise).rejects.toBeInstanceOf(BadRequest)
+    })
+
+    it('should allow admin user to delete himself', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      const deleteSpy = jest.spyOn(userRepositoryStub, 'delete')
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_ADMIN_USER)
+        .mockResolvedValueOnce(MOCK_ADMIN_USER)
+
+      await sut.delete('admin_user_id', 'admin_user_id')
+
+      expect(deleteSpy).toHaveBeenCalledWith('admin_user_id')
+    })
+
+    it('should allow regular user to delete himself', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      const deleteSpy = jest.spyOn(userRepositoryStub, 'delete')
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_REGULAR_USER)
+        .mockResolvedValueOnce(MOCK_REGULAR_USER)
+
+      await sut.delete('regular_user_id', 'regular_user_id')
+
+      expect(deleteSpy).toHaveBeenCalledWith('regular_user_id')
+    })
+
+    it('should not allow regular user to delete another user', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_REGULAR_USER)
+        .mockResolvedValueOnce({
+          ...MOCK_REGULAR_USER,
+          id: 'another_regular_id'
+        })
+
+      const promise = sut.delete('regular_user_id', 'another_regular_id')
+
+      expect(promise).rejects.toThrow(
+        'You are not authorized to delete this user'
+      )
+      expect(promise).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
   describe('registerUser', () => {
     it('should return user on success', async () => {
       const { sut, userRepositoryStub } = makeSut()
