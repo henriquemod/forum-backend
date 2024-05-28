@@ -13,8 +13,15 @@ export const MOCK_USER: UserModel.Model = {
 }
 
 export class UserStub
-  implements User.Get, User.Register, User.ActivateUser, User.GetPublic
+  implements
+    User.Get,
+    User.Register,
+    User.ActivateUser,
+    User.GetPublic,
+    User.DeleteUser
 {
+  async delete(authenticatedUserId: string, userId: string): Promise<void> {}
+
   async activate(userId: string): Promise<void> {}
 
   async getUser(

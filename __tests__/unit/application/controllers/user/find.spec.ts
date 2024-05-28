@@ -16,7 +16,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('Find Authenticated User Controller', () => {
+describe('Find User Controller', () => {
   it('should return statusCode 200 on success', async () => {
     const { sut } = makeSut()
     const res = await sut.handle({ userId: MOCK_USER.id })
