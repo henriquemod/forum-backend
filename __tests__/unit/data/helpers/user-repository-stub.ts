@@ -5,7 +5,10 @@ import type { DBUser } from '@/domain/usecases/db'
 type FindUser = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
   DBUser.FindUserByUserId
-export type DBUserStub = FindUser & DBUser.Add & DBUser.UpdateUser
+export type DBUserStub = FindUser &
+  DBUser.Add &
+  DBUser.UpdateUser &
+  DBUser.Delete
 
 export const MOCK_USER = {
   id: 'any_id',
@@ -19,6 +22,8 @@ export const MOCK_USER = {
 }
 
 export class UserRepositoryStub implements DBUserStub {
+  async delete(id: string): Promise<void> {}
+
   async update(params: DBUser.UpdateUserParams): Promise<void> {}
 
   async findByEmail(email: string): Promise<UserModel.Model | null> {

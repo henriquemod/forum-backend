@@ -44,6 +44,31 @@ describe('UserMongoRepository', () => {
     mongoServer.stop()
   })
 
+  describe('delete', () => {
+    it('should call delete with correct values', async () => {
+      const { sut } = makeSut()
+
+      const spy = jest.spyOn(UserSchema, 'deleteOne')
+
+      await sut.delete(MOCK_USER_ID)
+
+      expect(spy).toHaveBeenCalledWith(
+        { _id: MOCK_USER_ID },
+        { session: undefined }
+      )
+    })
+
+    it('should throw if deleteOne throws', () => {
+      const { sut } = makeSut()
+
+      jest.spyOn(UserSchema, 'deleteOne').mockImplementationOnce(() => {
+        throw new Error('test error')
+      })
+
+      expect(sut.delete(MOCK_USER_ID)).rejects.toThrow()
+    })
+  })
+
   describe('add', () => {
     it('should add a new user and return the user id', async () => {
       const { sut } = makeSut()
@@ -196,6 +221,13 @@ describe('UserMongoRepository', () => {
       const result = await sut.findByUserId(
         new ObjectId('507f1f77bcf86cd799439011').toString()
       )
+
+      expect(result).toBeNull()
+    })
+
+    it('should return null if invalid id is provided', async () => {
+      const { sut } = makeSut()
+      const result = await sut.findByUserId('invalid')
 
       expect(result).toBeNull()
     })

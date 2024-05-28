@@ -12,6 +12,10 @@ export namespace DBUser {
     add: (user: User.RegisterParams) => Promise<UserModel.Model>
   }
 
+  export interface Delete {
+    delete: (id: string) => Promise<void>
+  }
+
   export interface FindUserByEmail {
     findByEmail: (email: string) => Promise<UserModel.Model | null>
   }

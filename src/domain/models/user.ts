@@ -2,6 +2,7 @@ import type { WithDates } from '.'
 
 export namespace UserModel {
   export enum Level {
+    MASTER = 'master',
     ADMIN = 'admin',
     USER = 'user'
   }

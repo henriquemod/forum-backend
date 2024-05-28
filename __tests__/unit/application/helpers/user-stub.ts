@@ -12,7 +12,16 @@ export const MOCK_USER: UserModel.Model = {
   updatedAt: new Date()
 }
 
-export class UserStub implements User.Get, User.Register, User.ActivateUser {
+export class UserStub
+  implements
+    User.Get,
+    User.Register,
+    User.ActivateUser,
+    User.GetPublic,
+    User.DeleteUser
+{
+  async delete(authenticatedUserId: string, userId: string): Promise<void> {}
+
   async activate(userId: string): Promise<void> {}
 
   async getUser(
@@ -20,6 +29,16 @@ export class UserStub implements User.Get, User.Register, User.ActivateUser {
     origin?: User.Origin | undefined
   ): Promise<UserModel.Model> {
     return await Promise.resolve(MOCK_USER)
+  }
+
+  async getPublicUser(
+    value: string,
+    origin?: User.Origin | undefined
+  ): Promise<User.PublicUserData> {
+    return await Promise.resolve({
+      username: MOCK_USER.username,
+      createdAt: MOCK_USER.createdAt
+    })
   }
 
   async registerUser(user: User.RegisterParams): Promise<UserModel.Model> {
