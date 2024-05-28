@@ -26,7 +26,8 @@ const jestConfig: JestConfigWithTsJest = {
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
   roots: ['<rootDir>/src', '<rootDir>/__tests__'],
-  clearMocks: true
+  clearMocks: true,
+  setupFiles: ['<rootDir>/__tests__/unit/setup-envs.ts']
 }
 
 export default jestConfig

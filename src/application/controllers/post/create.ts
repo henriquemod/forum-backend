@@ -1,14 +1,17 @@
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
-import type { Post } from '@/data/usecases'
+import type { AI, Post } from '@/data/usecases'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
+import { BadRequest } from '@/application/errors'
 
 type PostManager = Post.CreatePost
+type AIManager = AI.ValidateContent
 
 export class CreatePostController extends Controller {
   constructor(
     private readonly postManager: PostManager,
+    private readonly AIManager: AIManager,
     protected readonly session?: Session
   ) {
     super(session)
@@ -19,6 +22,14 @@ export class CreatePostController extends Controller {
     title,
     content
   }: Post.CreateParams): Promise<HttpResponse<Post.CreateResult>> {
+    const isValidContent = await this.AIManager.validateContent(title, content)
+
+    if (!isValidContent) {
+      throw new BadRequest(
+        'Your post contains inappropriate content. Please review it and try again.'
+      )
+    }
+
     const newPost = await this.postManager.createPost({
       content,
       title,

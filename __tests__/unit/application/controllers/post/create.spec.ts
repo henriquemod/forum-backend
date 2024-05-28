@@ -1,7 +1,7 @@
 import { CreatePostController } from '@/application/controllers/post'
 import { ValidationComposite } from '@/application/validation'
-import type { Post } from '@/data/usecases/'
-import { PostStub } from '../../helpers'
+import type { Post, AI } from '@/data/usecases/'
+import { AiStub, PostStub } from '../../helpers'
 import { omit } from 'ramda'
 
 jest.mock('@/application/validation/composite')
@@ -9,14 +9,17 @@ jest.mock('@/application/validation/composite')
 interface SutTypes {
   sut: CreatePostController
   postManager: Post.CreatePost
+  aiManager: AI.ValidateContent
 }
 
 const makeSut = (): SutTypes => {
   const postManager = new PostStub()
+  const aiManager = new AiStub()
 
   return {
-    sut: new CreatePostController(postManager),
-    postManager
+    sut: new CreatePostController(postManager, aiManager),
+    postManager,
+    aiManager
   }
 }
 

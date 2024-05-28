@@ -1,12 +1,33 @@
+if (process.env.NODE_ENV !== 'production') {
+  import('dotenv')
+    .then((dotenv) => {
+      dotenv.config()
+    })
+    .catch((err) => {
+      console.error('Failed to load dotenv:', err)
+    })
+}
+
+const loadEnv = (key: string): string => {
+  const env = process.env[key]
+
+  if (!env) {
+    throw new Error(`Missing environment variable: ${key}`)
+  }
+
+  return env
+}
+
 export const env = {
-  appPort: process.env.PORT ?? 3001,
-  jwtSecret: process.env.JWT_SECRET ?? 'your_access_token_secret',
-  refreshTokenSecret:
-    process.env.REFRESH_TOKEN_SECRET ?? 'your_refresh_token_secret',
-  mongoUrl: `mongodb://127.0.0.1:27017/${process.env.MONGO_DB_NAME ?? 'petqa'}?retryWrites=true&loadBalanced=false&replicaSet=rs0&readPreference=primary&connectTimeoutMS=10000`,
-  bcryptSalt: process.env.BCRYPT_SALT ?? 12,
+  appPort: loadEnv('PORT'),
+  jwtSecret: loadEnv('JWT_SECRET'),
+  refreshTokenSecret: loadEnv('REFRESH_TOKEN_SECRET'),
+  mongoUrl: `mongodb://127.0.0.1:27017/${loadEnv('MONGO_DB_NAME')}?retryWrites=true&loadBalanced=false&replicaSet=rs0&readPreference=primary&connectTimeoutMS=10000`,
+  bcryptSalt: Number(loadEnv('BCRYPT_SALT')),
   features: {
-    userActivationByEmail:
-      (process.env.USER_ACTIVATION_BY_EMAIL ?? 'false') === 'true'
+    userActivationByEmail: loadEnv('USER_ACTIVATION_BY_EMAIL') === 'true',
+    openAiApiKey: process.env.OPEN_AI_API_KEY,
+    aiAcceptanceLevel: Number(process.env.AI_ACCEPTANCE_LEVEL || 10),
+    allowAiReplies: process.env.ALLOW_AI_REPLIES === 'true'
   }
 }
