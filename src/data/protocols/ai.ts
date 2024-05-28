@@ -5,7 +5,7 @@ import { env } from '@/main/config/env'
 type AIData = AI.ValidateContent
 
 export class AIManager implements AIData {
-  private readonly promptLevel: number | null = env.features.aiAcceptanceLevel
+  private readonly promptLevel: number = env.features.aiAcceptanceLevel
   private readonly promptTemplate =
     'Assume the role of an API system and your job is to analise an text title ' +
     'and content and determine its level (between 1-10) of acceptance, the content ' +
@@ -24,15 +24,6 @@ export class AIManager implements AIData {
       .replace('@content', content)
 
     const response = await this.prompt.prompt(text)
-
-    console.log({
-      responseLevel: response.level,
-      promptLevel: this.promptLevel
-    })
-
-    if (!this.promptLevel) {
-      return true
-    }
 
     return response.level >= this.promptLevel
   }

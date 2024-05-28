@@ -27,7 +27,7 @@ export const env = {
   features: {
     userActivationByEmail: loadEnv('USER_ACTIVATION_BY_EMAIL') === 'true',
     openAiApiKey: process.env.OPEN_AI_API_KEY,
-    aiAcceptanceLevel: Number(process.env.AI_ACCEPTANCE_LEVEL || 10),
+    aiAcceptanceLevel: Number(process.env.AI_ACCEPTANCE_LEVEL || 0),
     allowAiReplies: process.env.ALLOW_AI_REPLIES === 'true'
   }
 }
