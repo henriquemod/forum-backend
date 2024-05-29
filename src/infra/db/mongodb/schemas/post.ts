@@ -12,10 +12,17 @@ export const postSchema = new mongoose.Schema<PostModel.Model>({
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  replies: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Reply'
+    }
+  ],
+  createdAt: { type: Date, default: Date.now, required: true },
+  updatedAt: { type: Date, default: Date.now, required: true }
 })
 
 export const PostSchema = mongoose.model<PostModel.Model>('Post', postSchema)

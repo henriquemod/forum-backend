@@ -1,4 +1,4 @@
-import type { WithDates, UserModel } from '.'
+import type { WithDates, UserModel, ReplyModel } from '.'
 
 export namespace PostModel {
   export type Model = WithDates<{
@@ -6,5 +6,6 @@ export namespace PostModel {
     user: UserModel.Model
     title: string
     content: string
+    replies?: ReplyModel.Model[]
   }>
 }

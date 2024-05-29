@@ -3,14 +3,18 @@ import type { AuthenticatedRequest } from '@/application/protocols/http/authenti
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Reply } from '@/data/usecases'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
+import type { Session } from '@/application/protocols/session'
 
 type PerformParams = AuthenticatedRequest<
   Omit<Reply.ReplyPostParams, 'authorId'>
 >
 
 export class CreateReplyController extends Controller {
-  constructor(private readonly replyManager: Reply.ReplyPost) {
-    super()
+  constructor(
+    private readonly replyManager: Reply.ReplyPost,
+    protected readonly session?: Session
+  ) {
+    super(session)
   }
 
   async perform({

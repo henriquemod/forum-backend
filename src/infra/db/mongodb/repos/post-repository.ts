@@ -20,6 +20,7 @@ export class PostMongoRepository implements PostDBUsecases {
   }: DBPost.AddParams): Promise<DBPost.AddResult> {
     const post = new PostSchema(
       {
+        _id: new mongoose.Types.ObjectId(),
         user: new mongoose.Types.ObjectId(userId),
         content,
         title
@@ -55,6 +56,6 @@ export class PostMongoRepository implements PostDBUsecases {
   }
 
   async findAll(): Promise<PostModel.Model[]> {
-    return await PostSchema.find().populate('user')
+    return await PostSchema.find().populate('user').populate('replies').exec()
   }
 }

@@ -1,8 +1,9 @@
 import type { Post } from '@/data/usecases/'
 import { pick } from 'ramda'
 import { MOCK_USER } from './user-stub'
+import type { PostModel } from '@/domain/models'
 
-export const MOCK_POST = {
+export const MOCK_POST: PostModel.Model = {
   id: 'any_id',
   user: MOCK_USER,
   title: 'any_title',
