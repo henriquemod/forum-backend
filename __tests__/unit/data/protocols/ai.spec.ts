@@ -36,7 +36,10 @@ describe('AIManager', () => {
       sut.validateContent('any_title', 'any_content')
 
       expect(promptSpy).toHaveBeenCalledWith(
-        expect.stringContaining("title: 'any_title', content: 'any_content'")
+        expect.stringContaining("title: 'any_title'")
+      )
+      expect(promptSpy).toHaveBeenCalledWith(
+        expect.stringContaining("content: 'any_content'")
       )
     })
 
