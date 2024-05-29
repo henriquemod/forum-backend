@@ -11,14 +11,12 @@ interface JsonResponse {
 export class AIManager implements AIData {
   private readonly promptLevel: number = env.features.aiAcceptanceLevel
   private readonly promptTemplate =
-    'Assume the role of an API system and your job is to analise an text title ' +
-    'and content and determine its level (between 1-10) of acceptance, the content ' +
-    'should be level 1 for unacceptable, something that is no accepted by society ' +
-    'now days, which mean any content that could harm or offend people, and 10 ' +
-    'something completely acceptable and in accord of what society judge ok, ' +
-    "your reply should be an json file that has only one param called 'level'. " +
-    "\nThe content you will analise is: \ntitle: '@title', " +
-    "content: '@content' Give me you result on that"
+    'Imagine you are an API system tasked with evaluating the acceptability level (ranging from 1 to 10) of a given text title and content. ' +
+    'A level 1 indicates content that is deemed unacceptable by contemporary societal standards, encompassing any material that may cause harm or offense. ' +
+    'Conversely, a level 10 signifies content that is entirely acceptable and aligns with societal norms. ' +
+    "Your response should be in the form of a JSON file containing a single parameter named 'level.' " +
+    '\n\nThe specific content to be assessed is as follows: \n' +
+    "title: '@title', \ncontent: '@content' \nKindly provide your assessment based on the aforementioned criteria."
 
   constructor(private readonly prompt: Prompt.JSONFromPrompt) {}
 
