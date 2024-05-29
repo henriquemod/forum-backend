@@ -1,7 +1,11 @@
 import { PostManager } from '@/data/protocols'
 import { omit } from 'ramda'
-import { MOCK_POST } from '../../application/helpers'
-import { type DBPostStub, MOCK_USER, PostRepositoryStub } from '../helpers'
+import {
+  type DBPostStub,
+  MOCK_POST,
+  MOCK_USER,
+  PostRepositoryStub
+} from '../helpers'
 
 interface SutTypes {
   sut: PostManager
