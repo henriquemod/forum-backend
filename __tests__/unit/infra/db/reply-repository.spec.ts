@@ -54,7 +54,8 @@ describe('ReplyMongoRepository', () => {
     const replyParams = {
       user: USER,
       content: 'any_content',
-      post: POST
+      post: POST,
+      parentReply: null
     }
 
     it('should create a new reply and return the reply model', async () => {

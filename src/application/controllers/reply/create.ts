@@ -20,11 +20,13 @@ export class CreateReplyController extends Controller {
   async perform({
     postId,
     userId: authorId,
-    content
+    content,
+    replyContentId
   }: PerformParams): Promise<HttpResponse<void>> {
     await this.replyManager.reply({
       postId,
       authorId,
+      replyContentId,
       content
     })
 
