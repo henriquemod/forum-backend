@@ -90,7 +90,7 @@ export class UserManager implements UserDataUsecases {
     })
   }
 
-  async registerUser(user: User.RegisterParams): Promise<UserModel.Model> {
+  async registerUser(user: User.RegisterParams): Promise<UserModel.SafeModel> {
     const hasUsername = !!(await this.userRepository.findByUsername(
       user.username
     ))

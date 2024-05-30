@@ -5,6 +5,7 @@ import type { DBUser } from '@/domain/usecases/db'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
 import type { ClientSession } from 'mongoose'
 import mongoose from 'mongoose'
+import { pick } from 'ramda'
 
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
@@ -41,24 +42,43 @@ export class UserMongoRepository implements UserDBUsecases {
     username,
     email,
     password
-  }: User.RegisterParams): Promise<UserModel.Model> {
+  }: User.RegisterParams): Promise<UserModel.SafeModel> {
     const hashedPassword = await this.hash.generate(password)
 
-    const accessToken = new UserSchema(
+    const user = new UserSchema(
       {
         _id: new mongoose.Types.ObjectId(),
         username,
         email,
         password: hashedPassword,
         level: UserModel.Level.USER,
-        verifiedEmail: false
+        verifiedEmail: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         session: this.session
       }
     )
 
-    return await accessToken.save({ session: this.session })
+    await user.save({ session: this.session })
+
+    const userDTO = {
+      ...pick(
+        [
+          'email',
+          'createdAt',
+          'updatedAt',
+          'level',
+          'username',
+          'verifiedEmail'
+        ],
+        user
+      ),
+      id: user._id.toString()
+    }
+
+    return userDTO
   }
 
   async findByEmail(email: string): Promise<UserModel.Model | null> {

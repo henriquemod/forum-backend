@@ -9,7 +9,7 @@ export namespace DBUser {
     >
   }
   export interface Add {
-    add: (user: User.RegisterParams) => Promise<UserModel.Model>
+    add: (user: User.RegisterParams) => Promise<UserModel.SafeModel>
   }
 
   export interface Delete {

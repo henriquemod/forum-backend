@@ -19,7 +19,7 @@ export namespace User {
     Partial<Pick<UserModel.Model, 'level'>>
 
   export interface Register {
-    registerUser: (user: RegisterParams) => Promise<UserModel.Model>
+    registerUser: (user: RegisterParams) => Promise<UserModel.SafeModel>
   }
 
   export interface ActivateUser {

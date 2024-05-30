@@ -1,11 +1,13 @@
-import type { ActivationModel, UserModel } from '@/domain/models'
+import type { ActivationModel } from '@/domain/models'
 
 export namespace DBActivation {
   export interface CreateParams {
-    user: UserModel.Model
+    userId: string
   }
+  export type CreateReturn = Omit<ActivationModel, 'user'> & { user: string }
+
   export interface Create {
-    create: (params: CreateParams) => Promise<ActivationModel>
+    create: (params: CreateParams) => Promise<CreateReturn>
   }
   export interface FindByCode {
     findByCode: (code: string) => Promise<ActivationModel | null>

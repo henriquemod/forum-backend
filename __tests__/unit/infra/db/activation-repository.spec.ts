@@ -46,11 +46,10 @@ describe('ActivationMongoRepository', () => {
     it('should create a new activation', async () => {
       const { sut } = makeSut()
 
-      const activation = await sut.create({ user })
+      const activation = await sut.create({ userId: user.id })
 
       expect(activation.code).toBeTruthy()
-      expect(activation?.user.username).toBe(user.username)
-      expect(activation?.user.email).toBe(user.email)
+      expect(activation.user).toBe(user.id)
     })
   })
 
@@ -59,7 +58,7 @@ describe('ActivationMongoRepository', () => {
       const { sut } = makeSut()
 
       const data = await sut.create({
-        user
+        userId: user.id
       })
 
       const result = await sut.findByCode(data.code)
