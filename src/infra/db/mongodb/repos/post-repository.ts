@@ -3,6 +3,7 @@ import type { DBPost } from '@/domain/usecases/db'
 import { PostSchema } from '@/infra/db/mongodb/schemas'
 import type { ClientSession } from 'mongoose'
 import mongoose from 'mongoose'
+import { pick } from 'ramda'
 
 type PostDBUsecases = DBPost.Create &
   DBPost.FindAll &
@@ -52,10 +53,76 @@ export class PostMongoRepository implements PostDBUsecases {
   }
 
   async findById(id: string): Promise<PostModel.Model | null> {
-    return await PostSchema.findById(id).populate('user')
+    return await PostSchema.findById(id)
+      .populate({
+        path: 'user',
+        select: '_id',
+        transform: (doc) => {
+          return doc._id
+        }
+      })
+      .populate({
+        path: 'replies',
+        select: '_id content user parentReply createdAt updatedAt',
+        transform: (reply) => {
+          return {
+            id: reply._id.toString(),
+            ...pick(
+              ['content', 'user', 'parentReply', 'createdAt', 'updatedAt'],
+              reply
+            )
+          }
+        }
+      })
+      .select('_id title content user replies createdAt updatedAt')
+      .transform((post) => {
+        if (!post) return null
+
+        return {
+          id: post._id.toString(),
+          ...pick(
+            ['title', 'content', 'user', 'replies', 'createdAt', 'updatedAt'],
+            post
+          )
+        }
+      })
+      .exec()
   }
 
   async findAll(): Promise<PostModel.Model[]> {
-    return await PostSchema.find().populate('user').populate('replies').exec()
+    return await PostSchema.find()
+      .populate({
+        path: 'user',
+        select: '_id',
+        transform: (doc) => {
+          return doc._id
+        }
+      })
+      .populate({
+        path: 'replies',
+        select: '_id content user parentReply createdAt updatedAt',
+        transform: (reply) => {
+          return {
+            id: reply._id.toString(),
+            ...pick(
+              ['content', 'user', 'parentReply', 'createdAt', 'updatedAt'],
+              reply
+            )
+          }
+        }
+      })
+      .select('_id title content user replies createdAt updatedAt')
+      .transform((doc) => {
+        return doc.map((post) => {
+          return {
+            id: post._id.toString(),
+            ...pick(
+              ['title', 'content', 'user', 'replies', 'createdAt', 'updatedAt'],
+              post
+            )
+          }
+        })
+      })
+      .exec()
   }
 }

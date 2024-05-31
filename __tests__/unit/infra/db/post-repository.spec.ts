@@ -8,7 +8,6 @@ import { PostSchema } from '@/infra/db/mongodb/schemas'
 import { HashStub } from '../../application/helpers'
 import { MOCK_USER } from '../../data/helpers'
 
-const MOCK_USER_ID = '123456789012345678901234'
 const MOCK_POST_ID = '123456789012345678901234'
 
 interface SutTypes {
@@ -159,7 +158,7 @@ describe('PostMongoRepository', () => {
 
       const findRes = await sut.findById(createRest.id)
 
-      expect(findRes?.user.id).toBe(userId)
+      expect(findRes?.user.toString()).toBe(userId)
     })
 
     it('should throw if findById throws', () => {
@@ -180,13 +179,15 @@ describe('PostMongoRepository', () => {
       const { sut } = makeSut()
 
       await sut.create({
-        userId: MOCK_USER_ID,
+        userId,
         content: 'any_content',
         title: 'any_title'
       })
       const res = await sut.findAll()
 
       expect(res).toHaveLength(1)
+      expect(res[0].id).toBeDefined()
+      expect(res[0].user).toBeDefined()
     })
 
     it('should throw if find throws', () => {
