@@ -17,16 +17,12 @@ type PostData = Post.CreatePost &
 export class PostManager implements PostData {
   constructor(private readonly postRepository: PostRepository) {}
 
-  async createPost(params: Post.CreateParams): Promise<Post.CreateResult> {
-    const post = await this.postRepository.create({
+  async createPost(params: Post.CreateParams): Promise<PostModel.Model> {
+    return await this.postRepository.create({
       content: params.content,
       title: params.title,
       userId: params.userId
     })
-
-    return {
-      id: post.id
-    }
   }
 
   async findPost({ id }: Post.FindParams): Promise<PostModel.Model | null> {

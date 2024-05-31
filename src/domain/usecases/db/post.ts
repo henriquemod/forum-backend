@@ -17,7 +17,7 @@ export namespace DBPost {
   }
 
   export interface Create {
-    create: (params: AddParams) => Promise<AddResult>
+    create: (params: AddParams) => Promise<PostModel.Model>
   }
 
   export interface Delete {

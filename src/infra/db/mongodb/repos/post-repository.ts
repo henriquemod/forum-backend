@@ -14,11 +14,25 @@ type PostDBUsecases = DBPost.Create &
 export class PostMongoRepository implements PostDBUsecases {
   constructor(private readonly session?: ClientSession) {}
 
+  static makeDTO(
+    model: PostModel.Model & { _id: mongoose.Types.ObjectId }
+  ): PostModel.Model {
+    const entity = {
+      ...pick(
+        ['title', 'content', 'user', 'replies', 'createdAt', 'updatedAt'],
+        model
+      ),
+      id: model._id.toString()
+    }
+
+    return entity
+  }
+
   async create({
     userId,
     content,
     title
-  }: DBPost.AddParams): Promise<DBPost.AddResult> {
+  }: DBPost.AddParams): Promise<PostModel.Model> {
     const post = new PostSchema(
       {
         _id: new mongoose.Types.ObjectId(),
@@ -29,11 +43,9 @@ export class PostMongoRepository implements PostDBUsecases {
       { session: this.session }
     )
 
-    const { id } = await post.save({ session: this.session })
+    await post.save({ session: this.session })
 
-    return {
-      id
-    }
+    return PostMongoRepository.makeDTO(post)
   }
 
   async update({ id, updateContent }: DBPost.UpdateParams): Promise<void> {

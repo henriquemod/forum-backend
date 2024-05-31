@@ -29,12 +29,12 @@ const makeSut = (): SutTypes => {
 
 describe('PostManager', () => {
   describe('createPost', () => {
-    it('should return id on success', () => {
+    it('should return id on success', async () => {
       const { sut } = makeSut()
 
-      const res = sut.createPost(MOCK_BODY)
+      const res = await sut.createPost(MOCK_BODY)
 
-      expect(res).resolves.toEqual({ id: 'any_id' })
+      expect(res).toEqual(MOCK_POST)
     })
 
     it('should throw if createPost throws', () => {

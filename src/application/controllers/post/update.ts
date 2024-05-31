@@ -4,7 +4,7 @@ import type { AuthenticatedRequest } from '@/application/protocols/http/authenti
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
 import type { Post, User } from '@/data/usecases'
-import { UserModel } from '@/domain/models'
+import { type PostModel, UserModel } from '@/domain/models'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.UpdatePost & Post.FindPost
@@ -23,7 +23,7 @@ export class UpdatePostController extends Controller {
   async perform({
     userId,
     ...params
-  }: PerformParams): Promise<HttpResponse<Post.CreateResult>> {
+  }: PerformParams): Promise<HttpResponse<PostModel.Model>> {
     const post = await this.postManager.findPost({
       id: params.id
     })
