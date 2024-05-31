@@ -1,9 +1,10 @@
-import type { PostModel } from '@/domain/models'
+import type { PostModel, UserModel } from '@/domain/models'
 import type { DBPost } from '@/domain/usecases/db'
 import { PostSchema } from '@/infra/db/mongodb/schemas'
 import type { ClientSession } from 'mongoose'
 import mongoose from 'mongoose'
 import { pick } from 'ramda'
+import { UserMongoRepository } from './user-repository'
 
 type PostDBUsecases = DBPost.Create &
   DBPost.FindAll &
@@ -18,11 +19,12 @@ export class PostMongoRepository implements PostDBUsecases {
     model: PostModel.Model & { _id: mongoose.Types.ObjectId }
   ): PostModel.Model {
     const entity = {
-      ...pick(
-        ['title', 'content', 'user', 'replies', 'createdAt', 'updatedAt'],
-        model
-      ),
-      id: model._id.toString()
+      ...pick(['title', 'content', 'replies', 'createdAt', 'updatedAt'], model),
+      id: model._id.toString(),
+      user: UserMongoRepository.makeDTO(
+        model.user as UserModel.Model & { _id: mongoose.Types.ObjectId },
+        true
+      )
     }
 
     return entity

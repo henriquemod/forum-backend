@@ -15,4 +15,8 @@ export namespace DBReply {
   export interface FindById {
     findById: (replyId: string) => Promise<ReplyModel.Model | null>
   }
+
+  export interface Delete {
+    delete: (id: string) => Promise<void>
+  }
 }

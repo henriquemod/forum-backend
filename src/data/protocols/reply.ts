@@ -1,14 +1,28 @@
-import { NotFound } from '@/application/errors'
+import { NotFound, Unauthorized } from '@/application/errors'
 import type { Reply } from '@/data/usecases'
 import type { ReplyModel } from '@/domain/models'
 import type { DBPost, DBReply, DBUser } from '@/domain/usecases/db'
 
-export class ReplyManager implements Reply.ReplyPost {
+export class ReplyManager
+  implements Reply.ReplyPost, Reply.Delete, Reply.FindById
+{
   constructor(
-    private readonly replyRepository: DBReply.Create & DBReply.FindById,
+    private readonly replyRepository: DBReply.Create &
+      DBReply.FindById &
+      DBReply.Delete,
     private readonly postRepository: DBPost.FindById,
     private readonly userRepository: DBUser.FindUserByUserId
   ) {}
+
+  async findById(params: Reply.FindByIdParams): Promise<ReplyModel.Model> {
+    const reply = await this.replyRepository.findById(params.replyId)
+
+    if (!reply) {
+      throw new NotFound('Reply not found')
+    }
+
+    return reply
+  }
 
   async reply({
     authorId,
@@ -44,5 +58,19 @@ export class ReplyManager implements Reply.ReplyPost {
       parentReply,
       user
     })
+  }
+
+  async delete({ replyId, userId }: Reply.DeleteParams): Promise<void> {
+    const reply = await this.replyRepository.findById(replyId)
+
+    if (!reply) {
+      throw new NotFound('Reply not found')
+    }
+
+    if (reply.user.id !== userId) {
+      throw new Unauthorized('You are not allowed to delete this reply')
+    }
+
+    await this.replyRepository.delete(replyId)
   }
 }

@@ -41,7 +41,7 @@ export class UserMongoRepository implements UserDBUsecases {
       id: user._id.toString()
     }
 
-    return Object.assign(entity, safe ? {} : { password: user.password })
+    return Object.assign({}, entity, safe ? {} : { password: user.password })
   }
 
   async delete(id: string): Promise<void> {

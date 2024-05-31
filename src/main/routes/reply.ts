@@ -1,7 +1,11 @@
 import { adaptExpressRoute } from '@/main/adapters'
 import type { Router } from 'express'
 import type { ClientSession } from 'mongoose'
-import { makeCreateReplyController } from '../factories/controllers/reply'
+import {
+  makeCreateReplyController,
+  makeDeleteReplyController,
+  makeFindReplyController
+} from '../factories/controllers/reply'
 import { auth } from '../middlewares'
 
 export default (router: Router, session: ClientSession): void => {
@@ -9,5 +13,11 @@ export default (router: Router, session: ClientSession): void => {
     '/reply',
     auth,
     adaptExpressRoute(makeCreateReplyController(session))
+  )
+  router.get('/reply/:replyId', adaptExpressRoute(makeFindReplyController()))
+  router.delete(
+    '/reply',
+    auth,
+    adaptExpressRoute(makeDeleteReplyController(session))
   )
 }
