@@ -66,12 +66,13 @@ export class UserManager implements UserDataUsecases {
     return functionToGetEntity
   }
 
-  async getPublicUser(
-    value: string,
-    origin: User.Origin = 'username'
-  ): Promise<User.PublicUserData> {
+  async getPublicUser({
+    value,
+    origin = 'username',
+    safe = true
+  }: User.GetUserParams): Promise<User.PublicUserData> {
     const fn = await this.functionToGetEntity(origin)
-    const user = await fn(value)
+    const user = await fn(value, safe)
     if (!user) {
       throw new NotFound('User not found')
     }
@@ -105,16 +106,38 @@ export class UserManager implements UserDataUsecases {
     return createdUser
   }
 
-  async getUser(
-    value: string,
-    origin: User.Origin = 'username'
-  ): Promise<UserModel.Model> {
+  private assertUserType<T extends User.GetUserParams>(
+    user: UserModel.Model | UserModel.SafeModel,
+    params: T
+  ): asserts user is T['safe'] extends true
+    ? UserModel.SafeModel
+    : UserModel.Model {
+    if (params.safe) {
+      if ('password' in user) {
+        throw new Error('Expected SafeModel but got Model')
+      }
+    } else {
+      if ('password' in user) {
+        throw new Error('Expected Model but got SafeModel')
+      }
+    }
+  }
+
+  async getUser<T extends User.GetUserParams>({
+    value,
+    origin = 'username',
+    safe = true
+  }: T): Promise<
+    T['safe'] extends true ? UserModel.SafeModel : UserModel.Model
+  > {
     const fn = await this.functionToGetEntity(origin)
-    const user = await fn(value)
+    const user = await fn(value, safe)
 
     if (!user) {
       throw new NotFound('User not found')
     }
+
+    this.assertUserType(user, { value, origin, safe })
 
     return user
   }

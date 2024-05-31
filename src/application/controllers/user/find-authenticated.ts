@@ -14,8 +14,12 @@ export class FindAuthenticatedUserController extends Controller {
 
   async perform({
     userId
-  }: PerformParams): Promise<HttpResponse<UserModel.Model>> {
-    const user = await this.userManager.getUser(userId, 'id')
+  }: PerformParams): Promise<HttpResponse<UserModel.SafeModel>> {
+    const user = await this.userManager.getUser({
+      value: userId,
+      origin: 'id',
+      safe: true
+    })
 
     return ok(user)
   }

@@ -32,7 +32,11 @@ export class UpdatePostController extends Controller {
       throw new NotFound('Post not found')
     }
 
-    const user = await this.userManager.getUser(userId, 'id')
+    const user = await this.userManager.getUser({
+      value: userId,
+      origin: 'id',
+      safe: true
+    })
     const isUserAllowedToUpdatePost = post.user.id === user.id
     const isUserAdmin = user.level === UserModel.Level.ADMIN
 

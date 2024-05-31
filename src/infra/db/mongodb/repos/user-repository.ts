@@ -22,6 +22,25 @@ export class UserMongoRepository implements UserDBUsecases {
     private readonly session?: ClientSession
   ) {}
 
+  static makeDTO(
+    user: UserModel.Model & { _id: mongoose.Types.ObjectId }
+  ): UserModel.SafeModel {
+    return {
+      ...pick(
+        [
+          'email',
+          'createdAt',
+          'updatedAt',
+          'level',
+          'username',
+          'verifiedEmail'
+        ],
+        user
+      ),
+      id: user._id.toString()
+    }
+  }
+
   async delete(id: string): Promise<void> {
     await UserSchema.deleteOne({ _id: id }, { session: this.session })
   }
@@ -63,37 +82,34 @@ export class UserMongoRepository implements UserDBUsecases {
 
     await user.save({ session: this.session })
 
-    const userDTO = {
-      ...pick(
-        [
-          'email',
-          'createdAt',
-          'updatedAt',
-          'level',
-          'username',
-          'verifiedEmail'
-        ],
-        user
-      ),
-      id: user._id.toString()
-    }
-
-    return userDTO
+    return UserMongoRepository.makeDTO(user)
   }
 
-  async findByEmail(email: string): Promise<UserModel.Model | null> {
-    return await UserSchema.findOne({
+  async findByEmail(email: string): Promise<UserModel.SafeModel | null> {
+    const user = await UserSchema.findOne({
       email
     })
+
+    if (!user) {
+      return null
+    }
+
+    return UserMongoRepository.makeDTO(user)
   }
 
-  async findByUsername(username: string): Promise<UserModel.Model | null> {
-    return await UserSchema.findOne({
+  async findByUsername(username: string): Promise<UserModel.SafeModel | null> {
+    const user = await UserSchema.findOne({
       username
     })
+
+    if (!user) {
+      return null
+    }
+
+    return UserMongoRepository.makeDTO(user)
   }
 
-  async findByUserId(id: string): Promise<UserModel.Model | null> {
+  async findByUserId(id: string): Promise<UserModel.SafeModel | null> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return null
     }
@@ -101,6 +117,10 @@ export class UserMongoRepository implements UserDBUsecases {
       _id: id
     })
 
-    return user
+    if (!user) {
+      return null
+    }
+
+    return UserMongoRepository.makeDTO(user)
   }
 }

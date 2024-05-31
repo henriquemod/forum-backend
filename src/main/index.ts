@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { makeApp } from '@/main/config/app'
 import { env } from '@/main/config/env'
 import { databaseInit } from './config/database'

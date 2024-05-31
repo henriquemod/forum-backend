@@ -15,7 +15,10 @@ export class FindUserController extends Controller {
   async perform({
     id
   }: PerformParams): Promise<HttpResponse<User.PublicUserData>> {
-    const user = await this.userManager.getPublicUser(id, 'id')
+    const user = await this.userManager.getPublicUser({
+      value: id,
+      origin: 'id'
+    })
 
     return ok(user)
   }

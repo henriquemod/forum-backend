@@ -1,4 +1,4 @@
-import type { AccessTokenModel, UserModel, TokenModel } from '@/domain/models'
+import type { AccessTokenModel, TokenModel, UserModel } from '@/domain/models'
 
 export namespace Token {
   export type ValidateResult = boolean

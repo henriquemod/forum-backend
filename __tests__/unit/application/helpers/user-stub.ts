@@ -24,17 +24,21 @@ export class UserStub
 
   async activate(userId: string): Promise<void> {}
 
-  async getUser(
-    value: string,
-    origin?: User.Origin | undefined
-  ): Promise<UserModel.Model> {
+  async getUser<T extends User.GetUserParams>({
+    value,
+    origin = 'username',
+    safe
+  }: T): Promise<
+    T['safe'] extends true ? UserModel.SafeModel : UserModel.Model
+  > {
     return await Promise.resolve(MOCK_USER)
   }
 
-  async getPublicUser(
-    value: string,
-    origin?: User.Origin | undefined
-  ): Promise<User.PublicUserData> {
+  async getPublicUser({
+    value,
+    origin = 'username',
+    safe = true
+  }: User.GetUserParams): Promise<User.PublicUserData> {
     return await Promise.resolve({
       username: MOCK_USER.username,
       createdAt: MOCK_USER.createdAt

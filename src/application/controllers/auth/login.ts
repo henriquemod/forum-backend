@@ -26,7 +26,11 @@ export class LoginController extends Controller {
   }: Authentication.LoginParams): Promise<
     HttpResponse<Authentication.LoginResult>
   > {
-    const user = await this.userManager.getUser(username)
+    const user = await this.userManager.getUser({
+      value: username,
+      origin: 'username',
+      safe: false
+    })
 
     const isAllowed = await this.hashManager.compare(password, user.password)
 
