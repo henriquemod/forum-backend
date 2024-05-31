@@ -117,7 +117,7 @@ export class UserManager implements UserDataUsecases {
         throw new Error('Expected SafeModel but got Model')
       }
     } else {
-      if ('password' in user) {
+      if (!('password' in user)) {
         throw new Error('Expected Model but got SafeModel')
       }
     }

@@ -23,9 +23,10 @@ export class UserMongoRepository implements UserDBUsecases {
   ) {}
 
   static makeDTO(
-    user: UserModel.Model & { _id: mongoose.Types.ObjectId }
-  ): UserModel.SafeModel {
-    return {
+    user: UserModel.Model & { _id: mongoose.Types.ObjectId },
+    safe: boolean
+  ): UserModel.SafeModel | UserModel.Model {
+    const entity = {
       ...pick(
         [
           'email',
@@ -39,6 +40,8 @@ export class UserMongoRepository implements UserDBUsecases {
       ),
       id: user._id.toString()
     }
+
+    return Object.assign(entity, safe ? {} : { password: user.password })
   }
 
   async delete(id: string): Promise<void> {
@@ -82,10 +85,13 @@ export class UserMongoRepository implements UserDBUsecases {
 
     await user.save({ session: this.session })
 
-    return UserMongoRepository.makeDTO(user)
+    return UserMongoRepository.makeDTO(user, true)
   }
 
-  async findByEmail(email: string): Promise<UserModel.SafeModel | null> {
+  async findByEmail(
+    email: string,
+    safe = true
+  ): Promise<UserModel.SafeModel | null> {
     const user = await UserSchema.findOne({
       email
     })
@@ -94,10 +100,13 @@ export class UserMongoRepository implements UserDBUsecases {
       return null
     }
 
-    return UserMongoRepository.makeDTO(user)
+    return UserMongoRepository.makeDTO(user, safe)
   }
 
-  async findByUsername(username: string): Promise<UserModel.SafeModel | null> {
+  async findByUsername(
+    username: string,
+    safe = true
+  ): Promise<DBUser.FindResult> {
     const user = await UserSchema.findOne({
       username
     })
@@ -106,10 +115,13 @@ export class UserMongoRepository implements UserDBUsecases {
       return null
     }
 
-    return UserMongoRepository.makeDTO(user)
+    return UserMongoRepository.makeDTO(user, safe)
   }
 
-  async findByUserId(id: string): Promise<UserModel.SafeModel | null> {
+  async findByUserId(
+    id: string,
+    safe = true
+  ): Promise<UserModel.SafeModel | null> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return null
     }
@@ -121,6 +133,6 @@ export class UserMongoRepository implements UserDBUsecases {
       return null
     }
 
-    return UserMongoRepository.makeDTO(user)
+    return UserMongoRepository.makeDTO(user, safe)
   }
 }
