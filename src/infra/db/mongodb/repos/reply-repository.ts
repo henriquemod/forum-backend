@@ -6,7 +6,10 @@ import mongoose from 'mongoose'
 import { PostMongoRepository } from './post-repository'
 import { UserMongoRepository } from './user-repository'
 
-type ReplyDBUsecases = DBReply.Create & DBReply.FindById & DBReply.Delete
+type ReplyDBUsecases = DBReply.Create &
+  DBReply.FindById &
+  DBReply.Delete &
+  DBReply.Update
 
 export class ReplyMongoRepository implements ReplyDBUsecases {
   constructor(private readonly session?: ClientSession) {}
@@ -87,5 +90,13 @@ export class ReplyMongoRepository implements ReplyDBUsecases {
 
   async delete(id: string): Promise<void> {
     await ReplySchema.findByIdAndDelete(id, { session: this.session })
+  }
+
+  async update(id: string, content: string): Promise<void> {
+    await ReplySchema.findByIdAndUpdate(
+      id,
+      { content, updatedAt: new Date() },
+      { session: this.session }
+    )
   }
 }

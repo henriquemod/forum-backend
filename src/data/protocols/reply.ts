@@ -4,12 +4,13 @@ import type { ReplyModel } from '@/domain/models'
 import type { DBPost, DBReply, DBUser } from '@/domain/usecases/db'
 
 export class ReplyManager
-  implements Reply.ReplyPost, Reply.Delete, Reply.FindById
+  implements Reply.ReplyPost, Reply.Delete, Reply.FindById, Reply.Update
 {
   constructor(
     private readonly replyRepository: DBReply.Create &
       DBReply.FindById &
-      DBReply.Delete,
+      DBReply.Delete &
+      DBReply.Update,
     private readonly postRepository: DBPost.FindById,
     private readonly userRepository: DBUser.FindUserByUserId
   ) {}
@@ -72,5 +73,23 @@ export class ReplyManager
     }
 
     await this.replyRepository.delete(replyId)
+  }
+
+  async update({
+    content,
+    replyId,
+    userId
+  }: Reply.UpdateParams): Promise<void> {
+    const reply = await this.replyRepository.findById(replyId)
+
+    if (!reply) {
+      throw new NotFound('Reply not found')
+    }
+
+    if (reply.user.id !== userId) {
+      throw new Unauthorized('You are not allowed to update this reply')
+    }
+
+    await this.replyRepository.update(replyId, content)
   }
 }

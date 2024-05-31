@@ -27,4 +27,14 @@ export namespace Reply {
   export interface FindById {
     findById: (params: FindByIdParams) => Promise<ReplyModel.Model>
   }
+
+  export interface UpdateParams {
+    userId: string
+    replyId: string
+    content: string
+  }
+
+  export interface Update {
+    update: (params: UpdateParams) => Promise<void>
+  }
 }

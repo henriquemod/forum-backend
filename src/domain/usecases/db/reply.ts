@@ -19,4 +19,8 @@ export namespace DBReply {
   export interface Delete {
     delete: (id: string) => Promise<void>
   }
+
+  export interface Update {
+    update: (id: string, content: string) => Promise<void>
+  }
 }
