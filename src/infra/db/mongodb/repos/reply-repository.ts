@@ -63,7 +63,9 @@ export class ReplyMongoRepository implements ReplyDBUsecases {
         _id: new mongoose.Types.ObjectId(),
         user: new mongoose.Types.ObjectId(user.id),
         post: new mongoose.Types.ObjectId(post.id),
-        parentReply,
+        parentReply: parentReply
+          ? new mongoose.Types.ObjectId(parentReply.id)
+          : null,
         content
       },
       { session: this.session }
@@ -87,7 +89,7 @@ export class ReplyMongoRepository implements ReplyDBUsecases {
 
     if (parentReply) {
       await ReplySchema.findByIdAndUpdate(
-        parentReply,
+        new mongoose.Types.ObjectId(parentReply.id),
         { $push: { replies: reply._id } },
         { session: this.session }
       )

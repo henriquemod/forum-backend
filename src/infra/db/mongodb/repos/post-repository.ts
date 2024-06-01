@@ -80,28 +80,6 @@ export class PostMongoRepository implements PostDBUsecases {
           }
         ]
       })
-      // .populate({
-      //   path: 'replies',
-      //   populate: [
-      //     {
-      //       path: 'user'
-      //     },
-      //     {
-      //       path: 'post',
-      //       populate: [
-      //         {
-      //           path: 'user'
-      //         },
-      //         {
-      //           path: 'replies',
-      //           populate: {
-      //             path: 'user'
-      //           }
-      //         }
-      //       ]
-      //     }
-      //   ]
-      // })
       .select('_id title content user replies createdAt updatedAt')
       .exec()
 
