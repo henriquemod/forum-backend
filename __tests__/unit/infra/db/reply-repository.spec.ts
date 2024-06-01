@@ -1,8 +1,13 @@
-import { ReplyMongoRepository } from '@/infra/db/mongodb/repos'
+import {
+  PostMongoRepository,
+  ReplyMongoRepository,
+  UserMongoRepository
+} from '@/infra/db/mongodb/repos'
 import { PostSchema, ReplySchema, UserSchema } from '@/infra/db/mongodb/schemas'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 import { MOCK_POST, MOCK_USER } from '../../data/helpers'
+import type { PostModel, UserModel } from '@/domain/models'
 
 const MOCK_USER_ID = '123456789012345678901234'
 const MOCK_POST_ID = '123456789012345678901234'
@@ -33,46 +38,79 @@ const makeSut = (): SutTypes => {
 
 describe('ReplyMongoRepository', () => {
   let mongoServer: MongoMemoryServer
+  let user: UserModel.SafeModel
+  let post: PostModel.Model
 
   beforeEach(async () => {
     mongoServer = await MongoMemoryServer.create()
     await mongoose.connect(mongoServer.getUri())
 
-    const user = new UserSchema(USER)
-    await user.save()
+    const newUser = new UserSchema(USER)
+    await newUser.save()
+    user = UserMongoRepository.makeDTO(newUser, true)
 
-    const post = new PostSchema(POST)
-    await post.save()
+    const newPost = new PostSchema(POST)
+    await newPost.save()
+    post = PostMongoRepository.makeDTO(newPost)
   })
 
   afterEach(async () => {
+    await ReplySchema.deleteMany({})
+    await PostSchema.deleteMany({})
+    await UserSchema.deleteMany({})
     await mongoose.disconnect()
     mongoServer.stop()
   })
 
+  afterAll(() => {
+    jest.clearAllMocks()
+  })
+
   describe('create', () => {
     const replyParams = {
-      user: USER,
+      user,
       content: 'any_content',
-      post: POST,
+      post,
       parentReply: null
     }
 
     it('should create a new reply and return the reply model', async () => {
       const { sut } = makeSut()
 
-      const result = await sut.create(replyParams)
+      const result = await sut.create({
+        user,
+        content: 'any_content',
+        post,
+        parentReply: null
+      })
 
       expect(result).toBeTruthy()
       expect(result.content).toBe(replyParams.content)
-      expect(result.user).toEqual(replyParams.user._id)
-      expect(result.post).toEqual(replyParams.post._id)
+      expect(result.user).toMatchObject(user)
+      expect(result.post).toMatchObject(post)
     })
 
-    it('should throw if save throws', () => {
+    it('should add the reply to the post replies array', async () => {
       const { sut } = makeSut()
 
-      jest.spyOn(ReplySchema.prototype, 'save').mockImplementationOnce(() => {
+      const reply = await sut.create({
+        user,
+        content: 'any_content',
+        post,
+        parentReply: null
+      })
+
+      const postRepo = new PostMongoRepository()
+
+      const findPost = await postRepo.findById(post.id)
+      expect(findPost?.replies).toHaveLength(1)
+      expect(findPost?.replies?.[0].content).toBe(reply.content)
+    })
+
+    it('should throw if findByIdAndUpdate throws', () => {
+      const { sut } = makeSut()
+
+      jest.spyOn(PostSchema, 'findByIdAndUpdate').mockImplementationOnce(() => {
         throw new Error()
       })
 
@@ -81,19 +119,10 @@ describe('ReplyMongoRepository', () => {
       expect(promise).rejects.toThrow()
     })
 
-    it('should add the reply to the post replies array', async () => {
+    it('should throw if save throws', () => {
       const { sut } = makeSut()
 
-      const reply = await sut.create(replyParams)
-
-      const post = await PostSchema.findById(MOCK_POST_ID)
-      expect(post?.replies?.[0].toString()).toContain(reply.id)
-    })
-
-    it('should throw if findByIdAndUpdate throws', () => {
-      const { sut } = makeSut()
-
-      jest.spyOn(PostSchema, 'findByIdAndUpdate').mockImplementationOnce(() => {
+      jest.spyOn(ReplySchema.prototype, 'save').mockImplementationOnce(() => {
         throw new Error()
       })
 

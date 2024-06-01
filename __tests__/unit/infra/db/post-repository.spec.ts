@@ -158,7 +158,7 @@ describe('PostMongoRepository', () => {
 
       const findRes = await sut.findById(createRest.id)
 
-      expect(findRes?.user.toString()).toBe(userId)
+      expect(findRes?.user.id).toBe(userId)
     })
 
     it('should throw if findById throws', () => {

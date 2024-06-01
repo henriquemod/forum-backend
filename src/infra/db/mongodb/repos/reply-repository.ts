@@ -61,31 +61,39 @@ export class ReplyMongoRepository implements ReplyDBUsecases {
     const reply = new ReplySchema(
       {
         _id: new mongoose.Types.ObjectId(),
-        user,
-        post,
+        user: new mongoose.Types.ObjectId(user.id),
+        post: new mongoose.Types.ObjectId(post.id),
         parentReply,
         content
       },
       { session: this.session }
     )
 
-    const replyModel = await reply.save({ session: this.session })
+    await reply.save({ session: this.session })
+
+    await reply.populate('user')
+    await reply.populate({
+      path: 'post',
+      populate: {
+        path: 'user'
+      }
+    })
 
     await PostSchema.findByIdAndUpdate(
-      post,
-      { $push: { replies: replyModel._id } },
+      new mongoose.Types.ObjectId(post.id),
+      { $push: { replies: reply._id } },
       { session: this.session }
     )
 
     if (parentReply) {
       await ReplySchema.findByIdAndUpdate(
         parentReply,
-        { $push: { replies: replyModel._id } },
+        { $push: { replies: reply._id } },
         { session: this.session }
       )
     }
 
-    return replyModel
+    return ReplyMongoRepository.makeDTO(reply)
   }
 
   async delete(id: string): Promise<void> {

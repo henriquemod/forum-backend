@@ -47,6 +47,8 @@ export class PostMongoRepository implements PostDBUsecases {
 
     await post.save({ session: this.session })
 
+    await post.populate('user')
+
     return PostMongoRepository.makeDTO(post)
   }
 
@@ -67,40 +69,45 @@ export class PostMongoRepository implements PostDBUsecases {
   }
 
   async findById(id: string): Promise<PostModel.Model | null> {
-    return await PostSchema.findById(id)
-      .populate({
-        path: 'user',
-        select: '_id',
-        transform: (doc) => {
-          return doc._id
-        }
-      })
+    const post = await PostSchema.findById(id)
+      .populate('user')
       .populate({
         path: 'replies',
         select: '_id content user parentReply createdAt updatedAt',
-        transform: (reply) => {
-          return {
-            id: reply._id.toString(),
-            ...pick(
-              ['content', 'user', 'parentReply', 'createdAt', 'updatedAt'],
-              reply
-            )
+        populate: [
+          {
+            path: 'user'
           }
-        }
+        ]
       })
+      // .populate({
+      //   path: 'replies',
+      //   populate: [
+      //     {
+      //       path: 'user'
+      //     },
+      //     {
+      //       path: 'post',
+      //       populate: [
+      //         {
+      //           path: 'user'
+      //         },
+      //         {
+      //           path: 'replies',
+      //           populate: {
+      //             path: 'user'
+      //           }
+      //         }
+      //       ]
+      //     }
+      //   ]
+      // })
       .select('_id title content user replies createdAt updatedAt')
-      .transform((post) => {
-        if (!post) return null
-
-        return {
-          id: post._id.toString(),
-          ...pick(
-            ['title', 'content', 'user', 'replies', 'createdAt', 'updatedAt'],
-            post
-          )
-        }
-      })
       .exec()
+
+    if (!post) return null
+
+    return PostMongoRepository.makeDTO(post)
   }
 
   async findAll(): Promise<PostModel.Model[]> {
