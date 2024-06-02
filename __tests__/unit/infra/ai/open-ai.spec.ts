@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { OpenAI } from '@/infra/ai'
+import { env } from '@/main/config/env'
+
+jest.mock('@/main/config/env')
 
 jest.mock('openai', () => {
   return jest
@@ -43,6 +46,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('OpenAI', () => {
+  beforeEach(() => {
+    env.features.openAiApiKey = 'any_key'
+  })
+
+  afterAll(() => {
+    jest.clearAllMocks()
+  })
+
   describe('JSONFromPrompt', () => {
     it('should throw if openAi throws', async () => {
       const { sut } = makeSut()
@@ -77,6 +88,15 @@ describe('OpenAI', () => {
       const res = await sut.JSONFromPrompt('any_text')
 
       expect(res).toEqual({ type: 'success', data: { level: 5 } })
+    })
+
+    it('should return disabled if openAi is not defined', async () => {
+      env.features.openAiApiKey = undefined
+      const { sut } = makeSut()
+
+      const res = await sut.JSONFromPrompt('any_text')
+
+      expect(res).toEqual({ type: 'disabled' })
     })
   })
 })
