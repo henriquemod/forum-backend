@@ -1,4 +1,4 @@
-import { BadRequest } from '@/application/errors'
+import { BadRequest, InternalServerError } from '@/application/errors'
 import { UserManager } from '@/data/protocols'
 import { UserModel } from '@/domain/models'
 import {
@@ -7,6 +7,7 @@ import {
   SAFE_USER,
   UserRepositoryStub
 } from '../helpers'
+import { omit } from 'ramda'
 
 const MOCK_REGULAR_USER = MOCK_USER
 const MOCK_ADMIN_USER = {
@@ -280,6 +281,40 @@ describe('UserManager', () => {
       })
 
       expect(promise).rejects.toThrow('User not found')
+    })
+
+    it('should throw an error if expected SafeModel but got Model', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+      const userModel = { ...MOCK_USER, password: 'hashed_password' }
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUsername')
+        .mockResolvedValueOnce(userModel)
+
+      const promise = sut.getUser({
+        value: MOCK_USER.username,
+        safe: true
+      })
+
+      await expect(promise).rejects.toThrow(InternalServerError)
+      await expect(promise).rejects.toThrow('Expected SafeModel but got Model')
+    })
+
+    it('should throw an error if expected Model but got SafeModel', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+      const safeUserModel = { ...omit(['password'], MOCK_USER) }
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUsername')
+        .mockResolvedValueOnce(safeUserModel)
+
+      const promise = sut.getUser({
+        value: MOCK_USER.username,
+        safe: false
+      })
+
+      await expect(promise).rejects.toThrow(InternalServerError)
+      await expect(promise).rejects.toThrow('Expected Model but got SafeModel')
     })
   })
 

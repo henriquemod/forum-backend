@@ -1,4 +1,4 @@
-import { BadRequest, NotFound } from '@/application/errors'
+import { BadRequest, InternalServerError, NotFound } from '@/application/errors'
 import type { User } from '@/data/usecases'
 import { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
@@ -114,11 +114,11 @@ export class UserManager implements UserDataUsecases {
     : UserModel.Model {
     if (params.safe) {
       if ('password' in user) {
-        throw new Error('Expected SafeModel but got Model')
+        throw new InternalServerError('Expected SafeModel but got Model')
       }
     } else {
       if (!('password' in user)) {
-        throw new Error('Expected Model but got SafeModel')
+        throw new InternalServerError('Expected Model but got SafeModel')
       }
     }
   }
