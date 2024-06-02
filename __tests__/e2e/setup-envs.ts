@@ -1,0 +1,8 @@
+process.env.PORT = '3001'
+process.env.JWT_SECRET = 'your_access_token_secret'
+process.env.REFRESH_TOKEN_SECRET = 'your_refresh_token_secret'
+process.env.BCRYPT_SALT = '12'
+process.env.USER_ACTIVATION_BY_EMAIL = 'false'
+process.env.MONGO_DB_NAME = 'petqa'
+process.env.AI_ACCEPTANCE_LEVEL = '7'
+process.env.ALLOW_AI_REPLIES = 'true'

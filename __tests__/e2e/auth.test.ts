@@ -41,7 +41,7 @@ describe('Controller - Auth', () => {
       password: faker.internet.password(),
       email: faker.internet.email()
     }
-    const responseUpdated = await apiRequest.post('/api/register').send(params)
+    const responseUpdated = await apiRequest.post('/api/user').send(params)
 
     expect(responseUpdated.status).toBe(200)
     expect(responseUpdated.body.email).toBe(params.email)
@@ -55,7 +55,7 @@ describe('Controller - Auth', () => {
       password: faker.internet.password(),
       email: faker.internet.email()
     }
-    await apiRequest.post('/api/register').send(user)
+    await apiRequest.post('/api/user').send(user)
 
     const loginRequest = await apiRequest
       .post('/api/login')
@@ -73,7 +73,7 @@ describe('Controller - Auth', () => {
       password: faker.internet.password(),
       email: faker.internet.email()
     }
-    await apiRequest.post('/api/register').send(user)
+    await apiRequest.post('/api/user').send(user)
 
     const loginRequest = await apiRequest
       .post('/api/login')
@@ -96,7 +96,7 @@ describe('Controller - Auth', () => {
       password: faker.internet.password(),
       email: faker.internet.email()
     }
-    await apiRequest.post('/api/register').send(user)
+    await apiRequest.post('/api/user').send(user)
 
     const loginRequest = await apiRequest
       .post('/api/login')

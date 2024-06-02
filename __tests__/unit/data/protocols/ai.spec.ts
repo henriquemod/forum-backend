@@ -46,9 +46,10 @@ describe('AIManager', () => {
     it('should return false if prompt level is lower than prompt level', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest
-        .spyOn(promptStub, 'JSONFromPrompt')
-        .mockResolvedValueOnce({ level: 1 })
+      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({
+        type: 'success',
+        data: { level: 1 }
+      })
 
       const res = await sut.validateContent('any_title', 'any_content')
 
@@ -58,9 +59,10 @@ describe('AIManager', () => {
     it('should throw if prompt response is not an object', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest
-        .spyOn(promptStub, 'JSONFromPrompt')
-        .mockResolvedValueOnce('invalid_response')
+      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({
+        type: 'success',
+        data: null
+      })
 
       const promise = sut.validateContent('any_title', 'any_content')
 
@@ -70,7 +72,9 @@ describe('AIManager', () => {
     it('should throw if prompt response is null', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce(null)
+      jest
+        .spyOn(promptStub, 'JSONFromPrompt')
+        .mockResolvedValueOnce({ type: 'error', message: 'any_message' })
 
       const promise = sut.validateContent('any_title', 'any_content')
 
@@ -80,7 +84,11 @@ describe('AIManager', () => {
     it('should throw if prompt response does not contain level', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({})
+      jest
+        .spyOn(promptStub, 'JSONFromPrompt')
+        .mockResolvedValueOnce(
+          {} as unknown as Prompt.JSONPromptResponse<{ level: number }>
+        )
 
       const promise = sut.validateContent('any_title', 'any_content')
 
@@ -90,9 +98,10 @@ describe('AIManager', () => {
     it('should throw if prompt response level is not a number', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest
-        .spyOn(promptStub, 'JSONFromPrompt')
-        .mockResolvedValueOnce({ level: '1' })
+      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({
+        type: 'success',
+        data: { level: '1' }
+      })
 
       const promise = sut.validateContent('any_title', 'any_content')
 

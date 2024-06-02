@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { InternalServerError } from '@/application/errors'
 import { OpenAI } from '@/infra/ai'
 
 jest.mock('openai', () => {
@@ -54,9 +53,12 @@ describe('OpenAI', () => {
     it('should throw if openAi return null', async () => {
       const { sut } = makeSut()
 
-      await expect(sut.JSONFromPrompt('any_text')).rejects.toThrow(
-        InternalServerError
-      )
+      const res = await sut.JSONFromPrompt('any_text')
+
+      expect(res).toEqual({
+        type: 'error',
+        message: 'Error on OpenAI response'
+      })
     })
 
     it('should call openAi with correct params', async () => {
@@ -74,7 +76,7 @@ describe('OpenAI', () => {
 
       const res = await sut.JSONFromPrompt('any_text')
 
-      expect(res).toEqual({ level: 5 })
+      expect(res).toEqual({ type: 'success', data: { level: 5 } })
     })
   })
 })
