@@ -2,6 +2,7 @@ import type { User } from '@/data/usecases'
 import type { UserModel } from '@/domain/models'
 
 export namespace DBUser {
+  export type FindResult = UserModel.SafeModel | UserModel.Model | null
   export interface UpdateUserParams {
     userId: string
     userData: Partial<
@@ -9,7 +10,7 @@ export namespace DBUser {
     >
   }
   export interface Add {
-    add: (user: User.RegisterParams) => Promise<UserModel.Model>
+    add: (user: User.RegisterParams) => Promise<UserModel.SafeModel>
   }
 
   export interface Delete {
@@ -17,15 +18,15 @@ export namespace DBUser {
   }
 
   export interface FindUserByEmail {
-    findByEmail: (email: string) => Promise<UserModel.Model | null>
+    findByEmail: (email: string, safe?: boolean) => Promise<FindResult>
   }
 
   export interface FindUserByUsername {
-    findByUsername: (username: string) => Promise<UserModel.Model | null>
+    findByUsername: (username: string, safe?: boolean) => Promise<FindResult>
   }
 
   export interface FindUserByUserId {
-    findByUserId: (userId: string) => Promise<UserModel.Model | null>
+    findByUserId: (userId: string, safe?: boolean) => Promise<FindResult>
   }
 
   export interface FindUserByIdOrFail {

@@ -34,7 +34,7 @@ describe('Controller - Post', () => {
   beforeEach(async () => {
     await db.connection.dropDatabase()
 
-    await apiRequest.post('/api/register').send(user)
+    await apiRequest.post('/api/user').send(user)
     const res = await apiRequest.post('/api/login').send(omit(['email'], user))
 
     accessToken = res.body.accessToken

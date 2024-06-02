@@ -2,6 +2,9 @@ import { InternalServerError } from '@/application/errors'
 import { AIManager } from '@/data/protocols'
 import type { Prompt } from '@/domain/usecases/ai'
 import { PromptStub } from '../helpers'
+import { env } from '@/main/config/env'
+
+jest.mock('@/main/config/env')
 
 interface SutTypes {
   sut: AIManager
@@ -19,9 +22,28 @@ const makeSut = (): SutTypes => {
 }
 
 describe('AIManager', () => {
+  beforeEach(() => {
+    env.features.aiAcceptanceLevel = 7
+  })
+
+  afterAll(() => {
+    jest.clearAllMocks()
+  })
+
   describe('validateContent', () => {
     it('should return true if prompt level is higher than or equal to prompt level', async () => {
       const { sut } = makeSut()
+
+      const res = await sut.validateContent('any_title', 'any_content')
+
+      expect(res).toBe(true)
+    })
+    it('should return true if feature is disabled', async () => {
+      const { sut, promptStub } = makeSut()
+
+      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({
+        type: 'disabled'
+      })
 
       const res = await sut.validateContent('any_title', 'any_content')
 
@@ -46,9 +68,10 @@ describe('AIManager', () => {
     it('should return false if prompt level is lower than prompt level', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest
-        .spyOn(promptStub, 'JSONFromPrompt')
-        .mockResolvedValueOnce({ level: 1 })
+      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({
+        type: 'success',
+        data: { level: 1 }
+      })
 
       const res = await sut.validateContent('any_title', 'any_content')
 
@@ -58,9 +81,10 @@ describe('AIManager', () => {
     it('should throw if prompt response is not an object', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest
-        .spyOn(promptStub, 'JSONFromPrompt')
-        .mockResolvedValueOnce('invalid_response')
+      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({
+        type: 'success',
+        data: null
+      })
 
       const promise = sut.validateContent('any_title', 'any_content')
 
@@ -70,7 +94,9 @@ describe('AIManager', () => {
     it('should throw if prompt response is null', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce(null)
+      jest
+        .spyOn(promptStub, 'JSONFromPrompt')
+        .mockResolvedValueOnce({ type: 'error', message: 'any_message' })
 
       const promise = sut.validateContent('any_title', 'any_content')
 
@@ -80,7 +106,11 @@ describe('AIManager', () => {
     it('should throw if prompt response does not contain level', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({})
+      jest
+        .spyOn(promptStub, 'JSONFromPrompt')
+        .mockResolvedValueOnce(
+          {} as unknown as Prompt.JSONPromptResponse<{ level: number }>
+        )
 
       const promise = sut.validateContent('any_title', 'any_content')
 
@@ -90,9 +120,10 @@ describe('AIManager', () => {
     it('should throw if prompt response level is not a number', async () => {
       const { sut, promptStub } = makeSut()
 
-      jest
-        .spyOn(promptStub, 'JSONFromPrompt')
-        .mockResolvedValueOnce({ level: '1' })
+      jest.spyOn(promptStub, 'JSONFromPrompt').mockResolvedValueOnce({
+        type: 'success',
+        data: { level: '1' }
+      })
 
       const promise = sut.validateContent('any_title', 'any_content')
 

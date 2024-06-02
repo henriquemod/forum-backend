@@ -1,6 +1,7 @@
 import type { User } from '@/data/usecases'
 import { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
+import { omit } from 'ramda'
 
 type FindUser = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
@@ -20,6 +21,7 @@ export const MOCK_USER = {
   createdAt: new Date(),
   updatedAt: new Date()
 }
+export const SAFE_USER = omit(['password'], MOCK_USER)
 
 export class UserRepositoryStub implements DBUserStub {
   async delete(id: string): Promise<void> {}

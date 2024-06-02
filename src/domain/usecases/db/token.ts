@@ -30,4 +30,8 @@ export namespace DBToken {
   export interface FindTokenByUserId {
     findByUserId: (userId: string) => Promise<TokenModel | null>
   }
+
+  export interface FindByUsername {
+    findByUsername: (username: string) => Promise<TokenModel | null>
+  }
 }

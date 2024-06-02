@@ -1,10 +1,11 @@
 import type { PostModel } from '@/domain/models'
 
 export namespace Post {
-  type Model = Omit<PostModel.Model, 'user' | 'id' | 'createdAt' | 'updatedAt'>
-  export interface CreateResult {
-    id: string
-  }
+  type Model = Omit<
+    PostModel.Model,
+    'user' | 'id' | 'createdAt' | 'updatedAt' | 'replies'
+  >
+
   export type FindAllResult = PostModel.Model[]
   export type FindResult = PostModel.Model | null
   export type CreateParams = Model & {
@@ -20,7 +21,7 @@ export namespace Post {
   export type DeleteParams = FindParams
 
   export interface CreatePost {
-    createPost: (params: CreateParams) => Promise<CreateResult>
+    createPost: (params: CreateParams) => Promise<PostModel.Model>
   }
 
   export interface FindAllPosts {

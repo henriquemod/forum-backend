@@ -1,8 +1,8 @@
 import type { Post } from '@/data/usecases/'
-import { pick } from 'ramda'
 import { MOCK_USER } from './user-stub'
+import type { PostModel } from '@/domain/models'
 
-export const MOCK_POST = {
+export const MOCK_POST: PostModel.Model = {
   id: 'any_id',
   user: MOCK_USER,
   title: 'any_title',
@@ -19,8 +19,8 @@ export class PostStub
     Post.UpdatePost,
     Post.DeletePost
 {
-  async createPost(params: Post.CreateParams): Promise<Post.CreateResult> {
-    return pick(['id'], MOCK_POST)
+  async createPost(params: Post.CreateParams): Promise<PostModel.Model> {
+    return MOCK_POST
   }
 
   async findPost(params: Post.FindParams): Promise<Post.FindResult> {

@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb'
 import { UserModel } from '@/domain/models'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
+import { omit } from 'ramda'
 
 const MOCK_USER_ID = '123456789012345678901234'
 
@@ -185,7 +186,7 @@ describe('UserMongoRepository', () => {
 
       const result = await sut.findByEmail('test@example.com')
 
-      expect(result).toEqual(expect.objectContaining(user))
+      expect(result).toEqual(expect.objectContaining(omit(['password'], user)))
     })
   })
 
@@ -211,7 +212,7 @@ describe('UserMongoRepository', () => {
 
       const result = await sut.findByUsername('testuser')
 
-      expect(result).toEqual(expect.objectContaining(user))
+      expect(result).toEqual(expect.objectContaining(omit(['password'], user)))
     })
   })
 
@@ -246,7 +247,7 @@ describe('UserMongoRepository', () => {
       const result = await sut.findByUserId(data._id.toString())
 
       expect(data.id).toHaveLength(24)
-      expect(result).toEqual(expect.objectContaining(user))
+      expect(result).toEqual(expect.objectContaining(omit(['password'], user)))
     })
   })
 })

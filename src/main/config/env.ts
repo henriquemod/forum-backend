@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 if (process.env.NODE_ENV !== 'production') {
   import('dotenv')
     .then((dotenv) => {

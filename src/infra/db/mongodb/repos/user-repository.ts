@@ -5,6 +5,7 @@ import type { DBUser } from '@/domain/usecases/db'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
 import type { ClientSession } from 'mongoose'
 import mongoose from 'mongoose'
+import { pick } from 'ramda'
 
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &
@@ -20,6 +21,28 @@ export class UserMongoRepository implements UserDBUsecases {
     private readonly hash: EncryptionDataUsecases,
     private readonly session?: ClientSession
   ) {}
+
+  static makeDTO(
+    user: UserModel.Model & { _id: mongoose.Types.ObjectId },
+    safe: boolean
+  ): UserModel.SafeModel | UserModel.Model {
+    const entity = {
+      ...pick(
+        [
+          'email',
+          'createdAt',
+          'updatedAt',
+          'level',
+          'username',
+          'verifiedEmail'
+        ],
+        user
+      ),
+      id: user._id.toString()
+    }
+
+    return Object.assign({}, entity, safe ? {} : { password: user.password })
+  }
 
   async delete(id: string): Promise<void> {
     await UserSchema.deleteOne({ _id: id }, { session: this.session })
@@ -41,39 +64,64 @@ export class UserMongoRepository implements UserDBUsecases {
     username,
     email,
     password
-  }: User.RegisterParams): Promise<UserModel.Model> {
+  }: User.RegisterParams): Promise<UserModel.SafeModel> {
     const hashedPassword = await this.hash.generate(password)
 
-    const accessToken = new UserSchema(
+    const user = new UserSchema(
       {
         _id: new mongoose.Types.ObjectId(),
         username,
         email,
         password: hashedPassword,
         level: UserModel.Level.USER,
-        verifiedEmail: false
+        verifiedEmail: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         session: this.session
       }
     )
 
-    return await accessToken.save({ session: this.session })
+    await user.save({ session: this.session })
+
+    return UserMongoRepository.makeDTO(user, true)
   }
 
-  async findByEmail(email: string): Promise<UserModel.Model | null> {
-    return await UserSchema.findOne({
+  async findByEmail(
+    email: string,
+    safe = true
+  ): Promise<UserModel.SafeModel | null> {
+    const user = await UserSchema.findOne({
       email
     })
+
+    if (!user) {
+      return null
+    }
+
+    return UserMongoRepository.makeDTO(user, safe)
   }
 
-  async findByUsername(username: string): Promise<UserModel.Model | null> {
-    return await UserSchema.findOne({
+  async findByUsername(
+    username: string,
+    safe = true
+  ): Promise<DBUser.FindResult> {
+    const user = await UserSchema.findOne({
       username
     })
+
+    if (!user) {
+      return null
+    }
+
+    return UserMongoRepository.makeDTO(user, safe)
   }
 
-  async findByUserId(id: string): Promise<UserModel.Model | null> {
+  async findByUserId(
+    id: string,
+    safe = true
+  ): Promise<UserModel.SafeModel | null> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return null
     }
@@ -81,6 +129,10 @@ export class UserMongoRepository implements UserDBUsecases {
       _id: id
     })
 
-    return user
+    if (!user) {
+      return null
+    }
+
+    return UserMongoRepository.makeDTO(user, safe)
   }
 }

@@ -1,6 +1,6 @@
 import { NotFound } from '@/application/errors'
 import type { Activation } from '@/data/usecases'
-import type { ActivationModel, UserModel } from '@/domain/models'
+import type { UserModel } from '@/domain/models'
 import type { DBActivation } from '@/domain/usecases/db'
 
 type ActivationRepository = DBActivation.Create & DBActivation.FindByCode
@@ -11,7 +11,7 @@ type ActivationData = Activation.CreateActivationCode &
 export class ActivationManager implements ActivationData {
   constructor(private readonly activationRepository: ActivationRepository) {}
 
-  async getUser(code: string): Promise<UserModel.Model> {
+  async getUser(code: string): Promise<UserModel.SafeModel> {
     const activation = await this.activationRepository.findByCode(code)
 
     if (!activation) {
@@ -21,7 +21,7 @@ export class ActivationManager implements ActivationData {
     return activation.user
   }
 
-  async createActivationCode(user: UserModel.Model): Promise<ActivationModel> {
-    return await this.activationRepository.create({ user })
+  async createActivationCode(userId: string): Promise<Activation.CreateReturn> {
+    return await this.activationRepository.create({ userId })
   }
 }

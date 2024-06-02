@@ -1,7 +1,13 @@
+import { BadRequest, InternalServerError } from '@/application/errors'
 import { UserManager } from '@/data/protocols'
-import { type DBUserStub, MOCK_USER, UserRepositoryStub } from '../helpers'
 import { UserModel } from '@/domain/models'
-import { BadRequest } from '@/application/errors'
+import {
+  type DBUserStub,
+  MOCK_USER,
+  SAFE_USER,
+  UserRepositoryStub
+} from '../helpers'
+import { omit } from 'ramda'
 
 const MOCK_REGULAR_USER = MOCK_USER
 const MOCK_ADMIN_USER = {
@@ -184,34 +190,57 @@ describe('UserManager', () => {
 
   describe('getUser', () => {
     it('should return user on success from default origin', async () => {
-      const { sut } = makeSut()
+      const { sut, userRepositoryStub } = makeSut()
 
-      const res = await sut.getUser(MOCK_USER.username)
+      jest
+        .spyOn(userRepositoryStub, 'findByUsername')
+        .mockResolvedValueOnce(SAFE_USER)
 
-      expect(res).toEqual(MOCK_USER)
+      const res = await sut.getUser({
+        value: MOCK_USER.username
+      })
+
+      expect(res).toEqual(SAFE_USER)
     })
 
     it('should return user on success from email origin', async () => {
-      const { sut } = makeSut()
+      const { sut, userRepositoryStub } = makeSut()
 
-      const res = await sut.getUser(MOCK_USER.email, 'email')
+      jest
+        .spyOn(userRepositoryStub, 'findByEmail')
+        .mockResolvedValueOnce(SAFE_USER)
 
-      expect(res).toEqual(MOCK_USER)
+      const res = await sut.getUser({
+        value: MOCK_USER.email,
+        origin: 'email'
+      })
+
+      expect(res).toEqual(SAFE_USER)
     })
     it('should throw NotFound if user not found from email origin', async () => {
       const { sut, userRepositoryStub } = makeSut()
       jest.spyOn(userRepositoryStub, 'findByEmail').mockResolvedValueOnce(null)
 
-      const promise = sut.getUser(MOCK_USER.email, 'email')
+      const promise = sut.getUser({
+        value: MOCK_USER.email,
+        origin: 'email'
+      })
 
       expect(promise).rejects.toThrow('User not found')
     })
     it('should return user on success from username origin', async () => {
-      const { sut } = makeSut()
+      const { sut, userRepositoryStub } = makeSut()
 
-      const res = await sut.getUser(MOCK_USER.username, 'username')
+      jest
+        .spyOn(userRepositoryStub, 'findByUsername')
+        .mockResolvedValueOnce(SAFE_USER)
 
-      expect(res).toEqual(MOCK_USER)
+      const res = await sut.getUser({
+        value: MOCK_USER.username,
+        origin: 'username'
+      })
+
+      expect(res).toEqual(SAFE_USER)
     })
 
     it('should throw NotFound if user not found from username origin', async () => {
@@ -220,25 +249,72 @@ describe('UserManager', () => {
         .spyOn(userRepositoryStub, 'findByUsername')
         .mockResolvedValueOnce(null)
 
-      const promise = sut.getUser(MOCK_USER.username, 'username')
+      const promise = sut.getUser({
+        value: MOCK_USER.username,
+        origin: 'username'
+      })
 
       expect(promise).rejects.toThrow('User not found')
     })
     it('should return user on success from id origin', async () => {
-      const { sut } = makeSut()
+      const { sut, userRepositoryStub } = makeSut()
 
-      const res = await sut.getUser(MOCK_USER.username, 'id')
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(SAFE_USER)
 
-      expect(res).toEqual(MOCK_USER)
+      const res = await sut.getUser({
+        value: MOCK_USER.id,
+        origin: 'id'
+      })
+
+      expect(res).toEqual(SAFE_USER)
     })
 
     it('should throw NotFound if user not found from id origin', async () => {
       const { sut, userRepositoryStub } = makeSut()
       jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
 
-      const promise = sut.getUser(MOCK_USER.username, 'id')
+      const promise = sut.getUser({
+        value: MOCK_USER.id,
+        origin: 'id'
+      })
 
       expect(promise).rejects.toThrow('User not found')
+    })
+
+    it('should throw an error if expected SafeModel but got Model', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+      const userModel = { ...MOCK_USER, password: 'hashed_password' }
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUsername')
+        .mockResolvedValueOnce(userModel)
+
+      const promise = sut.getUser({
+        value: MOCK_USER.username,
+        safe: true
+      })
+
+      await expect(promise).rejects.toThrow(InternalServerError)
+      await expect(promise).rejects.toThrow('Expected SafeModel but got Model')
+    })
+
+    it('should throw an error if expected Model but got SafeModel', async () => {
+      const { sut, userRepositoryStub } = makeSut()
+      const safeUserModel = { ...omit(['password'], MOCK_USER) }
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUsername')
+        .mockResolvedValueOnce(safeUserModel)
+
+      const promise = sut.getUser({
+        value: MOCK_USER.username,
+        safe: false
+      })
+
+      await expect(promise).rejects.toThrow(InternalServerError)
+      await expect(promise).rejects.toThrow('Expected Model but got SafeModel')
     })
   })
 
@@ -246,7 +322,9 @@ describe('UserManager', () => {
     it('should return user on success from default origin', async () => {
       const { sut } = makeSut()
 
-      const res = await sut.getPublicUser(MOCK_USER.username)
+      const res = await sut.getPublicUser({
+        value: MOCK_USER.username
+      })
 
       expect(res).toMatchObject({
         username: MOCK_USER.username,
@@ -257,7 +335,10 @@ describe('UserManager', () => {
     it('should return user on success from email origin', async () => {
       const { sut } = makeSut()
 
-      const res = await sut.getPublicUser(MOCK_USER.email, 'email')
+      const res = await sut.getPublicUser({
+        value: MOCK_USER.email,
+        origin: 'email'
+      })
 
       expect(res).toMatchObject({
         username: MOCK_USER.username,
@@ -268,14 +349,20 @@ describe('UserManager', () => {
       const { sut, userRepositoryStub } = makeSut()
       jest.spyOn(userRepositoryStub, 'findByEmail').mockResolvedValueOnce(null)
 
-      const promise = sut.getPublicUser(MOCK_USER.email, 'email')
+      const promise = sut.getPublicUser({
+        value: MOCK_USER.email,
+        origin: 'email'
+      })
 
       expect(promise).rejects.toThrow('User not found')
     })
     it('should return user on success from username origin', async () => {
       const { sut } = makeSut()
 
-      const res = await sut.getPublicUser(MOCK_USER.username, 'username')
+      const res = await sut.getPublicUser({
+        value: MOCK_USER.username,
+        origin: 'username'
+      })
 
       expect(res).toMatchObject({
         username: MOCK_USER.username,
@@ -289,14 +376,20 @@ describe('UserManager', () => {
         .spyOn(userRepositoryStub, 'findByUsername')
         .mockResolvedValueOnce(null)
 
-      const promise = sut.getPublicUser(MOCK_USER.username, 'username')
+      const promise = sut.getPublicUser({
+        value: MOCK_USER.username,
+        origin: 'username'
+      })
 
       expect(promise).rejects.toThrow('User not found')
     })
     it('should return user on success from id origin', async () => {
       const { sut } = makeSut()
 
-      const res = await sut.getPublicUser(MOCK_USER.username, 'id')
+      const res = await sut.getPublicUser({
+        value: MOCK_USER.id,
+        origin: 'username'
+      })
 
       expect(res).toMatchObject({
         username: MOCK_USER.username,
@@ -308,7 +401,10 @@ describe('UserManager', () => {
       const { sut, userRepositoryStub } = makeSut()
       jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
 
-      const promise = sut.getPublicUser(MOCK_USER.username, 'id')
+      const promise = sut.getPublicUser({
+        value: MOCK_USER.id,
+        origin: 'id'
+      })
 
       expect(promise).rejects.toThrow('User not found')
     })

@@ -8,7 +8,7 @@ import {
   type Validator
 } from '@/application/validation'
 import type { Post, User } from '@/data/usecases'
-import { UserModel } from '@/domain/models'
+import { type PostModel, UserModel } from '@/domain/models'
 
 type PostManager = Post.DeletePost & Post.FindPost
 type UserManager = User.Get
@@ -20,13 +20,13 @@ export class DeletePostController extends Controller {
     private readonly userManager: UserManager,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({
     userId,
     id
-  }: PerformParams): Promise<HttpResponse<Post.CreateResult>> {
+  }: PerformParams): Promise<HttpResponse<PostModel.Model>> {
     const post = await this.postManager.findPost({
       id
     })
@@ -35,7 +35,11 @@ export class DeletePostController extends Controller {
       throw new NotFound('Post not found')
     }
 
-    const user = await this.userManager.getUser(userId, 'id')
+    const user = await this.userManager.getUser({
+      value: userId,
+      origin: 'id',
+      safe: true
+    })
     const isUserAllowedToDeletePost = post.user.id === user.id
     const isUserAdmin = user.level === UserModel.Level.ADMIN
 

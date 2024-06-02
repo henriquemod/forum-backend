@@ -38,8 +38,16 @@ export class AIManager implements AIData {
 
     const response = await this.prompt.JSONFromPrompt<JsonResponse>(text)
 
-    this.validateReturn(response)
+    if (response.type === 'disabled') {
+      return true
+    }
 
-    return response.level >= this.promptLevel
+    if (response.type === 'error') {
+      throw new InternalServerError(response.message)
+    }
+
+    this.validateReturn(response.data)
+
+    return response.data.level >= this.promptLevel
   }
 }

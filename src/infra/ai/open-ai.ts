@@ -1,4 +1,3 @@
-import { InternalServerError } from '@/application/errors'
 import type { Prompt } from '@/domain/usecases/ai'
 import { env } from '@/main/config/env'
 import OpenAIModule from 'openai'
@@ -14,7 +13,13 @@ export class OpenAI implements Prompt.JSONFromPrompt {
     }
   }
 
-  async JSONFromPrompt<T = Record<string, unknown>>(text: string): Promise<T> {
+  async JSONFromPrompt<T = Record<string, unknown>>(
+    text: string
+  ): Promise<Prompt.JSONPromptResponse<T>> {
+    if (!this.openAi) {
+      return { type: 'disabled' }
+    }
+
     const chatCompletion = await this.openAi?.chat.completions.create({
       messages: [{ role: 'system', content: text }],
       model: 'gpt-3.5-turbo',
@@ -23,9 +28,15 @@ export class OpenAI implements Prompt.JSONFromPrompt {
     const contentResponse = chatCompletion?.choices[0].message.content
 
     if (!contentResponse) {
-      throw new InternalServerError('Error on OpenAI response')
+      return {
+        type: 'error',
+        message: 'Error on OpenAI response'
+      }
     }
 
-    return JSON.parse(contentResponse)
+    return {
+      type: 'success',
+      data: JSON.parse(contentResponse)
+    }
   }
 }

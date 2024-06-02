@@ -15,4 +15,6 @@ export namespace UserModel {
     level: Level
     verifiedEmail: boolean
   }>
+
+  export type SafeModel = Omit<Model, 'password'>
 }

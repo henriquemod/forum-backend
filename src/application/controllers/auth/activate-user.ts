@@ -13,7 +13,7 @@ export class ActivateUserController extends Controller {
     private readonly activationManager: ActivationManager,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({

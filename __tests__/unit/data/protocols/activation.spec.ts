@@ -58,18 +58,9 @@ describe('ActivationManager', () => {
         .spyOn(activationRepositoryStub, 'create')
         .mockResolvedValueOnce(MOCK_ACTIVATION)
 
-      const res = await sut.createActivationCode(MOCK_USER)
+      const res = await sut.createActivationCode(MOCK_USER.id)
 
       expect(res).toEqual(MOCK_ACTIVATION)
     })
-
-    // it('should throw NotFound if user not found', () => {
-    //   const { sut, userRepositoryStub } = makeSut()
-    //   jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
-
-    //   const promise = sut.createActivationCode(MOCK_USER)
-
-    //   expect(promise).rejects.toThrow('User not found')
-    // })
   })
 })

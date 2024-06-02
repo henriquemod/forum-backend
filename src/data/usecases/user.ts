@@ -2,14 +2,29 @@ import type { UserModel } from '@/domain/models'
 
 export namespace User {
   export type Origin = 'username' | 'email' | 'id'
-  export type PublicUserData = Pick<UserModel.Model, 'username' | 'createdAt'>
+  export type PublicUserData = Pick<
+    UserModel.SafeModel,
+    'username' | 'createdAt'
+  >
+
+  export interface GetUserParams {
+    value: string
+    origin?: Origin
+    safe?: boolean
+  }
+
+  type GetUserReturnType<T extends GetUserParams> = T['safe'] extends true
+    ? UserModel.SafeModel
+    : UserModel.Model
 
   export interface Get {
-    getUser: (value: string, origin?: Origin) => Promise<UserModel.Model>
+    getUser: <T extends GetUserParams>(
+      params: T
+    ) => Promise<GetUserReturnType<T>>
   }
 
   export interface GetPublic {
-    getPublicUser: (value: string, origin?: Origin) => Promise<PublicUserData>
+    getPublicUser: (params: GetUserParams) => Promise<PublicUserData>
   }
 
   export type RegisterParams = Omit<
@@ -19,7 +34,7 @@ export namespace User {
     Partial<Pick<UserModel.Model, 'level'>>
 
   export interface Register {
-    registerUser: (user: RegisterParams) => Promise<UserModel.Model>
+    registerUser: (user: RegisterParams) => Promise<UserModel.SafeModel>
   }
 
   export interface ActivateUser {

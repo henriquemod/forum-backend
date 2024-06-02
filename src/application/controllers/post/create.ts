@@ -1,9 +1,10 @@
+import { BadRequest } from '@/application/errors'
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
 import type { AI, Post } from '@/data/usecases'
+import type { PostModel } from '@/domain/models'
 import { ValidationBuilder as builder, type Validator } from '../../validation'
-import { BadRequest } from '@/application/errors'
 
 type PostManager = Post.CreatePost
 type AIManager = AI.ValidateContent
@@ -14,14 +15,14 @@ export class CreatePostController extends Controller {
     private readonly AIManager: AIManager,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({
     userId,
     title,
     content
-  }: Post.CreateParams): Promise<HttpResponse<Post.CreateResult>> {
+  }: Post.CreateParams): Promise<HttpResponse<PostModel.Model>> {
     const isValidContent = await this.AIManager.validateContent(title, content)
 
     if (!isValidContent) {

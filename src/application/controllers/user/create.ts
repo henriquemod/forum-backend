@@ -15,7 +15,7 @@ export class CreateUserController extends Controller {
     private readonly mailService: MailService,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({
@@ -31,7 +31,7 @@ export class CreateUserController extends Controller {
       email
     })
 
-    const { code } = await this.activationManager.createActivationCode(user)
+    const { code } = await this.activationManager.createActivationCode(user.id)
 
     await this.mailService.sendActivationMail(email, code)
 

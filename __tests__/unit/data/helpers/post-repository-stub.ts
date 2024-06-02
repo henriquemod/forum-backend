@@ -1,7 +1,15 @@
 import type { PostModel } from '@/domain/models'
 import type { DBPost } from '@/domain/usecases/db'
-import { MOCK_POST } from '../../application/helpers'
-import { pick } from 'ramda'
+import { MOCK_USER } from './user-repository-stub'
+
+export const MOCK_POST: PostModel.Model = {
+  id: 'any_id',
+  user: MOCK_USER,
+  title: 'any_title',
+  content: 'any_content',
+  createdAt: new Date(),
+  updatedAt: new Date()
+}
 
 export type DBPostStub = DBPost.Create &
   DBPost.FindAll &
@@ -10,8 +18,8 @@ export type DBPostStub = DBPost.Create &
   DBPost.Update
 
 export class PostRepositoryStub implements DBPostStub {
-  async create(params: DBPost.AddParams): Promise<DBPost.AddResult> {
-    return await Promise.resolve(pick(['id'], MOCK_POST))
+  async create(params: DBPost.AddParams): Promise<PostModel.Model> {
+    return await Promise.resolve(MOCK_POST)
   }
 
   async findAll(): Promise<PostModel.Model[]> {
