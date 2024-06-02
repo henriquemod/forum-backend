@@ -1,14 +1,14 @@
+import type { UserModel } from '@/domain/models'
 import {
   PostMongoRepository,
+  ReplyMongoRepository,
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
+import { PostSchema } from '@/infra/db/mongodb/schemas'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
-import { PostSchema } from '@/infra/db/mongodb/schemas'
 import { HashStub } from '../../application/helpers'
 import { MOCK_USER } from '../../data/helpers'
-
-const MOCK_POST_ID = '123456789012345678901234'
 
 interface SutTypes {
   sut: PostMongoRepository
@@ -24,20 +24,24 @@ const makeSut = (): SutTypes => {
 
 describe('PostMongoRepository', () => {
   let mongoServer: MongoMemoryServer
-  let userId: string
+  let user: UserModel.SafeModel
 
   beforeEach(async () => {
     mongoServer = await MongoMemoryServer.create()
     await mongoose.connect(mongoServer.getUri())
 
     const userRepository = new UserMongoRepository(new HashStub())
-    const user = await userRepository.add(MOCK_USER)
-    userId = user.id
+    user = await userRepository.add(MOCK_USER)
   })
 
   afterEach(async () => {
     await mongoose.disconnect()
     mongoServer.stop()
+    jest.restoreAllMocks()
+  })
+
+  afterAll(() => {
+    jest.clearAllMocks()
   })
 
   describe('create', () => {
@@ -45,7 +49,7 @@ describe('PostMongoRepository', () => {
       const { sut } = makeSut()
 
       const result = await sut.create({
-        userId,
+        userId: user.id,
         content: 'any_content',
         title: 'any_title'
       })
@@ -61,7 +65,7 @@ describe('PostMongoRepository', () => {
       })
 
       const promise = sut.create({
-        userId,
+        userId: user.id,
         content: 'any_content',
         title: 'any_title'
       })
@@ -75,7 +79,7 @@ describe('PostMongoRepository', () => {
       const { sut } = makeSut()
 
       const post = await sut.create({
-        userId,
+        userId: user.id,
         content: 'any_content',
         title: 'any_title'
       })
@@ -105,7 +109,7 @@ describe('PostMongoRepository', () => {
       })
 
       const promise = sut.update({
-        id: MOCK_POST_ID,
+        id: 'any_id',
         updateContent: {
           title: 'any_edited_title',
           content: 'any_edited_content'
@@ -121,7 +125,7 @@ describe('PostMongoRepository', () => {
       const { sut } = makeSut()
 
       const post = await sut.create({
-        userId,
+        userId: user.id,
         content: 'any_content',
         title: 'any_title'
       })
@@ -140,7 +144,7 @@ describe('PostMongoRepository', () => {
         throw new Error()
       })
 
-      const promise = sut.delete(MOCK_POST_ID)
+      const promise = sut.delete('any_id')
 
       expect(promise).rejects.toThrow()
     })
@@ -151,14 +155,14 @@ describe('PostMongoRepository', () => {
       const { sut } = makeSut()
 
       const createRest = await sut.create({
-        userId,
+        userId: user.id,
         content: 'any_content',
         title: 'any_title'
       })
 
       const findRes = await sut.findById(createRest.id)
 
-      expect(findRes?.user.id).toBe(userId)
+      expect(findRes?.user.id).toBe(user.id)
     })
 
     it('should throw if findById throws', () => {
@@ -168,7 +172,7 @@ describe('PostMongoRepository', () => {
         throw new Error()
       })
 
-      const promise = sut.findById(MOCK_POST_ID)
+      const promise = sut.findById('any_id')
 
       expect(promise).rejects.toThrow()
     })
@@ -179,7 +183,7 @@ describe('PostMongoRepository', () => {
       const { sut } = makeSut()
 
       await sut.create({
-        userId,
+        userId: user.id,
         content: 'any_content',
         title: 'any_title'
       })
@@ -188,6 +192,33 @@ describe('PostMongoRepository', () => {
       expect(res).toHaveLength(1)
       expect(res[0].id).toBeDefined()
       expect(res[0].user).toBeDefined()
+    })
+
+    it('should find all posts with replies', async () => {
+      const { sut } = makeSut()
+
+      const post = await sut.create({
+        userId: user.id,
+        content: 'any_content',
+        title: 'any_title'
+      })
+
+      const replyRepo = new ReplyMongoRepository()
+      const reply = await replyRepo.create({
+        user,
+        content: 'any_content',
+        post,
+        parentReply: null
+      })
+
+      const res = await sut.findAll()
+
+      expect(res).toHaveLength(1)
+      expect(res[0].id).toBeDefined()
+      expect(res[0].user).toBeDefined()
+      expect(res[0].replies).toHaveLength(1)
+      expect(res[0].replies?.[0].id).toBe(reply.id)
+      expect(res[0].replies?.[0].user.toString()).toBe(user.id)
     })
 
     it('should throw if find throws', () => {
