@@ -17,7 +17,7 @@ export class UpdatePostController extends Controller {
     private readonly userManager: UserManager,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({

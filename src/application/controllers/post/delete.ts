@@ -20,7 +20,7 @@ export class DeletePostController extends Controller {
     private readonly userManager: UserManager,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({

@@ -15,7 +15,7 @@ export class CreateUserController extends Controller {
     private readonly mailService: MailService,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({

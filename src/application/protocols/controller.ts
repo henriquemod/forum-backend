@@ -6,10 +6,20 @@ import { badRequest } from './http'
 import type { HttpResponse } from './http/responses'
 import type { Session } from './session'
 
+export interface ControllerProps {
+  session?: Session
+}
+
 export abstract class Controller {
+  protected readonly session?: Session
   abstract perform(httpRequest: any): Promise<HttpResponse>
 
-  constructor(protected readonly session?: Session) {}
+  constructor(props?: ControllerProps) {
+    if (props) {
+      const { session } = props
+      this.session = session
+    }
+  }
 
   buildValidators(_httpRequest: any): Validator[] {
     return []

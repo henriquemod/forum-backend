@@ -12,7 +12,7 @@ export class DeleteReplyController extends Controller {
     private readonly replyManager: Reply.Delete,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({

@@ -17,7 +17,7 @@ export class LoginController extends Controller {
     private readonly hashManager: HashComparer,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({

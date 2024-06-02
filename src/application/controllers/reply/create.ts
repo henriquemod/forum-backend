@@ -14,7 +14,7 @@ export class CreateReplyController extends Controller {
     private readonly replyManager: Reply.ReplyPost,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({

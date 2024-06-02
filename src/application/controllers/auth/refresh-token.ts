@@ -11,7 +11,7 @@ export class RefreshTokenController extends Controller {
     private readonly tokenManager: TokenManager,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({ accessToken }: { accessToken: string }): Promise<

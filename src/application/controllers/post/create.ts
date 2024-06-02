@@ -15,7 +15,7 @@ export class CreatePostController extends Controller {
     private readonly AIManager: AIManager,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({

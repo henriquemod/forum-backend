@@ -14,7 +14,7 @@ export class UpdateReplyController extends Controller {
     private readonly replyManager: ReplyManager,
     protected readonly session?: Session
   ) {
-    super(session)
+    super({ session })
   }
 
   async perform({
