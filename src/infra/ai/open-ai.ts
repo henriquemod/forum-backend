@@ -1,4 +1,3 @@
-// import { InternalServerError } from '@/application/errors'
 import type { Prompt } from '@/domain/usecases/ai'
 import { env } from '@/main/config/env'
 import OpenAIModule from 'openai'

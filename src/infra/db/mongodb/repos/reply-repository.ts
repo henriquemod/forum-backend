@@ -36,6 +36,10 @@ export class ReplyMongoRepository implements ReplyDBUsecases {
   }
 
   async findById(replyId: string): Promise<ReplyModel.Model | null> {
+    if (!mongoose.Types.ObjectId.isValid(replyId)) {
+      return null
+    }
+
     const reply = await ReplySchema.findById(replyId)
       .populate('user')
       .populate({
