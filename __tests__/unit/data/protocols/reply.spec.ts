@@ -1,5 +1,9 @@
 import { ReplyManager } from '@/data/protocols'
-import { NotFound } from '@/application/errors'
+import {
+  InternalServerError,
+  NotFound,
+  Unauthorized
+} from '@/application/errors'
 import {
   type DBReplyStub,
   type DBPostStub,
@@ -11,6 +15,7 @@ import {
   PostRepositoryStub,
   UserRepositoryStub
 } from '../helpers'
+import { UserModel } from '@/domain/models'
 
 interface SutTypes {
   sut: ReplyManager
@@ -81,7 +86,7 @@ describe('ReplyManager', () => {
 
       const res = sut.reply(replyParams)
 
-      await expect(res).rejects.toThrow(new NotFound('User not found'))
+      await expect(res).rejects.toThrow(new NotFound('User or post not found'))
     })
 
     it('should throw NotFound if post not found', async () => {
@@ -90,7 +95,7 @@ describe('ReplyManager', () => {
 
       const res = sut.reply(replyParams)
 
-      await expect(res).rejects.toThrow(new NotFound('Post not found'))
+      await expect(res).rejects.toThrow(new NotFound('User or post not found'))
     })
 
     it('should throw if create reply throws', async () => {
@@ -103,19 +108,216 @@ describe('ReplyManager', () => {
 
       await expect(res).rejects.toThrow()
     })
+    it('should throw if does not find parent reply', () => {
+      const { sut, replyRepositoryStub } = makeSut()
+      jest.spyOn(replyRepositoryStub, 'findById').mockResolvedValueOnce(null)
+
+      const res = sut.reply({
+        authorId: MOCK_USER.id,
+        content: MOCK_REPLY.content,
+        postId: MOCK_POST.id,
+        replyContentId: MOCK_REPLY.id
+      })
+
+      expect(res).rejects.toThrow(new NotFound('Parent reply not found'))
+    })
   })
 
-  it('should throw if does not find parent reply', () => {
-    const { sut, replyRepositoryStub } = makeSut()
-    jest.spyOn(replyRepositoryStub, 'findById').mockResolvedValueOnce(null)
+  describe('findById', () => {
+    it('should return reply on success', async () => {
+      const { sut } = makeSut()
 
-    const res = sut.reply({
-      authorId: MOCK_USER.id,
-      content: MOCK_REPLY.content,
-      postId: MOCK_POST.id,
-      replyContentId: MOCK_REPLY.id
+      const res = await sut.findById({ replyId: MOCK_REPLY.id })
+
+      expect(res).toEqual(MOCK_REPLY)
     })
 
-    expect(res).rejects.toThrow(new NotFound('Reply not found'))
+    it('should throw NotFound if reply not found', () => {
+      const { sut, replyRepositoryStub } = makeSut()
+      jest.spyOn(replyRepositoryStub, 'findById').mockResolvedValueOnce(null)
+
+      const res = sut.findById({ replyId: MOCK_REPLY.id })
+
+      expect(res).rejects.toThrow(new NotFound('Reply not found'))
+    })
+
+    it('should throw if findById throws', async () => {
+      const { sut, replyRepositoryStub } = makeSut()
+      jest
+        .spyOn(replyRepositoryStub, 'findById')
+        .mockRejectedValueOnce(new InternalServerError())
+
+      const res = sut.findById({ replyId: MOCK_REPLY.id })
+
+      await expect(res).rejects.toThrow(InternalServerError)
+    })
+  })
+
+  describe('delete', () => {
+    it('should call delete with correct values', async () => {
+      const { sut, replyRepositoryStub } = makeSut()
+
+      const spy = jest.spyOn(replyRepositoryStub, 'delete')
+
+      await sut.delete({ replyId: MOCK_REPLY.id, userId: MOCK_USER.id })
+
+      expect(spy).toHaveBeenCalledWith(MOCK_REPLY.id)
+    })
+
+    it('should throw NotFound if reply not found', () => {
+      const { sut, replyRepositoryStub } = makeSut()
+      jest.spyOn(replyRepositoryStub, 'findById').mockResolvedValueOnce(null)
+
+      const res = sut.delete({ replyId: MOCK_REPLY.id, userId: MOCK_USER.id })
+
+      expect(res).rejects.toThrow(new NotFound('Reply or user not found'))
+    })
+
+    it('should throw NotFound if user not found', () => {
+      const { sut, userRepositoryStub } = makeSut()
+      jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
+
+      const res = sut.delete({ replyId: MOCK_REPLY.id, userId: MOCK_USER.id })
+
+      expect(res).rejects.toThrow(new NotFound('Reply or user not found'))
+    })
+
+    it('should throw Unauthorized if user is not the author', () => {
+      const { sut, replyRepositoryStub } = makeSut()
+
+      jest.spyOn(replyRepositoryStub, 'findById').mockResolvedValueOnce({
+        ...MOCK_REPLY,
+        user: { ...MOCK_REPLY.user, id: 'other_id' }
+      })
+
+      const res = sut.delete({ replyId: MOCK_REPLY.id, userId: MOCK_USER.id })
+
+      expect(res).rejects.toThrow(
+        new Unauthorized('You are not allowed to delete this reply')
+      )
+    })
+
+    it('should throw if delete throws', async () => {
+      const { sut, replyRepositoryStub } = makeSut()
+      jest
+        .spyOn(replyRepositoryStub, 'delete')
+        .mockRejectedValueOnce(new InternalServerError())
+
+      const res = sut.delete({ replyId: MOCK_REPLY.id, userId: MOCK_USER.id })
+
+      await expect(res).rejects.toThrow(InternalServerError)
+    })
+
+    it('should allow admin to delete reply', async () => {
+      const { sut, replyRepositoryStub, userRepositoryStub } = makeSut()
+
+      jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce({
+        ...MOCK_USER,
+        id: 'admin_id',
+        level: UserModel.Level.ADMIN
+      })
+
+      const spy = jest.spyOn(replyRepositoryStub, 'delete')
+
+      await sut.delete({ replyId: MOCK_REPLY.id, userId: MOCK_USER.id })
+
+      expect(spy).toHaveBeenCalledWith(MOCK_REPLY.id)
+    })
+
+    it('should allow master user to delete reply', async () => {
+      const { sut, replyRepositoryStub, userRepositoryStub } = makeSut()
+
+      jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce({
+        ...MOCK_USER,
+        id: 'master_id',
+        level: UserModel.Level.MASTER
+      })
+
+      const spy = jest.spyOn(replyRepositoryStub, 'delete')
+
+      await sut.delete({ replyId: MOCK_REPLY.id, userId: MOCK_USER.id })
+
+      expect(spy).toHaveBeenCalledWith(MOCK_REPLY.id)
+    })
+  })
+
+  describe('update', () => {
+    it('should call update with correct values', async () => {
+      const { sut, replyRepositoryStub, userRepositoryStub } = makeSut()
+
+      jest
+        .spyOn(userRepositoryStub, 'findByUserId')
+        .mockResolvedValueOnce(MOCK_USER)
+
+      const spy = jest.spyOn(replyRepositoryStub, 'update')
+
+      await sut.update({
+        content: MOCK_REPLY.content,
+        replyId: MOCK_REPLY.id,
+        userId: MOCK_USER.id
+      })
+
+      expect(spy).toHaveBeenCalledWith(MOCK_REPLY.id, MOCK_REPLY.content)
+    })
+
+    it('should throw NotFound if reply not found', () => {
+      const { sut, replyRepositoryStub } = makeSut()
+      jest.spyOn(replyRepositoryStub, 'findById').mockResolvedValueOnce(null)
+
+      const res = sut.update({
+        content: MOCK_REPLY.content,
+        replyId: MOCK_REPLY.id,
+        userId: MOCK_USER.id
+      })
+
+      expect(res).rejects.toThrow(new NotFound('Reply or user not found'))
+    })
+
+    it('should throw NotFound if user not found', () => {
+      const { sut, userRepositoryStub } = makeSut()
+      jest.spyOn(userRepositoryStub, 'findByUserId').mockResolvedValueOnce(null)
+
+      const res = sut.update({
+        content: MOCK_REPLY.content,
+        replyId: MOCK_REPLY.id,
+        userId: MOCK_USER.id
+      })
+
+      expect(res).rejects.toThrow(new NotFound('Reply or user not found'))
+    })
+
+    it('should throw Unauthorized if user is not the author', () => {
+      const { sut, replyRepositoryStub } = makeSut()
+
+      jest.spyOn(replyRepositoryStub, 'findById').mockResolvedValueOnce({
+        ...MOCK_REPLY,
+        user: { ...MOCK_REPLY.user, id: 'other_id' }
+      })
+
+      const res = sut.update({
+        content: MOCK_REPLY.content,
+        replyId: MOCK_REPLY.id,
+        userId: MOCK_USER.id
+      })
+
+      expect(res).rejects.toThrow(
+        new Unauthorized('You are not allowed to update this reply')
+      )
+    })
+
+    it('should throw if update throws', async () => {
+      const { sut, replyRepositoryStub } = makeSut()
+      jest
+        .spyOn(replyRepositoryStub, 'update')
+        .mockRejectedValueOnce(new InternalServerError())
+
+      const res = sut.update({
+        content: MOCK_REPLY.content,
+        replyId: MOCK_REPLY.id,
+        userId: MOCK_USER.id
+      })
+
+      await expect(res).rejects.toThrow(InternalServerError)
+    })
   })
 })

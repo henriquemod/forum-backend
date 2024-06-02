@@ -1,6 +1,6 @@
 import { NotFound, Unauthorized } from '@/application/errors'
 import type { Reply } from '@/data/usecases'
-import type { ReplyModel } from '@/domain/models'
+import { UserModel, type ReplyModel } from '@/domain/models'
 import type { DBPost, DBReply, DBUser } from '@/domain/usecases/db'
 
 export class ReplyManager
@@ -31,16 +31,13 @@ export class ReplyManager
     replyContentId,
     postId
   }: Reply.ReplyPostParams): Promise<void> {
-    const user = await this.userRepository.findByUserId(authorId)
+    const [user, post] = await Promise.all([
+      this.userRepository.findByUserId(authorId),
+      this.postRepository.findById(postId)
+    ])
 
-    if (!user) {
-      throw new NotFound('User not found')
-    }
-
-    const post = await this.postRepository.findById(postId)
-
-    if (!post) {
-      throw new NotFound('Post not found')
+    if (!user || !post) {
+      throw new NotFound('User or post not found')
     }
 
     let parentReply: ReplyModel.Model | null = null
@@ -49,7 +46,7 @@ export class ReplyManager
       parentReply = await this.replyRepository.findById(replyContentId)
 
       if (!parentReply) {
-        throw new NotFound('Reply not found')
+        throw new NotFound('Parent reply not found')
       }
     }
 
@@ -62,13 +59,24 @@ export class ReplyManager
   }
 
   async delete({ replyId, userId }: Reply.DeleteParams): Promise<void> {
-    const reply = await this.replyRepository.findById(replyId)
+    const [reply, user] = await Promise.all([
+      this.replyRepository.findById(replyId),
+      this.userRepository.findByUserId(userId)
+    ])
 
-    if (!reply) {
-      throw new NotFound('Reply not found')
+    if (!reply || !user) {
+      throw new NotFound('Reply or user not found')
     }
 
-    if (reply.user.id !== userId) {
+    if (
+      user.level === UserModel.Level.ADMIN ||
+      user.level === UserModel.Level.MASTER
+    ) {
+      await this.replyRepository.delete(replyId)
+      return
+    }
+
+    if (reply.user.id !== user.id) {
       throw new Unauthorized('You are not allowed to delete this reply')
     }
 
@@ -80,13 +88,16 @@ export class ReplyManager
     replyId,
     userId
   }: Reply.UpdateParams): Promise<void> {
-    const reply = await this.replyRepository.findById(replyId)
+    const [reply, user] = await Promise.all([
+      this.replyRepository.findById(replyId),
+      this.userRepository.findByUserId(userId)
+    ])
 
-    if (!reply) {
-      throw new NotFound('Reply not found')
+    if (!reply || !user) {
+      throw new NotFound('Reply or user not found')
     }
 
-    if (reply.user.id !== userId) {
+    if (reply.user.id !== user.id) {
       throw new Unauthorized('You are not allowed to update this reply')
     }
 
