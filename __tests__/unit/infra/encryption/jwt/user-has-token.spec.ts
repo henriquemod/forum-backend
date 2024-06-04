@@ -1,4 +1,5 @@
 import { JwtTokenEncryption } from '@/infra/encryption'
+
 import { UserRepositoryStub } from '../stubs'
 
 interface SutTypes {

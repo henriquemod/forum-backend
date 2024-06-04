@@ -1,4 +1,5 @@
 import { ActivationManager } from '@/data/protocols'
+
 import {
   type DBActivationStub,
   type DBUserStub,

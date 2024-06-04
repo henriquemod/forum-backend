@@ -1,5 +1,6 @@
-import type { Mail } from '@/data/usecases'
 import Mailgun from 'mailgun.js'
+
+import type { Mail } from '@/data/usecases'
 
 export class MailgunMailService implements Mail.SendActivationMail {
   private readonly mailgun: Mailgun = new Mailgun(FormData)

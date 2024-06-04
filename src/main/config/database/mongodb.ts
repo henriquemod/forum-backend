@@ -1,4 +1,5 @@
 import mongoose, { type ClientSession } from 'mongoose'
+
 import { env } from '../env'
 
 export const mongoDbInit = async (): Promise<ClientSession> => {

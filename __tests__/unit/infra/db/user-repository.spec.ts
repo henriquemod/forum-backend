@@ -1,11 +1,12 @@
-import type { Hash } from '@/data/usecases'
-import { UserMongoRepository } from '@/infra/db/mongodb/repos/user-repository'
-import { UserSchema } from '@/infra/db/mongodb/schemas'
 import { ObjectId } from 'mongodb'
-import { UserModel } from '@/domain/models'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 import { omit } from 'ramda'
+
+import type { Hash } from '@/data/usecases'
+import { UserModel } from '@/domain/models'
+import { UserMongoRepository } from '@/infra/db/mongodb/repos/user-repository'
+import { UserSchema } from '@/infra/db/mongodb/schemas'
 
 const MOCK_USER_ID = '123456789012345678901234'
 

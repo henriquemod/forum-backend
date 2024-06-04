@@ -1,3 +1,5 @@
+import type { ClientSession } from 'mongoose'
+
 import { CreateUserController } from '@/application/controllers/user'
 import { ActivationManager, UserManager } from '@/data/protocols'
 import {
@@ -6,7 +8,7 @@ import {
 } from '@/infra/db/mongodb/repos'
 import { BCryptHash } from '@/infra/encryption'
 import { MailjetMailService } from '@/infra/mail'
-import type { ClientSession } from 'mongoose'
+
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeCreateUserController = (

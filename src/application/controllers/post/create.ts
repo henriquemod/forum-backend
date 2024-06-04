@@ -4,6 +4,7 @@ import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
 import type { AI, Post, Queue, Reply } from '@/data/usecases'
 import type { PostModel } from '@/domain/models'
+
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.CreatePost

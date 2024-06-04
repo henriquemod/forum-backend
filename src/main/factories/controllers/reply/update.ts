@@ -1,3 +1,5 @@
+import type { ClientSession } from 'mongoose'
+
 import { UpdateReplyController } from '@/application/controllers/reply'
 import { ReplyManager } from '@/data/protocols'
 import {
@@ -6,7 +8,7 @@ import {
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
 import { BCryptHash } from '@/infra/encryption'
-import type { ClientSession } from 'mongoose'
+
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeUpdateReplyController = (

@@ -1,6 +1,7 @@
 import type { Post } from '@/data/usecases/'
-import { MOCK_USER } from './user-stub'
 import type { PostModel } from '@/domain/models'
+
+import { MOCK_USER } from './user-stub'
 
 export const MOCK_POST: PostModel.Model = {
   id: 'any_id',

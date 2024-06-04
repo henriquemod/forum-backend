@@ -1,5 +1,6 @@
-import type { Middleware } from '@/application/protocols'
 import type { RequestHandler } from 'express'
+
+import type { Middleware } from '@/application/protocols'
 
 type Adapter = (middleware: Middleware) => RequestHandler
 

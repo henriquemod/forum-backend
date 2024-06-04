@@ -1,5 +1,6 @@
 import type { Reply } from '@/data/usecases/'
 import type { ReplyModel } from '@/domain/models'
+
 import { MOCK_REPLY } from '../../data/helpers'
 
 export class ReplyStub

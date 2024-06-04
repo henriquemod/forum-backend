@@ -1,5 +1,7 @@
-import { adaptExpressRoute } from '@/main/adapters'
 import type { Router } from 'express'
+
+import { adaptExpressRoute } from '@/main/adapters'
+
 import type { ExtraParams } from '../config/routes'
 import {
   makeCreatePostController,

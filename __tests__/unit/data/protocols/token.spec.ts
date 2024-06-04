@@ -1,5 +1,6 @@
 import { NotFound } from '@/application/errors'
 import { TokenManager } from '@/data/protocols'
+
 import {
   type DBTokenStub,
   type DBUserStub,

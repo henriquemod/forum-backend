@@ -1,8 +1,10 @@
+import type { ClientSession } from 'mongoose'
+import mongoose from 'mongoose'
+
 import type { PostModel, ReplyModel, UserModel } from '@/domain/models'
 import type { DBReply } from '@/domain/usecases/db'
 import { PostSchema, ReplySchema } from '@/infra/db/mongodb/schemas'
-import type { ClientSession } from 'mongoose'
-import mongoose from 'mongoose'
+
 import { PostMongoRepository } from './post-repository'
 import { UserMongoRepository } from './user-repository'
 

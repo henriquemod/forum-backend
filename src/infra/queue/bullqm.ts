@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Queue } from '@/data/usecases'
 import {
   Queue as BullQueue,
   type ConnectionOptions,
   type Worker,
   type Job
 } from 'bullmq'
+
+import type { Queue } from '@/data/usecases'
 
 export class BullQMQueue implements Queue.Add {
   static async InitializeWorker(

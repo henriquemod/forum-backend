@@ -1,7 +1,8 @@
+import { omit } from 'ramda'
+
 import type { User } from '@/data/usecases'
 import { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
-import { omit } from 'ramda'
 
 type FindUser = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &

@@ -1,5 +1,6 @@
 import type { Activation } from '@/data/usecases'
 import type { UserModel } from '@/domain/models'
+
 import { MOCK_USER } from './user-stub'
 
 export class ActivationStub

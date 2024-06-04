@@ -1,6 +1,7 @@
 import { ListPostsController } from '@/application/controllers/post'
 import { ValidationComposite } from '@/application/validation'
 import type { Post } from '@/data/usecases/'
+
 import { MOCK_POST, PostStub } from '../../helpers'
 
 jest.mock('@/application/validation/composite')

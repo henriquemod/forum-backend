@@ -1,11 +1,12 @@
+import type { ClientSession } from 'mongoose'
+import mongoose from 'mongoose'
+import { pick } from 'ramda'
+
 import type { User } from '@/data/usecases'
 import type { Hash } from '@/data/usecases/encryption'
 import { UserModel } from '@/domain/models'
 import type { DBUser } from '@/domain/usecases/db'
 import { UserSchema } from '@/infra/db/mongodb/schemas'
-import type { ClientSession } from 'mongoose'
-import mongoose from 'mongoose'
-import { pick } from 'ramda'
 
 type UserDBUsecases = DBUser.FindUserByEmail &
   DBUser.FindUserByUsername &

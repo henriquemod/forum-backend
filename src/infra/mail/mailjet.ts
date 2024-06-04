@@ -1,6 +1,7 @@
+import Mailjet, { type Client } from 'node-mailjet'
+
 import type { Mail } from '@/data/usecases'
 import { env } from '@/main/config/env'
-import Mailjet, { type Client } from 'node-mailjet'
 
 const MAILJET_TEMPLATE_ID = 5972199
 

@@ -1,9 +1,10 @@
 import { Controller, noContent } from '@/application/protocols'
 import type { AuthenticatedRequest } from '@/application/protocols/http/authenticated-request'
 import type { HttpResponse } from '@/application/protocols/http/responses'
-import type { Reply } from '@/data/usecases'
-import { ValidationBuilder as builder, type Validator } from '../../validation'
 import type { Session } from '@/application/protocols/session'
+import type { Reply } from '@/data/usecases'
+
+import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PerformParams = AuthenticatedRequest<Reply.DeleteParams>
 

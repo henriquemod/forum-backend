@@ -1,10 +1,11 @@
 import { Controller, noContent } from '@/application/protocols'
+import type { AuthenticatedRequest } from '@/application/protocols/http/authenticated-request'
 import type { HttpResponse } from '@/application/protocols/http/responses'
+import type { Session } from '@/application/protocols/session'
 import type { Reply } from '@/data/usecases'
 import type { ReplyModel } from '@/domain/models'
+
 import { type Validator, ValidationBuilder as builder } from '../../validation'
-import type { AuthenticatedRequest } from '@/application/protocols/http/authenticated-request'
-import type { Session } from '@/application/protocols/session'
 
 type ReplyManager = Reply.Update
 type PerformParams = AuthenticatedRequest<Reply.UpdateParams>

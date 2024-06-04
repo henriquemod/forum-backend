@@ -1,8 +1,9 @@
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
-import type { Token } from '@/data/usecases'
-import { ValidationBuilder as builder, type Validator } from '../../validation'
 import type { Session } from '@/application/protocols/session'
+import type { Token } from '@/data/usecases'
+
+import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type TokenManager = Token.Refresh
 

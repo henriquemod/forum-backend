@@ -1,7 +1,8 @@
+import bcrypt from 'bcrypt'
+
 import { InternalServerError } from '@/application/errors'
 import type { Hash } from '@/data/usecases/encryption'
 import { env } from '@/main/config/env'
-import bcrypt from 'bcrypt'
 
 type EncryptionDataUsecases = Hash.Generate & Hash.Compare
 

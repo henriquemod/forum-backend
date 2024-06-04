@@ -1,7 +1,8 @@
+import bcrypt from 'bcrypt'
+
 import { InternalServerError } from '@/application/errors'
 import { BCryptHash } from '@/infra/encryption'
 import '@/main/config/env'
-import bcrypt from 'bcrypt'
 
 jest.mock('bcrypt')
 jest.mock('@/main/config/env', () => ({

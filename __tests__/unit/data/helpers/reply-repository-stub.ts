@@ -1,7 +1,8 @@
-import type { DBReply } from '@/domain/usecases/db'
-import { MOCK_USER } from './user-repository-stub'
 import type { PostModel, ReplyModel, UserModel } from '@/domain/models'
+import type { DBReply } from '@/domain/usecases/db'
+
 import { MOCK_POST } from './post-repository-stub'
+import { MOCK_USER } from './user-repository-stub'
 
 export type DBReplyStub = DBReply.Create &
   DBReply.FindById &

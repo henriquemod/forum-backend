@@ -1,8 +1,9 @@
+import type { ClientSession } from 'mongoose'
+import mongoose from 'mongoose'
+
 import type { AccessTokenModel, TokenModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
-import type { ClientSession } from 'mongoose'
-import mongoose from 'mongoose'
 
 type TokenDBUsecases = DBToken.FindTokenByToken &
   DBToken.FindTokenByUserId &

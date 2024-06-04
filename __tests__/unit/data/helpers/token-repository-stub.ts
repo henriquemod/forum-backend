@@ -1,6 +1,7 @@
-import type { DBToken } from '@/domain/usecases/db'
-import { MOCK_USER } from './user-repository-stub'
 import type { TokenModel } from '@/domain/models'
+import type { DBToken } from '@/domain/usecases/db'
+
+import { MOCK_USER } from './user-repository-stub'
 
 export type DBTokenStub = DBToken.FindTokenByRefreshToken &
   DBToken.FindTokenByToken &

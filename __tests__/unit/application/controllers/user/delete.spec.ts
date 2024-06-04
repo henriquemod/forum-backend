@@ -1,4 +1,5 @@
 import { DeleteUserController } from '@/application/controllers/user'
+
 import { UserStub } from '../../helpers'
 
 interface SutTypes {

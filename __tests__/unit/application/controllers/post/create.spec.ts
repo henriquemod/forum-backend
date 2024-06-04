@@ -1,7 +1,9 @@
+import { omit } from 'ramda'
+
 import { CreatePostController } from '@/application/controllers/post'
 import { ValidationComposite } from '@/application/validation'
 import type { AI, Post } from '@/data/usecases/'
-import { omit } from 'ramda'
+
 import { AiStub, PostStub, ReplyStub } from '../../helpers'
 
 jest.mock('@/application/validation/composite')

@@ -1,7 +1,9 @@
 /* eslint-disable no-console */
+import type { RedisOptions } from 'ioredis'
+
 import { makeApp } from '@/main/config/app'
 import { env } from '@/main/config/env'
-import type { RedisOptions } from 'ioredis'
+
 import { databaseInit } from './config/database'
 
 const redisOptions: RedisOptions = {

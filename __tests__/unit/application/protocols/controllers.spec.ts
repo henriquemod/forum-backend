@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
+import { ApiError } from '@/application/protocols'
 import { Controller } from '@/application/protocols/controller'
-import { ApiError } from '@/application/protocols/api-error'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 
 class TestController extends Controller {

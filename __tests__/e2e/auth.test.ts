@@ -1,10 +1,12 @@
+import { faker } from '@faker-js/faker'
+
+import mongoose from 'mongoose'
+import { isEmpty, omit } from 'ramda'
+import request from 'supertest'
+import type TestAgent from 'supertest/lib/agent'
+
 import { makeApp } from '@/main/config/app'
 import { env } from '@/main/config/env'
-import mongoose from 'mongoose'
-import request from 'supertest'
-import { faker } from '@faker-js/faker'
-import { isEmpty, omit } from 'ramda'
-import type TestAgent from 'supertest/lib/agent'
 
 jest.mock('@/main/config/env', () => {
   const MONGO_PORT = process.env.DB_PORT || '27017'

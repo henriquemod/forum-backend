@@ -1,3 +1,6 @@
+import type { ConnectionOptions } from 'bullmq'
+import type { ClientSession } from 'mongoose'
+
 import { CreatePostController } from '@/application/controllers/post'
 import { AIValidateContent, PostManager, ReplyManager } from '@/data/protocols'
 import { OpenAI } from '@/infra/ai'
@@ -6,11 +9,10 @@ import {
   ReplyMongoRepository,
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
-import type { ClientSession } from 'mongoose'
-import { mongoSessionFactory } from '../../sessions/mongo-session'
-import { BullQMQueue } from '@/infra/queue'
-import type { ConnectionOptions } from 'bullmq'
 import { BCryptHash } from '@/infra/encryption'
+import { BullQMQueue } from '@/infra/queue'
+
+import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 interface FactoryParams {
   session?: ClientSession

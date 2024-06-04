@@ -1,8 +1,9 @@
 import { InternalServerError } from '@/application/errors'
 import { AIValidateContent } from '@/data/protocols'
 import type { Prompt } from '@/domain/usecases/ai'
-import { PromptStub } from '../helpers'
 import { env } from '@/main/config/env'
+
+import { PromptStub } from '../helpers'
 
 jest.mock('@/main/config/env')
 

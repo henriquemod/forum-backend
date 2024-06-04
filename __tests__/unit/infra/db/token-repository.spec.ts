@@ -1,7 +1,8 @@
-import { TokenMongoRepository } from '@/infra/db/mongodb/repos/token-repository'
-import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
+
+import { TokenMongoRepository } from '@/infra/db/mongodb/repos/token-repository'
+import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
 
 const MOCK_USER_ID = '123456789012345678901234'
 

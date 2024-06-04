@@ -3,6 +3,7 @@ import { AuthMiddleware } from '@/application/middlewares/auth-middleware'
 import { badRequest, ok, unauthorized } from '@/application/protocols'
 import { ApiError } from '@/application/protocols/api-error'
 import type { Token } from '@/data/usecases'
+
 import { TokenStub } from '../helpers'
 
 interface SutTypes {

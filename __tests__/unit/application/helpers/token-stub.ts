@@ -1,5 +1,6 @@
 import type { Token } from '@/data/usecases'
 import type { UserModel, AccessTokenModel, TokenModel } from '@/domain/models'
+
 import { MOCK_USER } from './user-stub'
 
 type TokenImplementation = Token.Validate &

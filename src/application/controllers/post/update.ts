@@ -5,6 +5,7 @@ import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
 import type { Post, User } from '@/data/usecases'
 import { type PostModel, UserModel } from '@/domain/models'
+
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.UpdatePost & Post.FindPost

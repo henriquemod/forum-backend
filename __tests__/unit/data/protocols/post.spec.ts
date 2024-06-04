@@ -1,5 +1,7 @@
-import { PostManager } from '@/data/protocols'
 import { omit } from 'ramda'
+
+import { PostManager } from '@/data/protocols'
+
 import {
   type DBPostStub,
   MOCK_POST,

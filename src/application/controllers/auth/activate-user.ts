@@ -2,6 +2,7 @@ import { Controller, noContent } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
 import type { Activation, Authentication, User } from '@/data/usecases'
+
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type UserManager = User.ActivateUser

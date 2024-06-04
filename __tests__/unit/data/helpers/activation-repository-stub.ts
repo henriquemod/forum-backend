@@ -1,5 +1,6 @@
 import type { ActivationModel } from '@/domain/models'
 import type { DBActivation } from '@/domain/usecases/db'
+
 import { MOCK_USER } from './user-repository-stub'
 
 export const MOCK_ACTIVATION = {

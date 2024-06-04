@@ -1,5 +1,6 @@
-import type { ActivationModel } from '@/domain/models'
 import mongoose, { Schema } from 'mongoose'
+
+import type { ActivationModel } from '@/domain/models'
 
 export const activationSchema = new mongoose.Schema<ActivationModel>({
   code: {

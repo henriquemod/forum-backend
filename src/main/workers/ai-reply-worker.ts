@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
+import { type ConnectionOptions, Worker } from 'bullmq'
+
 import { AIPromptReplyToPost } from '@/data/protocols'
 import { OpenAI } from '@/infra/ai'
 import { BullQMQueue } from '@/infra/queue'
-import { type ConnectionOptions, Worker } from 'bullmq'
+
 import { makeCreateReplyController } from '../factories/controllers/reply'
 
 export default (connection: ConnectionOptions): void => {

@@ -1,3 +1,5 @@
+import type { ClientSession } from 'mongoose'
+
 import { LoginController } from '@/application/controllers/auth'
 import { TokenManager, UserManager } from '@/data/protocols'
 import {
@@ -5,7 +7,7 @@ import {
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
 import { BCryptHash, JwtTokenEncryption } from '@/infra/encryption'
-import type { ClientSession } from 'mongoose'
+
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeLoginController = (
