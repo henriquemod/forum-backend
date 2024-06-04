@@ -3,7 +3,7 @@ import { AIValidateContent } from '@/data/protocols'
 import type { Prompt } from '@/domain/usecases/ai'
 import { env } from '@/main/config/env'
 
-import { PromptStub } from '../helpers'
+import { ValidatePromptStub } from '../../helpers'
 
 jest.mock('@/main/config/env')
 
@@ -13,7 +13,7 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const promptStub = new PromptStub()
+  const promptStub = new ValidatePromptStub()
   const sut = new AIValidateContent(promptStub)
 
   return {
@@ -22,7 +22,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('AIManager', () => {
+describe('AIValidateContent', () => {
   beforeEach(() => {
     env.features.aiAcceptanceLevel = 7
   })
