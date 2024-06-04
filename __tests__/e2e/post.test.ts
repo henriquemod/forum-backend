@@ -7,8 +7,6 @@ import request from 'supertest'
 
 jest.mock('@/main/config/env', () => {
   const MONGO_PORT = process.env.DB_PORT || '27017'
-  // eslint-disable-next-line no-console
-  console.warn('MONGO_PORT', MONGO_PORT)
   const currentEnv = jest.requireActual('@/main/config/env')
   return {
     ...currentEnv,
