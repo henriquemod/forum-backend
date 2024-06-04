@@ -1,5 +1,5 @@
 import { InternalServerError } from '@/application/errors'
-import { AIManager } from '@/data/protocols'
+import { AIValidateContent } from '@/data/protocols'
 import type { Prompt } from '@/domain/usecases/ai'
 import { PromptStub } from '../helpers'
 import { env } from '@/main/config/env'
@@ -7,13 +7,13 @@ import { env } from '@/main/config/env'
 jest.mock('@/main/config/env')
 
 interface SutTypes {
-  sut: AIManager
+  sut: AIValidateContent
   promptStub: Prompt.JSONFromPrompt
 }
 
 const makeSut = (): SutTypes => {
   const promptStub = new PromptStub()
-  const sut = new AIManager(promptStub)
+  const sut = new AIValidateContent(promptStub)
 
   return {
     sut,

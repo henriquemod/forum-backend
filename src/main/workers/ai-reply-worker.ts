@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { AIManager } from '@/data/protocols'
+import { AIPromptReplyToPost } from '@/data/protocols'
 import { OpenAI } from '@/infra/ai'
 import { BullQMQueue } from '@/infra/queue/bullqm'
 import { type ConnectionOptions, Worker } from 'bullmq'
@@ -12,7 +12,7 @@ export default (connection: ConnectionOptions): void => {
       console.log(`Processing job ${job.id} of type ${job.name}`)
       console.log('Job data:', job.data)
 
-      const aiManager = new AIManager(new OpenAI())
+      const aiManager = new AIPromptReplyToPost(new OpenAI())
       const controller = makeCreateReplyController()
 
       const aiGeneratedReply = await aiManager.promptReply(
@@ -33,5 +33,13 @@ export default (connection: ConnectionOptions): void => {
     { connection }
   )
 
-  BullQMQueue.InitializeWorker(worker)
+  BullQMQueue.InitializeWorker(
+    worker,
+    (job, err) => {
+      console.error(`Job ${job?.id} failed with error: ${err?.message}`)
+    },
+    (job) => {
+      console.log(`Job ${job.id} completed`)
+    }
+  )
 }

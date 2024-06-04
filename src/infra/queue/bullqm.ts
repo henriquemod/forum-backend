@@ -1,16 +1,20 @@
-/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Queue } from '@/data/usecases'
-import { Queue as BullQueue, type ConnectionOptions, type Worker } from 'bullmq'
+import {
+  Queue as BullQueue,
+  type ConnectionOptions,
+  type Worker,
+  type Job
+} from 'bullmq'
 
 export class BullQMQueue implements Queue.Add {
-  static async InitializeWorker(worker: Worker): Promise<void> {
-    worker.on('failed', (job, err) => {
-      console.error(`Job ${job?.id} failed:`, err)
-    })
-
-    worker.on('completed', (job) => {
-      console.log(`Job ${job.id} completed`)
-    })
+  static async InitializeWorker(
+    worker: Worker,
+    onFailCallback: <T = any>(job?: Job<T>, err?: Error) => void,
+    onCompleteCallback: <T = any>(job: Job<T>) => void
+  ): Promise<void> {
+    worker.on('failed', onFailCallback)
+    worker.on('completed', onCompleteCallback)
   }
 
   constructor(private readonly connection?: ConnectionOptions) {}

@@ -8,7 +8,7 @@ import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.CreatePost
 type ReplyManager = Reply.ReplyPost
-type AIManager = AI.ValidateContent & AI.PromptReplyToPost
+type AIManager = AI.ValidateContent
 
 export interface CreatePostControllerParams {
   postManager: PostManager
@@ -20,7 +20,6 @@ export interface CreatePostControllerParams {
 
 export class CreatePostController extends Controller {
   private readonly postManager: PostManager
-  private readonly replyManager: ReplyManager
   private readonly AIManager: AIManager
   private readonly queue?: Queue.Add
 
@@ -34,7 +33,6 @@ export class CreatePostController extends Controller {
     super({ session })
     this.postManager = postManager
     this.AIManager = AIManager
-    this.replyManager = replyManager
     this.queue = queue
   }
 
@@ -58,25 +56,7 @@ export class CreatePostController extends Controller {
     })
 
     if (this.queue) {
-      await this.queue.add(
-        newPost
-        // {
-        // callback: async () => {
-        //   const aiGeneratedReply = await this.AIManager.promptReply(
-        //     newPost.title,
-        //     newPost.content
-        //   )
-
-        //   if (aiGeneratedReply) {
-        //     await this.replyManager.reply({
-        //       authorId: newPost.user.id,
-        //       content: aiGeneratedReply,
-        //       postId: newPost.id
-        //     })
-        //   }
-        // }
-        // }
-      )
+      await this.queue.add(newPost)
     }
 
     return ok(newPost)

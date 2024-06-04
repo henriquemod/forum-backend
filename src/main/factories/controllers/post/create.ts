@@ -1,5 +1,5 @@
 import { CreatePostController } from '@/application/controllers/post'
-import { AIManager, PostManager, ReplyManager } from '@/data/protocols'
+import { AIValidateContent, PostManager, ReplyManager } from '@/data/protocols'
 import { OpenAI } from '@/infra/ai'
 import {
   PostMongoRepository,
@@ -32,7 +32,7 @@ export const makeCreatePostController = ({
     postRepository,
     userRepository
   )
-  const aiManagement = new AIManager(new OpenAI())
+  const aiManagement = new AIValidateContent(new OpenAI())
 
   return new CreatePostController({
     postManager,
