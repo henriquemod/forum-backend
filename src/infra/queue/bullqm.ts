@@ -9,6 +9,8 @@ import {
 import type { Queue } from '@/data/usecases'
 
 export class BullQMQueue implements Queue.Add {
+  constructor(private readonly connection?: ConnectionOptions) {}
+
   static async InitializeWorker(
     worker: Worker,
     onFailCallback: <T = any>(job?: Job<T>, err?: Error) => void,
@@ -17,8 +19,6 @@ export class BullQMQueue implements Queue.Add {
     worker.on('failed', onFailCallback)
     worker.on('completed', onCompleteCallback)
   }
-
-  constructor(private readonly connection?: ConnectionOptions) {}
 
   async add(prompt: unknown): Promise<void> {
     if (this.connection) {

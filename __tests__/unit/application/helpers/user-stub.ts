@@ -20,36 +20,30 @@ export class UserStub
     User.GetPublic,
     User.DeleteUser
 {
-  async delete(authenticatedUserId: string, userId: string): Promise<void> {}
+  async delete(_authenticatedUserId: string, _userId: string): Promise<void> {}
 
-  async activate(userId: string): Promise<void> {}
+  async activate(_userId: string): Promise<void> {}
 
-  async getUser<T extends User.GetUserParams>({
-    value,
-    origin = 'username',
-    safe
-  }: T): Promise<
-    T['safe'] extends true ? UserModel.SafeModel : UserModel.Model
-  > {
+  async getUser<T extends User.GetUserParams>(
+    _params: T
+  ): Promise<T['safe'] extends true ? UserModel.SafeModel : UserModel.Model> {
     return await Promise.resolve(MOCK_USER)
   }
 
-  async getPublicUser({
-    value,
-    origin = 'username',
-    safe = true
-  }: User.GetUserParams): Promise<User.PublicUserData> {
+  async getPublicUser(
+    _params: User.GetUserParams
+  ): Promise<User.PublicUserData> {
     return await Promise.resolve({
       username: MOCK_USER.username,
       createdAt: MOCK_USER.createdAt
     })
   }
 
-  async registerUser(user: User.RegisterParams): Promise<UserModel.Model> {
+  async registerUser(_user: User.RegisterParams): Promise<UserModel.Model> {
     return await Promise.resolve({ ...MOCK_USER, password: 'hashed_password' })
   }
 
-  async findUserByIdOrFail(id: string): Promise<UserModel.Model> {
+  async findUserByIdOrFail(_id: string): Promise<UserModel.Model> {
     return MOCK_USER
   }
 }

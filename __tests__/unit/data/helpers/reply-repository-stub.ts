@@ -22,15 +22,15 @@ export const MOCK_REPLY: ReplyModel.Model = {
 }
 
 export class ReplyRepositoryStub implements DBReplyStub {
-  async delete(id: string): Promise<void> {}
+  async delete(_id: string): Promise<void> {}
 
-  async update(id: string, content: string): Promise<void> {}
+  async update(_id: string, _content: string): Promise<void> {}
 
-  async findById(replyId: string): Promise<ReplyModel.Model | null> {
+  async findById(_replyId: string): Promise<ReplyModel.Model | null> {
     return await Promise.resolve(MOCK_REPLY)
   }
 
-  async create(params: DBReply.CreateParams): Promise<ReplyModel.Model> {
+  async create(_params: DBReply.CreateParams): Promise<ReplyModel.Model> {
     return await Promise.resolve(MOCK_REPLY)
   }
 }

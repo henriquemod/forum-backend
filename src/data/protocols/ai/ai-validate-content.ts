@@ -20,17 +20,6 @@ export class AIValidateContent implements AIData {
 
   constructor(private readonly prompt: Prompt.JSONFromPrompt) {}
 
-  private readonly validateReturn = (response: unknown): void => {
-    if (
-      typeof response !== 'object' ||
-      response === null ||
-      !('level' in response) ||
-      typeof response.level !== 'number'
-    ) {
-      throw new InternalServerError('Error on AI response')
-    }
-  }
-
   async validateContent(title: string, content: string): Promise<boolean> {
     const text = this.promptTemplate
       .replace('@title', title)
@@ -49,5 +38,16 @@ export class AIValidateContent implements AIData {
     this.validateReturn(response.data)
 
     return response.data.level >= this.promptLevel
+  }
+
+  private readonly validateReturn = (response: unknown): void => {
+    if (
+      typeof response !== 'object' ||
+      response === null ||
+      !('level' in response) ||
+      typeof response.level !== 'number'
+    ) {
+      throw new InternalServerError('Error on AI response')
+    }
   }
 }

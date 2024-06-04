@@ -4,7 +4,7 @@ import { Controller } from '@/application/protocols/controller'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 
 class TestController extends Controller {
-  async perform(httpRequest: unknown): Promise<HttpResponse> {
+  async perform(_httpRequest: unknown): Promise<HttpResponse> {
     return {} as HttpResponse
   }
 }

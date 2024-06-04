@@ -10,7 +10,7 @@ type TokenImplementation = Token.Validate &
   Token.GetToken
 
 export class TokenStub implements TokenImplementation {
-  async getToken(token: string): Promise<TokenModel> {
+  async getToken(_token: string): Promise<TokenModel> {
     return await Promise.resolve({
       accessToken: 'any_access',
       refreshAccessToken: 'any_refresh',

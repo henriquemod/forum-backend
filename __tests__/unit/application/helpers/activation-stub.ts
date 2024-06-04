@@ -8,7 +8,7 @@ export class ActivationStub
     Activation.CreateActivationCode,
     Activation.GetUserByActivationCode
 {
-  async getUser(code: string): Promise<UserModel.Model> {
+  async getUser(_code: string): Promise<UserModel.Model> {
     return MOCK_USER
   }
 

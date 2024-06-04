@@ -2,19 +2,17 @@ import { BadRequest } from '@/application/errors'
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
-import type { AI, Post, Queue, Reply } from '@/data/usecases'
+import type { AI, Post, Queue } from '@/data/usecases'
 import type { PostModel } from '@/domain/models'
 
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.CreatePost
-type ReplyManager = Reply.ReplyPost
 type AIManager = AI.ValidateContent
 
 export interface CreatePostControllerParams {
   postManager: PostManager
   AIManager: AIManager
-  replyManager: ReplyManager
   session?: Session
   queue?: Queue.Add
 }
@@ -27,7 +25,6 @@ export class CreatePostController extends Controller {
   constructor({
     postManager,
     AIManager,
-    replyManager,
     session,
     queue
   }: CreatePostControllerParams) {

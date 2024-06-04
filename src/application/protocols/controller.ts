@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ValidationComposite, type Validator } from '@/application/validation'
+import { type Validator, ValidationComposite } from '@/application/validation'
 
 import { BadRequest } from '../errors'
 import { ApiError } from './api-error'
@@ -22,6 +22,7 @@ export abstract class Controller {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   buildValidators(_httpRequest: any): Validator[] {
     return []
   }

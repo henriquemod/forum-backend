@@ -20,7 +20,7 @@ export class ActivationRepositoryStub implements DBActivationStub {
     return Object.assign({}, MOCK_ACTIVATION, { user: params.userId })
   }
 
-  async findByCode(code: string): Promise<ActivationModel | null> {
+  async findByCode(_code: string): Promise<ActivationModel | null> {
     return Object.assign({}, MOCK_ACTIVATION, { user: MOCK_USER })
   }
 }

@@ -17,25 +17,25 @@ export const MOCK_ACCESS_TOKEN: TokenModel = {
 }
 
 export class TokenRepositoryStub implements DBTokenStub {
-  async findByToken(accessTokenToFind: string): Promise<TokenModel | null> {
+  async findByToken(_accessTokenToFind: string): Promise<TokenModel | null> {
     return await Promise.resolve(MOCK_ACCESS_TOKEN)
   }
 
   async findByRefreshToken(
-    accessTokenToFind: string
+    _accessTokenToFind: string
   ): Promise<TokenModel | null> {
     return await Promise.resolve(MOCK_ACCESS_TOKEN)
   }
 
-  async findByUserId(userId: string): Promise<TokenModel | null> {
+  async findByUserId(_userId: string): Promise<TokenModel | null> {
     return await Promise.resolve(MOCK_ACCESS_TOKEN)
   }
 
-  async delete(accessToken: string): Promise<void> {
+  async delete(_accessToken: string): Promise<void> {
     await Promise.resolve()
   }
 
-  async add(params: DBToken.AddParams): Promise<void> {
+  async add(_params: DBToken.AddParams): Promise<void> {
     await Promise.resolve()
   }
 }

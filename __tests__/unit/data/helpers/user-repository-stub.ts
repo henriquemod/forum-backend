@@ -25,23 +25,23 @@ export const MOCK_USER = {
 export const SAFE_USER = omit(['password'], MOCK_USER)
 
 export class UserRepositoryStub implements DBUserStub {
-  async delete(id: string): Promise<void> {}
+  async delete(_id: string): Promise<void> {}
 
-  async update(params: DBUser.UpdateUserParams): Promise<void> {}
+  async update(_params: DBUser.UpdateUserParams): Promise<void> {}
 
-  async findByEmail(email: string): Promise<UserModel.Model | null> {
+  async findByEmail(_email: string): Promise<UserModel.Model | null> {
     return await Promise.resolve(MOCK_USER)
   }
 
-  async findByUsername(username: string): Promise<UserModel.Model | null> {
+  async findByUsername(_username: string): Promise<UserModel.Model | null> {
     return await Promise.resolve(MOCK_USER)
   }
 
-  async findByUserId(userId: string): Promise<UserModel.Model | null> {
+  async findByUserId(_userId: string): Promise<UserModel.Model | null> {
     return await Promise.resolve(MOCK_USER)
   }
 
-  async add(user: User.RegisterParams): Promise<UserModel.Model> {
+  async add(_user: User.RegisterParams): Promise<UserModel.Model> {
     return await Promise.resolve(MOCK_USER)
   }
 }

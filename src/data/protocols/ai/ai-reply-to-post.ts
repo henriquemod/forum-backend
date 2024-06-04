@@ -22,17 +22,6 @@ export class AIPromptReplyToPost implements AIData {
 
   constructor(private readonly prompt: Prompt.JSONFromPrompt) {}
 
-  private readonly validateReturn = (response: unknown): void => {
-    if (
-      typeof response !== 'object' ||
-      response === null ||
-      !('reply' in response) ||
-      typeof response.reply !== 'string'
-    ) {
-      throw new InternalServerError('Error on AI response')
-    }
-  }
-
   async promptReply(title: string, content: string): Promise<string> {
     const text = this.promptReplyTemplate
       .replace('@title', title)
@@ -51,5 +40,16 @@ export class AIPromptReplyToPost implements AIData {
     this.validateReturn(response.data)
 
     return response.data.reply
+  }
+
+  private readonly validateReturn = (response: unknown): void => {
+    if (
+      typeof response !== 'object' ||
+      response === null ||
+      !('reply' in response) ||
+      typeof response.reply !== 'string'
+    ) {
+      throw new InternalServerError('Error on AI response')
+    }
   }
 }

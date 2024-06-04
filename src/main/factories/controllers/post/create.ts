@@ -2,14 +2,9 @@ import type { ConnectionOptions } from 'bullmq'
 import type { ClientSession } from 'mongoose'
 
 import { CreatePostController } from '@/application/controllers/post'
-import { AIValidateContent, PostManager, ReplyManager } from '@/data/protocols'
+import { AIValidateContent, PostManager } from '@/data/protocols'
 import { OpenAI } from '@/infra/ai'
-import {
-  PostMongoRepository,
-  ReplyMongoRepository,
-  UserMongoRepository
-} from '@/infra/db/mongodb/repos'
-import { BCryptHash } from '@/infra/encryption'
+import { PostMongoRepository } from '@/infra/db/mongodb/repos'
 import { BullQMQueue } from '@/infra/queue'
 
 import { mongoSessionFactory } from '../../sessions/mongo-session'
@@ -26,19 +21,11 @@ export const makeCreatePostController = ({
   const bullQueue = new BullQMQueue(queueConnection)
   const mongoSession = mongoSessionFactory(session)
   const postRepository = new PostMongoRepository(session)
-  const replyRepository = new ReplyMongoRepository(session)
-  const userRepository = new UserMongoRepository(new BCryptHash(), session)
   const postManager = new PostManager(postRepository)
-  const replyManager = new ReplyManager(
-    replyRepository,
-    postRepository,
-    userRepository
-  )
   const aiManagement = new AIValidateContent(new OpenAI())
 
   return new CreatePostController({
     postManager,
-    replyManager,
     AIManager: aiManagement,
     session: mongoSession,
     queue: bullQueue
