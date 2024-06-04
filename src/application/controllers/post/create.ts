@@ -58,22 +58,25 @@ export class CreatePostController extends Controller {
     })
 
     if (this.queue) {
-      await this.queue.add({
-        callback: async () => {
-          const aiGeneratedReply = await this.AIManager.promptReply(
-            newPost.title,
-            newPost.content
-          )
+      await this.queue.add(
+        newPost
+        // {
+        // callback: async () => {
+        //   const aiGeneratedReply = await this.AIManager.promptReply(
+        //     newPost.title,
+        //     newPost.content
+        //   )
 
-          if (aiGeneratedReply) {
-            await this.replyManager.reply({
-              authorId: newPost.user.id,
-              content: aiGeneratedReply,
-              postId: newPost.id
-            })
-          }
-        }
-      })
+        //   if (aiGeneratedReply) {
+        //     await this.replyManager.reply({
+        //       authorId: newPost.user.id,
+        //       content: aiGeneratedReply,
+        //       postId: newPost.id
+        //     })
+        //   }
+        // }
+        // }
+      )
     }
 
     return ok(newPost)

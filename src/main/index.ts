@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { BullQMQueue } from '@/infra/queue/bullqm'
 import { makeApp } from '@/main/config/app'
 import { env } from '@/main/config/env'
 import type { RedisOptions } from 'ioredis'
@@ -11,8 +10,6 @@ const redisOptions: RedisOptions = {
 }
 
 const start = async (): Promise<void> => {
-  BullQMQueue.InitializeWorker(redisOptions)
-
   const session = await databaseInit()
   const app = makeApp({ session, queueConnection: redisOptions })
 

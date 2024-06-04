@@ -1,6 +1,7 @@
 import express from 'express'
 import { setupMiddlewares } from './middlewares'
 import { type ExtraParams, setupRoutes } from './routes'
+import { setupWorkers } from './workers'
 
 const makeApp = ({
   session,
@@ -10,6 +11,7 @@ const makeApp = ({
 
   setupMiddlewares(app)
   setupRoutes(app, { session, queueConnection })
+  setupWorkers(queueConnection)
 
   return app
 }
