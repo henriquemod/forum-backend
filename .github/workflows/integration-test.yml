@@ -32,9 +32,7 @@ jobs:
         run: bun install
 
       - name: Run integration tests with Bun
-        run: bun test:integration
-        env:
-          MONGO_PORT: 42069
+        run: MONGO_PORT=42069 bun test:integration
 
   test-node:
     runs-on: ubuntu-latest
@@ -59,6 +57,4 @@ jobs:
         run: npm install
 
       - name: Run integration tests with Node
-        run: npm run test:integration
-        env:
-          MONGO_PORT: 42069
+        run: MONGO_PORT=42069 npm run test:integration
