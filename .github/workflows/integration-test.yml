@@ -1,0 +1,90 @@
+name: Integration Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-bun:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:7.0.9
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "echo 'try { rs.status() } catch (err) { rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"localhost:27017\"}]}) }' | mongosh --port 27017 --quiet"
+          --health-interval 5s
+          --health-timeout 30s
+          --health-start-period 0s
+          --health-retries 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: docker compose up -d
+
+      - name: Wait for MongoDB to be healthy
+        run: |
+          echo "Waiting for MongoDB to be healthy..."
+          while ! docker inspect --format='{{.State.Health.Status}}' $(docker-compose ps -q mongo) | grep -q 'healthy'; do sleep 1; done
+
+      - name: Set up Bun
+        uses: Jarred-Sumner/setup-bun@v1.5
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run integration tests with Bun
+        run: bun test:integration
+
+      - name: Tear down Docker Compose
+        run: docker compose down
+
+  test-node:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:7.0.9
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "echo 'try { rs.status() } catch (err) { rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"localhost:27017\"}]}) }' | mongosh --port 27017 --quiet"
+          --health-interval 5s
+          --health-timeout 30s
+          --health-start-period 0s
+          --health-retries 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: docker compose up -d
+
+      - name: Wait for MongoDB to be healthy
+        run: |
+          echo "Waiting for MongoDB to be healthy..."
+          while ! docker inspect --format='{{.State.Health.Status}}' $(docker-compose ps -q mongo) | grep -q 'healthy'; do sleep 1; done
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run integration tests with Node
+        run: npm run test:integration
+
+      - name: Tear down Docker Compose
+        run: docker compose down
