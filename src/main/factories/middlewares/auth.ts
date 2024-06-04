@@ -8,5 +8,6 @@ export const makeAuthMiddleware = (): Middleware => {
   const tokenRepository = new TokenMongoRepository()
   const jwtManager = new JwtTokenEncryption(tokenRepository)
   const tokenValidator = new TokenManager(tokenRepository, jwtManager)
+
   return new AuthMiddleware(tokenValidator)
 }

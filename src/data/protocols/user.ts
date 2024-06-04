@@ -35,6 +35,7 @@ export class UserManager implements UserDataUsecases {
 
     if (isRequestUserMaster) {
       await this.userRepository.delete(userId)
+
       return
     }
 
@@ -44,6 +45,7 @@ export class UserManager implements UserDataUsecases {
 
     if (authenticatedUserId === userId) {
       await this.userRepository.delete(userId)
+
       return
     }
 
@@ -63,6 +65,7 @@ export class UserManager implements UserDataUsecases {
         functionToGetEntity = this.userRepository.findByUserId
         break
     }
+
     return functionToGetEntity
   }
 

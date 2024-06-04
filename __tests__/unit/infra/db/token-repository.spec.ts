@@ -12,6 +12,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   const sut = new TokenMongoRepository()
+
   return {
     sut
   }

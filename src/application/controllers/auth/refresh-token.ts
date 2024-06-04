@@ -21,6 +21,7 @@ export class RefreshTokenController extends Controller {
     }>
   > {
     const res = await this.tokenManager.refresh(accessToken)
+
     return ok({
       accessToken: res.accessToken,
       accessRefreshToken: res.accessRefreshToken

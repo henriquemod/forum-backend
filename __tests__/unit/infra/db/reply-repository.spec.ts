@@ -18,6 +18,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   const sut = new ReplyMongoRepository()
+
   return {
     sut
   }

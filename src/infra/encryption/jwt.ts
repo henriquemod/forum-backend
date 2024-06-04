@@ -13,6 +13,7 @@ export class JwtTokenEncryption implements TokenDataUsecases {
 
   async userHasToken(userId: string): Promise<boolean> {
     const token = await this.tokenRepository.findByUserId(userId)
+
     return !!token
   }
 

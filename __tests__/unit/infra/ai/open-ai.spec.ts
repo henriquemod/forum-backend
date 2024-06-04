@@ -40,6 +40,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   const sut = new OpenAI()
+
   return {
     sut
   }

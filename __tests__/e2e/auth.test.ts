@@ -11,6 +11,7 @@ import { env } from '@/main/config/env'
 jest.mock('@/main/config/env', () => {
   const MONGO_PORT = process.env.DB_PORT || '27017'
   const currentEnv = jest.requireActual('@/main/config/env')
+
   return {
     ...currentEnv,
     env: {

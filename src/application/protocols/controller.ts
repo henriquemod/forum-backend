@@ -41,6 +41,7 @@ export abstract class Controller {
       return res
     } catch (error) {
       await this.session?.abortTransaction()
+
       return ApiError.errorHandler(error)
     }
   }

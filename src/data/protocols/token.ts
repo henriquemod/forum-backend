@@ -26,16 +26,19 @@ export class TokenManager implements TokenDataUsecases {
     if (!tokenData) {
       throw new NotFound('Token not found')
     }
+
     return tokenData
   }
 
   async userHasToken(userId: string): Promise<boolean> {
     const token = await this.tokenRepository.findByUserId(userId)
+
     return !!token
   }
 
   async validate(accessToken: string): Promise<boolean> {
     const token = await this.tokenRepository.findByToken(accessToken)
+
     return !!token
   }
 

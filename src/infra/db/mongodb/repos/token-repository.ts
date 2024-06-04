@@ -51,6 +51,7 @@ export class TokenMongoRepository implements TokenDBUsecases {
 
   async findByUserId(userId: string): Promise<TokenModel | null> {
     const user = new mongoose.Types.ObjectId(userId)
+
     return await AccessTokenSchema.findOne({ user }).populate('user')
   }
 

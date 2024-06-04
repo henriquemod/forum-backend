@@ -15,6 +15,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   const sut = new ActivationMongoRepository()
+
   return {
     sut
   }
