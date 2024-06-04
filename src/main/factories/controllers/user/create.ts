@@ -2,22 +2,18 @@ import type { ClientSession } from 'mongoose'
 
 import { CreateUserController } from '@/application/controllers/user'
 import { ActivationManager, UserManager } from '@/data/protocols'
-import {
-  ActivationMongoRepository,
-  UserMongoRepository
-} from '@/infra/db/mongodb/repos'
-import { BCryptHash } from '@/infra/encryption'
+import { ActivationMongoRepository } from '@/infra/db/mongodb/repos'
 import { MailjetMailService } from '@/infra/mail'
 
+import { makeUserRepository } from '../../repositories'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeCreateUserController = (
   session?: ClientSession
 ): CreateUserController => {
-  const bCryptHashInfra = new BCryptHash()
   const mongoSession = mongoSessionFactory(session)
-  const userMongoRepository = new UserMongoRepository(bCryptHashInfra, session)
-  const userManager = new UserManager(userMongoRepository)
+  const userRepository = makeUserRepository(session)
+  const userManager = new UserManager(userRepository)
   const mailService = new MailjetMailService()
   const activationManager = new ActivationManager(
     new ActivationMongoRepository(session)

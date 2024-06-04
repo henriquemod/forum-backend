@@ -2,12 +2,9 @@ import type { ClientSession } from 'mongoose'
 
 import { DeletePostController } from '@/application/controllers/post'
 import { PostManager, UserManager } from '@/data/protocols'
-import {
-  PostMongoRepository,
-  UserMongoRepository
-} from '@/infra/db/mongodb/repos'
-import { BCryptHash } from '@/infra/encryption'
+import { PostMongoRepository } from '@/infra/db/mongodb/repos'
 
+import { makeUserRepository } from '../../repositories'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeDeletePostController = (
@@ -15,7 +12,7 @@ export const makeDeletePostController = (
 ): DeletePostController => {
   const mongoSession = mongoSessionFactory(session)
   const postRepository = new PostMongoRepository()
-  const userRepository = new UserMongoRepository(new BCryptHash())
+  const userRepository = makeUserRepository(session)
   const postManagement = new PostManager(postRepository)
   const userManager = new UserManager(userRepository)
 

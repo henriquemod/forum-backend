@@ -13,7 +13,8 @@
     "test:coverage": "jest --passWithNoTests --no-cache --runInBand --coverage ",
     "test:integration": "jest --config jest.integration.config.ts --passWithNoTests --no-cache --runInBand",
     "prepare": "husky",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "seed:mongo": "bun src/infra/db/mongodb/seeds/index.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "19.2.2",

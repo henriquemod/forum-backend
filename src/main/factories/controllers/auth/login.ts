@@ -2,12 +2,10 @@ import type { ClientSession } from 'mongoose'
 
 import { LoginController } from '@/application/controllers/auth'
 import { TokenManager, UserManager } from '@/data/protocols'
-import {
-  TokenMongoRepository,
-  UserMongoRepository
-} from '@/infra/db/mongodb/repos'
+import { TokenMongoRepository } from '@/infra/db/mongodb/repos'
 import { BCryptHash, JwtTokenEncryption } from '@/infra/encryption'
 
+import { makeUserRepository } from '../../repositories'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeLoginController = (
@@ -15,7 +13,7 @@ export const makeLoginController = (
 ): LoginController => {
   const mongoSession = mongoSessionFactory(session)
   const hash = new BCryptHash()
-  const userRepository = new UserMongoRepository(hash, session)
+  const userRepository = makeUserRepository(session)
   const tokenRepository = new TokenMongoRepository(session)
   const jwtManager = new JwtTokenEncryption(tokenRepository)
   const userManagement = new UserManager(userRepository)

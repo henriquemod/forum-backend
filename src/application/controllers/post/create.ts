@@ -2,25 +2,26 @@ import { BadRequest } from '@/application/errors'
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
-import type { AI, Post, Queue } from '@/data/usecases'
+import { type AI, type Post, Queue } from '@/data/usecases'
 import type { PostModel } from '@/domain/models'
 
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type PostManager = Post.CreatePost
 type AIManager = AI.ValidateContent
+type QueueManager = Queue.Add
 
 export interface CreatePostControllerParams {
   postManager: PostManager
   AIManager: AIManager
   session?: Session
-  queue?: Queue.Add
+  queue?: QueueManager
 }
 
 export class CreatePostController extends Controller {
   private readonly postManager: PostManager
   private readonly AIManager: AIManager
-  private readonly queue?: Queue.Add
+  private readonly queue?: QueueManager
 
   constructor({
     postManager,
@@ -54,7 +55,11 @@ export class CreatePostController extends Controller {
     })
 
     if (this.queue) {
-      await this.queue.add(newPost)
+      await this.queue.add<PostModel.Model>({
+        taskName: 'reply-to-post',
+        queueName: Queue.Name.REPLY_TO_POST,
+        content: newPost
+      })
     }
 
     return ok(newPost)

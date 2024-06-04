@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Queue as BullQueue,
   type ConnectionOptions,
@@ -13,17 +12,21 @@ export class BullQMQueue implements Queue.Add {
 
   static async InitializeWorker(
     worker: Worker,
-    onFailCallback: <T = any>(job?: Job<T>, err?: Error) => void,
-    onCompleteCallback: <T = any>(job: Job<T>) => void
+    onFailCallback: <T = unknown>(job?: Job<T>, err?: Error) => void,
+    onCompleteCallback: <T = unknown>(job: Job<T>) => void
   ): Promise<void> {
     worker.on('failed', onFailCallback)
     worker.on('completed', onCompleteCallback)
   }
 
-  async add(prompt: unknown): Promise<void> {
+  async add<T>({
+    queueName,
+    taskName,
+    content
+  }: Queue.AddParams<T>): Promise<void> {
     if (this.connection) {
-      const queue = new BullQueue('my-queue', { connection: this.connection })
-      await queue.add('ola-mundo', prompt)
+      const queue = new BullQueue(queueName, { connection: this.connection })
+      await queue.add(taskName, content)
     }
   }
 }
