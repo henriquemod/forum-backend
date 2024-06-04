@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { AIPromptReplyToPost } from '@/data/protocols'
 import { OpenAI } from '@/infra/ai'
-import { BullQMQueue } from '@/infra/queue/bullqm'
+import { BullQMQueue } from '@/infra/queue'
 import { type ConnectionOptions, Worker } from 'bullmq'
 import { makeCreateReplyController } from '../factories/controllers/reply'
 

@@ -8,7 +8,7 @@ import {
 } from '@/infra/db/mongodb/repos'
 import type { ClientSession } from 'mongoose'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
-import { BullQMQueue } from '@/infra/queue/bullqm'
+import { BullQMQueue } from '@/infra/queue'
 import type { ConnectionOptions } from 'bullmq'
 import { BCryptHash } from '@/infra/encryption'
 
