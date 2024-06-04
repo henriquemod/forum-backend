@@ -1,6 +1,6 @@
 import { adaptExpressRoute } from '@/main/adapters'
 import type { Router } from 'express'
-import type { ClientSession } from 'mongoose'
+import type { ExtraParams } from '../config/routes'
 import {
   makeCreateReplyController,
   makeDeleteReplyController,
@@ -9,7 +9,7 @@ import {
 } from '../factories/controllers/reply'
 import { auth } from '../middlewares'
 
-export default (router: Router, session: ClientSession): void => {
+export default (router: Router, { session }: ExtraParams): void => {
   router.post(
     '/reply',
     auth,

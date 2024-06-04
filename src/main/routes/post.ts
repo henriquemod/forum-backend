@@ -1,6 +1,6 @@
 import { adaptExpressRoute } from '@/main/adapters'
 import type { Router } from 'express'
-import type { ClientSession } from 'mongoose'
+import type { ExtraParams } from '../config/routes'
 import {
   makeCreatePostController,
   makeDeletePostController,
@@ -10,11 +10,12 @@ import {
 } from '../factories/controllers/post'
 import { auth } from '../middlewares'
 
-export default (router: Router, session: ClientSession): void => {
+export default (router: Router, params: ExtraParams): void => {
+  const { session, queueConnection } = params
   router.post(
     '/post',
     auth,
-    adaptExpressRoute(makeCreatePostController(session))
+    adaptExpressRoute(makeCreatePostController({ session, queueConnection }))
   )
   router.put(
     '/post',

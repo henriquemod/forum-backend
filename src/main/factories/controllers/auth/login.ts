@@ -9,7 +9,7 @@ import type { ClientSession } from 'mongoose'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeLoginController = (
-  session: ClientSession
+  session?: ClientSession
 ): LoginController => {
   const mongoSession = mongoSessionFactory(session)
   const hash = new BCryptHash()

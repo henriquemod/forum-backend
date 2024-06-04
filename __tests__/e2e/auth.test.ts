@@ -18,7 +18,7 @@ jest.mock('@/main/config/env', () => {
 })
 
 describe('Controller - Auth', () => {
-  const apiRequest: TestAgent = request(makeApp())
+  const apiRequest: TestAgent = request(makeApp({}))
   let db: typeof mongoose
 
   beforeAll(async () => {

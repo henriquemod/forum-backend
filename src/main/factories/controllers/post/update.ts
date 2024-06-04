@@ -9,7 +9,7 @@ import type { ClientSession } from 'mongoose'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeUpdatePostController = (
-  session: ClientSession
+  session?: ClientSession
 ): UpdatePostController => {
   const mongoSession = mongoSessionFactory(session)
   const postRepository = new PostMongoRepository(session)

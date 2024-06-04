@@ -6,7 +6,7 @@ import type { ClientSession } from 'mongoose'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeRefreshTokenController = (
-  session: ClientSession
+  session?: ClientSession
 ): RefreshTokenController => {
   const mongoSession = mongoSessionFactory(session)
   const tokenRepository = new TokenMongoRepository(session)

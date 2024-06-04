@@ -23,7 +23,7 @@ const user = {
 }
 
 describe('Controller - Post', () => {
-  const apiRequest = request(makeApp())
+  const apiRequest = request(makeApp({}))
   let accessToken: string
   let db: typeof mongoose
 

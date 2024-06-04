@@ -10,7 +10,7 @@ import type { ClientSession } from 'mongoose'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeDeleteReplyController = (
-  session: ClientSession
+  session?: ClientSession
 ): DeleteReplyController => {
   const mongoSession = mongoSessionFactory(session)
   const userRepository = new UserMongoRepository(new BCryptHash(), session)

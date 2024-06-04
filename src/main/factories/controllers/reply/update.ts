@@ -10,7 +10,7 @@ import type { ClientSession } from 'mongoose'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeUpdateReplyController = (
-  session: ClientSession
+  session?: ClientSession
 ): UpdateReplyController => {
   const mongoSession = mongoSessionFactory(session)
   const userRepository = new UserMongoRepository(new BCryptHash(), session)

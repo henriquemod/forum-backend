@@ -1,5 +1,6 @@
 import { adaptExpressRoute } from '@/main/adapters'
 import type { Router } from 'express'
+import type { ExtraParams } from '../config/routes'
 import {
   makeActivateUserController,
   makeLoginController,
@@ -7,9 +8,8 @@ import {
   makeRefreshTokenController
 } from '../factories/controllers/auth'
 import { auth } from '../middlewares'
-import type { ClientSession } from 'mongoose'
 
-export default (router: Router, session: ClientSession): void => {
+export default (router: Router, { session }: ExtraParams): void => {
   router.post('/login', adaptExpressRoute(makeLoginController(session)))
   router.post('/token', adaptExpressRoute(makeRefreshTokenController(session)))
   router.post(

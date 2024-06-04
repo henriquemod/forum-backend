@@ -9,7 +9,7 @@ import type { ClientSession } from 'mongoose'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeDeletePostController = (
-  session: ClientSession
+  session?: ClientSession
 ): DeletePostController => {
   const mongoSession = mongoSessionFactory(session)
   const postRepository = new PostMongoRepository()

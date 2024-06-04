@@ -1,6 +1,6 @@
 import { adaptExpressRoute } from '@/main/adapters'
 import type { Router } from 'express'
-import type { ClientSession } from 'mongoose'
+import type { ExtraParams } from '../config/routes'
 import {
   makeCreateUserController,
   makeDeleteUserController,
@@ -9,7 +9,7 @@ import {
 } from '../factories/controllers/user'
 import { auth } from '../middlewares'
 
-export default (router: Router, session: ClientSession): void => {
+export default (router: Router, { session }: ExtraParams): void => {
   router.get('/user/:id', adaptExpressRoute(makeFindUserController()))
   router.post('/user', adaptExpressRoute(makeCreateUserController(session)))
   router.post(
