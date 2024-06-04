@@ -6,12 +6,13 @@ import { isEmpty, omit } from 'ramda'
 import request from 'supertest'
 
 jest.mock('@/main/config/env', () => {
+  const MONGO_PORT = process.env.DB_PORT || '27017'
   const currentEnv = jest.requireActual('@/main/config/env')
   return {
     ...currentEnv,
     env: {
       ...currentEnv.env,
-      mongoUrl: `mongodb://127.0.0.1:27017/e2eTesting?replicaSet=rs0`
+      mongoUrl: `mongodb://127.0.0.1:${MONGO_PORT}/e2eTesting?replicaSet=rs0`
     }
   }
 })
