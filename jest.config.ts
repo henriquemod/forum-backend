@@ -21,6 +21,7 @@ const jestConfig: JestConfigWithTsJest = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/main/**',
+    '!<rootDir>/src/infra/db/mongodb/seeds/**',
     '!<rootDir>/src/**/index.ts'
   ],
   coverageDirectory: 'coverage',

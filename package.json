@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "bun dist/main/index.js",
-    "dev": "bun src/main/index.ts",
+    "dev": "bun --watch src/main/index.ts",
     "build": "tsc --build tsconfig.prod.json && tsc-alias -p tsconfig.prod.json",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts",

@@ -2,9 +2,9 @@ import { omit } from 'ramda'
 
 import { CreatePostController } from '@/application/controllers/post'
 import { ValidationComposite } from '@/application/validation'
-import type { AI, Post } from '@/data/usecases/'
+import { type AI, type Post, Queue } from '@/data/usecases/'
 
-import { AiStub, PostStub } from '../../helpers'
+import { AiStub, MOCK_POST, PostStub, QueueStub } from '../../helpers'
 
 jest.mock('@/application/validation/composite')
 
@@ -12,19 +12,27 @@ interface SutTypes {
   sut: CreatePostController
   postManager: Post.CreatePost
   aiManager: AI.ValidateContent
+  queue: Queue.Add
 }
 
-const makeSut = (): SutTypes => {
+interface SutParams {
+  queue?: boolean
+}
+
+const makeSut = (params?: SutParams): SutTypes => {
   const postManager = new PostStub()
   const aiManager = new AiStub()
+  const queue = new QueueStub()
 
   return {
     sut: new CreatePostController({
       postManager,
-      AIManager: aiManager
+      AIManager: aiManager,
+      queue: params?.queue ? queue : undefined
     }),
     postManager,
-    aiManager
+    aiManager,
+    queue
   }
 }
 
@@ -122,6 +130,22 @@ describe('Create Post Controller', () => {
       statusCode: 400,
       error:
         'Your post contains inappropriate content. Please review it and try again.'
+    })
+  })
+
+  it('should call queue.add with correct values', async () => {
+    const { sut, queue } = makeSut({
+      queue: true
+    })
+
+    const addSpy = jest.spyOn(queue, 'add')
+
+    await sut.handle(MOCK_BODY)
+
+    expect(addSpy).toHaveBeenCalledWith({
+      taskName: 'reply-to-post',
+      queueName: Queue.Name.REPLY_TO_POST,
+      content: MOCK_POST
     })
   })
 })
