@@ -1,8 +1,9 @@
+import type { ClientSession } from 'mongoose'
+import mongoose from 'mongoose'
+
 import type { AccessTokenModel, TokenModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db'
 import { AccessTokenSchema } from '@/infra/db/mongodb/schemas'
-import type { ClientSession } from 'mongoose'
-import mongoose from 'mongoose'
 
 type TokenDBUsecases = DBToken.FindTokenByToken &
   DBToken.FindTokenByUserId &
@@ -50,6 +51,7 @@ export class TokenMongoRepository implements TokenDBUsecases {
 
   async findByUserId(userId: string): Promise<TokenModel | null> {
     const user = new mongoose.Types.ObjectId(userId)
+
     return await AccessTokenSchema.findOne({ user }).populate('user')
   }
 

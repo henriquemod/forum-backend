@@ -1,3 +1,7 @@
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import mongoose from 'mongoose'
+import { pick } from 'ramda'
+
 import type { PostModel, UserModel } from '@/domain/models'
 import {
   PostMongoRepository,
@@ -5,9 +9,7 @@ import {
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
 import { PostSchema, ReplySchema, UserSchema } from '@/infra/db/mongodb/schemas'
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import mongoose from 'mongoose'
-import { pick } from 'ramda'
+
 import { MOCK_POST, MOCK_USER } from '../../data/helpers'
 
 interface SutTypes {
@@ -16,6 +18,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   const sut = new ReplyMongoRepository()
+
   return {
     sut
   }

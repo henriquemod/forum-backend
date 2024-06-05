@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import jwt from 'jsonwebtoken'
+
 import { JwtTokenEncryption } from '@/infra/encryption'
 import '@/main/config/env'
-import jwt from 'jsonwebtoken'
+
 import { UserRepositoryStub } from '../stubs'
 
 jest.mock('jsonwebtoken')

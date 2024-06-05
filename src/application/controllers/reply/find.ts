@@ -1,8 +1,9 @@
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Reply } from '@/data/usecases'
-import { type Validator, ValidationBuilder as builder } from '../../validation'
 import type { ReplyModel } from '@/domain/models'
+
+import { type Validator, ValidationBuilder as builder } from '../../validation'
 
 type ReplyManager = Reply.FindById
 

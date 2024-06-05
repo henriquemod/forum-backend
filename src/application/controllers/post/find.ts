@@ -1,6 +1,7 @@
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Post } from '@/data/usecases'
+
 import { type Validator, ValidationBuilder as builder } from '../../validation'
 
 type PostManager = Post.FindPost

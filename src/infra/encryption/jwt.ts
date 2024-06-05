@@ -1,8 +1,9 @@
+import jwt from 'jsonwebtoken'
+
 import type { Token } from '@/data/usecases/token'
 import type { UserModel } from '@/domain/models'
 import type { DBToken } from '@/domain/usecases/db'
 import { env } from '@/main/config/env'
-import jwt from 'jsonwebtoken'
 
 type TokenDBUsecases = DBToken.Delete & DBToken.FindTokenByUserId
 type TokenDataUsecases = Token.SignIn & Token.Invalidate & Token.Validate
@@ -12,6 +13,7 @@ export class JwtTokenEncryption implements TokenDataUsecases {
 
   async userHasToken(userId: string): Promise<boolean> {
     const token = await this.tokenRepository.findByUserId(userId)
+
     return !!token
   }
 

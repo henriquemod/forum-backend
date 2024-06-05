@@ -1,6 +1,7 @@
 import type { Post } from '@/data/usecases/'
-import { MOCK_USER } from './user-stub'
 import type { PostModel } from '@/domain/models'
+
+import { MOCK_USER } from './user-stub'
 
 export const MOCK_POST: PostModel.Model = {
   id: 'any_id',
@@ -19,11 +20,11 @@ export class PostStub
     Post.UpdatePost,
     Post.DeletePost
 {
-  async createPost(params: Post.CreateParams): Promise<PostModel.Model> {
+  async createPost(_params: Post.CreateParams): Promise<PostModel.Model> {
     return MOCK_POST
   }
 
-  async findPost(params: Post.FindParams): Promise<Post.FindResult> {
+  async findPost(_params: Post.FindParams): Promise<Post.FindResult> {
     return MOCK_POST
   }
 
@@ -31,7 +32,7 @@ export class PostStub
     return [MOCK_POST]
   }
 
-  async updatePost(params: Post.UpdateParams): Promise<void> {}
+  async updatePost(_params: Post.UpdateParams): Promise<void> {}
 
-  async deletePost(params: Post.DeleteParams): Promise<void> {}
+  async deletePost(_params: Post.DeleteParams): Promise<void> {}
 }

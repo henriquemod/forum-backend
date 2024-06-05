@@ -1,5 +1,6 @@
 import type { Token } from '@/data/usecases'
 import type { UserModel, AccessTokenModel, TokenModel } from '@/domain/models'
+
 import { MOCK_USER } from './user-stub'
 
 type TokenImplementation = Token.Validate &
@@ -9,7 +10,7 @@ type TokenImplementation = Token.Validate &
   Token.GetToken
 
 export class TokenStub implements TokenImplementation {
-  async getToken(token: string): Promise<TokenModel> {
+  async getToken(_token: string): Promise<TokenModel> {
     return await Promise.resolve({
       accessToken: 'any_access',
       refreshAccessToken: 'any_refresh',

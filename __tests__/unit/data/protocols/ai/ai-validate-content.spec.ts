@@ -1,19 +1,20 @@
 import { InternalServerError } from '@/application/errors'
-import { AIManager } from '@/data/protocols'
+import { AIValidateContent } from '@/data/protocols'
 import type { Prompt } from '@/domain/usecases/ai'
-import { PromptStub } from '../helpers'
 import { env } from '@/main/config/env'
+
+import { ValidatePromptStub } from '../../helpers'
 
 jest.mock('@/main/config/env')
 
 interface SutTypes {
-  sut: AIManager
+  sut: AIValidateContent
   promptStub: Prompt.JSONFromPrompt
 }
 
 const makeSut = (): SutTypes => {
-  const promptStub = new PromptStub()
-  const sut = new AIManager(promptStub)
+  const promptStub = new ValidatePromptStub()
+  const sut = new AIValidateContent(promptStub)
 
   return {
     sut,
@@ -21,7 +22,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('AIManager', () => {
+describe('AIValidateContent', () => {
   beforeEach(() => {
     env.features.aiAcceptanceLevel = 7
   })

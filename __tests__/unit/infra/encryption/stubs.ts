@@ -7,11 +7,11 @@ type UserRepository = DBToken.Delete &
   DBToken.FindTokenByUserId
 
 export class UserRepositoryStub implements UserRepository {
-  async delete(accessToken: string): Promise<void> {
+  async delete(_accessToken: string): Promise<void> {
     await Promise.resolve()
   }
 
-  async findByToken(accessTokenToFind: string): Promise<TokenModel | null> {
+  async findByToken(_accessTokenToFind: string): Promise<TokenModel | null> {
     return await Promise.resolve({
       invalid: false,
       refreshAccessToken: 'any_refresh',
@@ -30,7 +30,7 @@ export class UserRepositoryStub implements UserRepository {
   }
 
   async findByRefreshToken(
-    accessTokenToFind: string
+    _accessTokenToFind: string
   ): Promise<TokenModel | null> {
     return await Promise.resolve({
       invalid: false,
@@ -49,7 +49,7 @@ export class UserRepositoryStub implements UserRepository {
     })
   }
 
-  async findByUserId(userId: string): Promise<TokenModel | null> {
+  async findByUserId(_userId: string): Promise<TokenModel | null> {
     return await Promise.resolve({
       invalid: false,
       refreshAccessToken: 'any_refresh',

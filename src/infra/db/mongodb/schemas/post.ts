@@ -1,5 +1,6 @@
-import type { PostModel } from '@/domain/models'
 import mongoose, { Schema } from 'mongoose'
+
+import type { PostModel } from '@/domain/models'
 
 export const postSchema = new mongoose.Schema<PostModel.Model>({
   title: {

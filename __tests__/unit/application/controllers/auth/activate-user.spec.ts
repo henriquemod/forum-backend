@@ -2,6 +2,7 @@ import { ActivateUserController } from '@/application/controllers/auth'
 import { NotFound } from '@/application/errors'
 import { ValidationComposite } from '@/application/validation'
 import type { Activation, User } from '@/data/usecases/'
+
 import { ActivationStub, UserStub } from '../../helpers'
 
 jest.mock('@/application/validation/composite')

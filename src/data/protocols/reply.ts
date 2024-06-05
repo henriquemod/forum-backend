@@ -73,6 +73,7 @@ export class ReplyManager
       user.level === UserModel.Level.MASTER
     ) {
       await this.replyRepository.delete(replyId)
+
       return
     }
 

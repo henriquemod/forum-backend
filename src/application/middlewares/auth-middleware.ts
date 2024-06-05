@@ -1,5 +1,7 @@
-import type { Token } from '@/data/usecases'
 import type { Request } from 'express'
+
+import type { Token } from '@/data/usecases'
+
 import { BadRequest, Forbidden } from '../errors'
 import { badRequest, ok, unauthorized, type Middleware } from '../protocols'
 import { ApiError } from '../protocols/api-error'

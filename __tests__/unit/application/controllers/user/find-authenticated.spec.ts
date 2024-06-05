@@ -1,4 +1,5 @@
 import { FindAuthenticatedUserController } from '@/application/controllers/user'
+
 import { MOCK_USER, UserStub } from '../../helpers'
 
 interface SutTypes {

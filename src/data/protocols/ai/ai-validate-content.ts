@@ -8,7 +8,7 @@ interface JsonResponse {
   level: number
 }
 
-export class AIManager implements AIData {
+export class AIValidateContent implements AIData {
   private readonly promptLevel: number = env.features.aiAcceptanceLevel
   private readonly promptTemplate =
     'Imagine you are an API system tasked with evaluating the acceptability level (ranging from 1 to 10) of a given text title and content. ' +
@@ -19,17 +19,6 @@ export class AIManager implements AIData {
     "title: '@title', \ncontent: '@content' \nKindly provide your assessment based on the aforementioned criteria."
 
   constructor(private readonly prompt: Prompt.JSONFromPrompt) {}
-
-  private readonly validateReturn = (response: unknown): void => {
-    if (
-      typeof response !== 'object' ||
-      response === null ||
-      !('level' in response) ||
-      typeof response.level !== 'number'
-    ) {
-      throw new InternalServerError('Error on AI response')
-    }
-  }
 
   async validateContent(title: string, content: string): Promise<boolean> {
     const text = this.promptTemplate
@@ -49,5 +38,16 @@ export class AIManager implements AIData {
     this.validateReturn(response.data)
 
     return response.data.level >= this.promptLevel
+  }
+
+  private readonly validateReturn = (response: unknown): void => {
+    if (
+      typeof response !== 'object' ||
+      response === null ||
+      !('level' in response) ||
+      typeof response.level !== 'number'
+    ) {
+      throw new InternalServerError('Error on AI response')
+    }
   }
 }

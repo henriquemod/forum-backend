@@ -1,5 +1,6 @@
-import type { TokenModel } from '@/domain/models'
 import mongoose, { Schema } from 'mongoose'
+
+import type { TokenModel } from '@/domain/models'
 
 export const accessTokenSchema = new mongoose.Schema<TokenModel>({
   accessToken: { type: String, required: true },

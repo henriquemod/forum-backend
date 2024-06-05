@@ -1,8 +1,9 @@
 import { UpdatePostController } from '@/application/controllers/post'
 import { ValidationComposite } from '@/application/validation'
 import type { Post, User } from '@/data/usecases/'
-import { MOCK_POST, MOCK_USER, PostStub, UserStub } from '../../helpers'
 import { UserModel } from '@/domain/models'
+
+import { MOCK_POST, MOCK_USER, PostStub, UserStub } from '../../helpers'
 
 jest.mock('@/application/validation/composite')
 

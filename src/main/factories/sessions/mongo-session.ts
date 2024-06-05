@@ -1,5 +1,6 @@
-import type { Session } from '@/application/protocols/session'
 import type { ClientSession } from 'mongoose'
+
+import type { Session } from '@/application/protocols/session'
 
 export const mongoSessionFactory = (nativeSession?: ClientSession): Session => {
   return {

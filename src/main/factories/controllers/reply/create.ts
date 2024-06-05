@@ -1,19 +1,20 @@
+import type { ClientSession } from 'mongoose'
+
 import { CreateReplyController } from '@/application/controllers/reply'
 import { ReplyManager } from '@/data/protocols'
 import {
   PostMongoRepository,
-  ReplyMongoRepository,
-  UserMongoRepository
+  ReplyMongoRepository
 } from '@/infra/db/mongodb/repos'
-import { BCryptHash } from '@/infra/encryption'
-import type { ClientSession } from 'mongoose'
+
+import { makeUserRepository } from '../../repositories'
 import { mongoSessionFactory } from '../../sessions/mongo-session'
 
 export const makeCreateReplyController = (
-  session: ClientSession
+  session?: ClientSession
 ): CreateReplyController => {
   const mongoSession = mongoSessionFactory(session)
-  const userRepository = new UserMongoRepository(new BCryptHash(), session)
+  const userRepository = makeUserRepository(session)
   const replyRepository = new ReplyMongoRepository(session)
   const postRepository = new PostMongoRepository(session)
   const replyManager = new ReplyManager(

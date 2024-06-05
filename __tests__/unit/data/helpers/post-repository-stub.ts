@@ -1,5 +1,6 @@
 import type { PostModel } from '@/domain/models'
 import type { DBPost } from '@/domain/usecases/db'
+
 import { MOCK_USER } from './user-repository-stub'
 
 export const MOCK_POST: PostModel.Model = {
@@ -18,7 +19,7 @@ export type DBPostStub = DBPost.Create &
   DBPost.Update
 
 export class PostRepositoryStub implements DBPostStub {
-  async create(params: DBPost.AddParams): Promise<PostModel.Model> {
+  async create(_params: DBPost.AddParams): Promise<PostModel.Model> {
     return await Promise.resolve(MOCK_POST)
   }
 
@@ -26,11 +27,11 @@ export class PostRepositoryStub implements DBPostStub {
     return await Promise.resolve([MOCK_POST])
   }
 
-  async findById(id: string): Promise<PostModel.Model | null> {
+  async findById(_id: string): Promise<PostModel.Model | null> {
     return await Promise.resolve(MOCK_POST)
   }
 
-  async delete(id: string): Promise<void> {}
+  async delete(_id: string): Promise<void> {}
 
-  async update(params: DBPost.UpdateParams): Promise<void> {}
+  async update(_params: DBPost.UpdateParams): Promise<void> {}
 }

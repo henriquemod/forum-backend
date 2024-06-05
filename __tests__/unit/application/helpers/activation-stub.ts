@@ -1,5 +1,6 @@
 import type { Activation } from '@/data/usecases'
 import type { UserModel } from '@/domain/models'
+
 import { MOCK_USER } from './user-stub'
 
 export class ActivationStub
@@ -7,7 +8,7 @@ export class ActivationStub
     Activation.CreateActivationCode,
     Activation.GetUserByActivationCode
 {
-  async getUser(code: string): Promise<UserModel.Model> {
+  async getUser(_code: string): Promise<UserModel.Model> {
     return MOCK_USER
   }
 

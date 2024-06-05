@@ -1,8 +1,9 @@
 import { Controller, ok } from '@/application/protocols'
 import type { HttpResponse } from '@/application/protocols/http/responses'
-import type { Authentication, Mail, User, Activation } from '@/data/usecases'
-import { ValidationBuilder as builder, type Validator } from '../../validation'
 import type { Session } from '@/application/protocols/session'
+import type { Authentication, Mail, User, Activation } from '@/data/usecases'
+
+import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type UserManager = User.Register
 type MailService = Mail.SendActivationMail

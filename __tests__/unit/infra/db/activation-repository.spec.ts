@@ -1,8 +1,10 @@
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import mongoose from 'mongoose'
+
 import type { UserModel } from '@/domain/models'
 import { ActivationMongoRepository } from '@/infra/db/mongodb/repos/activation-repository'
 import { ActivationSchema, UserSchema } from '@/infra/db/mongodb/schemas'
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import mongoose from 'mongoose'
+
 import { MOCK_USER } from '../../data/helpers'
 
 const MOCK_USER_ID = '123456789012345678901234'
@@ -13,6 +15,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   const sut = new ActivationMongoRepository()
+
   return {
     sut
   }

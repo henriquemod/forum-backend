@@ -1,5 +1,6 @@
-import { UserModel } from '@/domain/models'
 import mongoose from 'mongoose'
+
+import { UserModel } from '@/domain/models'
 
 export const userSchema = new mongoose.Schema<UserModel.Model>({
   username: { type: String, required: true, unique: true },

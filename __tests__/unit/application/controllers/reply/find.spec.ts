@@ -1,8 +1,9 @@
 import { FindReplyController } from '@/application/controllers/reply'
-import type { Reply } from '@/data/usecases/'
-import { ReplyStub } from '../../helpers'
 import { ValidationComposite } from '@/application/validation'
+import type { Reply } from '@/data/usecases/'
+
 import { MOCK_REPLY } from '../../../data/helpers'
+import { ReplyStub } from '../../helpers'
 
 jest.mock('@/application/validation/composite')
 

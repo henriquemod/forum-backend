@@ -35,6 +35,7 @@ export class UserManager implements UserDataUsecases {
 
     if (isRequestUserMaster) {
       await this.userRepository.delete(userId)
+
       return
     }
 
@@ -44,6 +45,7 @@ export class UserManager implements UserDataUsecases {
 
     if (authenticatedUserId === userId) {
       await this.userRepository.delete(userId)
+
       return
     }
 
@@ -63,6 +65,7 @@ export class UserManager implements UserDataUsecases {
         functionToGetEntity = this.userRepository.findByUserId
         break
     }
+
     return functionToGetEntity
   }
 
@@ -106,23 +109,6 @@ export class UserManager implements UserDataUsecases {
     return createdUser
   }
 
-  private assertUserType<T extends User.GetUserParams>(
-    user: UserModel.Model | UserModel.SafeModel,
-    params: T
-  ): asserts user is T['safe'] extends true
-    ? UserModel.SafeModel
-    : UserModel.Model {
-    if (params.safe) {
-      if ('password' in user) {
-        throw new InternalServerError('Expected SafeModel but got Model')
-      }
-    } else {
-      if (!('password' in user)) {
-        throw new InternalServerError('Expected Model but got SafeModel')
-      }
-    }
-  }
-
   async getUser<T extends User.GetUserParams>({
     value,
     origin = 'username',
@@ -140,5 +126,22 @@ export class UserManager implements UserDataUsecases {
     this.assertUserType(user, { value, origin, safe })
 
     return user
+  }
+
+  private assertUserType<T extends User.GetUserParams>(
+    user: UserModel.Model | UserModel.SafeModel,
+    params: T
+  ): asserts user is T['safe'] extends true
+    ? UserModel.SafeModel
+    : UserModel.Model {
+    if (params.safe) {
+      if ('password' in user) {
+        throw new InternalServerError('Expected SafeModel but got Model')
+      }
+    } else {
+      if (!('password' in user)) {
+        throw new InternalServerError('Expected Model but got SafeModel')
+      }
+    }
   }
 }

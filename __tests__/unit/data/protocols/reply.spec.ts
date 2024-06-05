@@ -1,9 +1,11 @@
-import { ReplyManager } from '@/data/protocols'
 import {
   InternalServerError,
   NotFound,
   Unauthorized
 } from '@/application/errors'
+import { ReplyManager } from '@/data/protocols'
+import { UserModel } from '@/domain/models'
+
 import {
   type DBReplyStub,
   type DBPostStub,
@@ -15,7 +17,6 @@ import {
   PostRepositoryStub,
   UserRepositoryStub
 } from '../helpers'
-import { UserModel } from '@/domain/models'
 
 interface SutTypes {
   sut: ReplyManager

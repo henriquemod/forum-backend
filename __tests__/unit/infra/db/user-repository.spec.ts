@@ -1,11 +1,12 @@
-import type { Hash } from '@/data/usecases'
-import { UserMongoRepository } from '@/infra/db/mongodb/repos/user-repository'
-import { UserSchema } from '@/infra/db/mongodb/schemas'
 import { ObjectId } from 'mongodb'
-import { UserModel } from '@/domain/models'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 import { omit } from 'ramda'
+
+import type { Hash } from '@/data/usecases'
+import { UserModel } from '@/domain/models'
+import { UserMongoRepository } from '@/infra/db/mongodb/repos/user-repository'
+import { UserSchema } from '@/infra/db/mongodb/schemas'
 
 const MOCK_USER_ID = '123456789012345678901234'
 
@@ -213,6 +214,23 @@ describe('UserMongoRepository', () => {
       const result = await sut.findByUsername('testuser')
 
       expect(result).toEqual(expect.objectContaining(omit(['password'], user)))
+      expect(result && 'password' in result).toBeFalsy()
+    })
+
+    it('should return the user with hashed password if safe is false', async () => {
+      const { sut } = makeSut()
+
+      const user = {
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'password'
+      }
+
+      await UserSchema.create(user)
+
+      const result = await sut.findByUsername('testuser', false)
+
+      expect(result).toEqual(expect.objectContaining(user))
     })
   })
 

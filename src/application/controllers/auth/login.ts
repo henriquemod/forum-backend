@@ -4,6 +4,7 @@ import type { HttpResponse } from '@/application/protocols/http/responses'
 import type { Session } from '@/application/protocols/session'
 import type { Authentication, Token, User } from '@/data/usecases'
 import type { Hash } from '@/data/usecases/encryption'
+
 import { ValidationBuilder as builder, type Validator } from '../../validation'
 
 type UserManager = User.Get

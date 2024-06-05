@@ -1,5 +1,6 @@
 import { CreateUserController } from '@/application/controllers/user'
 import type { User } from '@/data/usecases/'
+
 import { ActivationStub, MailServiceStub, UserStub } from '../../helpers'
 
 interface SutTypes {

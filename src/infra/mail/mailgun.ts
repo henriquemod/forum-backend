@@ -1,10 +1,11 @@
-import type { Mail } from '@/data/usecases'
 import Mailgun from 'mailgun.js'
+
+import type { Mail } from '@/data/usecases'
 
 export class MailgunMailService implements Mail.SendActivationMail {
   private readonly mailgun: Mailgun = new Mailgun(FormData)
 
-  async sendActivationMail(email: string): Promise<void> {
+  async sendActivationMail(_email: string): Promise<void> {
     const mg = this.mailgun.client({
       username: 'api',
       key:

@@ -1,5 +1,6 @@
-import type { ReplyModel } from '@/domain/models'
 import mongoose, { Schema } from 'mongoose'
+
+import type { ReplyModel } from '@/domain/models'
 
 export const replySchema = new mongoose.Schema<ReplyModel.Model>({
   content: {

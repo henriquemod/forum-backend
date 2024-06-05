@@ -1,3 +1,6 @@
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import mongoose from 'mongoose'
+
 import type { UserModel } from '@/domain/models'
 import {
   PostMongoRepository,
@@ -5,8 +8,7 @@ import {
   UserMongoRepository
 } from '@/infra/db/mongodb/repos'
 import { PostSchema } from '@/infra/db/mongodb/schemas'
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import mongoose from 'mongoose'
+
 import { HashStub } from '../../application/helpers'
 import { MOCK_USER } from '../../data/helpers'
 

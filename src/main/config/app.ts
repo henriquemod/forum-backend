@@ -1,13 +1,18 @@
 import express from 'express'
-import { setupMiddlewares } from './middlewares'
-import { setupRoutes } from './routes'
-import type { ClientSession } from 'mongoose'
 
-const makeApp = (session?: ClientSession): express.Express => {
+import { setupMiddlewares } from './middlewares'
+import { type ExtraParams, setupRoutes } from './routes'
+import { setupWorkers } from './workers'
+
+const makeApp = ({
+  session,
+  queueConnection
+}: ExtraParams): express.Express => {
   const app = express()
 
   setupMiddlewares(app)
-  setupRoutes(app, session)
+  setupRoutes(app, { session, queueConnection })
+  setupWorkers(queueConnection)
 
   return app
 }

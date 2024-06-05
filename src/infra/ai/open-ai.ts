@@ -1,6 +1,7 @@
+import OpenAIModule from 'openai'
+
 import type { Prompt } from '@/domain/usecases/ai'
 import { env } from '@/main/config/env'
-import OpenAIModule from 'openai'
 
 export class OpenAI implements Prompt.JSONFromPrompt {
   private readonly openAi?: OpenAIModule

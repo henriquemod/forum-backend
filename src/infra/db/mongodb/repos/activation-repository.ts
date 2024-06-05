@@ -1,9 +1,10 @@
-import type { ActivationModel } from '@/domain/models'
-import type { DBActivation } from '@/domain/usecases/db'
-import { ActivationSchema } from '@/infra/db/mongodb/schemas'
 import type { ClientSession } from 'mongoose'
 import mongoose from 'mongoose'
 import { v4 as uuidv4 } from 'uuid'
+
+import type { ActivationModel } from '@/domain/models'
+import type { DBActivation } from '@/domain/usecases/db'
+import { ActivationSchema } from '@/infra/db/mongodb/schemas'
 
 type ActivationDBUsecases = DBActivation.FindByCode & DBActivation.Create
 

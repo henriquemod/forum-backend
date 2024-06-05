@@ -18,6 +18,7 @@ export class ValidationBuilder {
     this.validators.push(
       new RequiredStringValidator(this.value, this.fieldName)
     )
+
     return this
   }
 

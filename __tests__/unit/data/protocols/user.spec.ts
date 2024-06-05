@@ -1,13 +1,15 @@
+import { omit } from 'ramda'
+
 import { BadRequest, InternalServerError } from '@/application/errors'
 import { UserManager } from '@/data/protocols'
 import { UserModel } from '@/domain/models'
+
 import {
   type DBUserStub,
   MOCK_USER,
   SAFE_USER,
   UserRepositoryStub
 } from '../helpers'
-import { omit } from 'ramda'
 
 const MOCK_REGULAR_USER = MOCK_USER
 const MOCK_ADMIN_USER = {
