@@ -6,7 +6,7 @@ import { join } from 'path'
 
 export interface ExtraParams {
   session?: ClientSession
-  queueConnection?: ConnectionOptions
+  queueConnection: ConnectionOptions
 }
 
 export const setupRoutes = (app: Express, params: ExtraParams): void => {

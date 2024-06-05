@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 
+import { Redis } from 'ioredis'
 import mongoose from 'mongoose'
 import { isEmpty, omit } from 'ramda'
 import request from 'supertest'
@@ -22,10 +23,21 @@ jest.mock('@/main/config/env', () => {
 })
 
 describe('Controller - Auth', () => {
-  const apiRequest: TestAgent = request(makeApp({}))
+  let apiRequest: TestAgent
+  let redis: Redis
   let db: typeof mongoose
 
   beforeAll(async () => {
+    redis = new Redis({
+      host: 'localhost',
+      port: 6379,
+      maxRetriesPerRequest: null
+    })
+    apiRequest = request(
+      makeApp({
+        queueConnection: redis
+      })
+    )
     db = await mongoose.connect(env.mongoUrl)
   })
 
@@ -36,6 +48,7 @@ describe('Controller - Auth', () => {
   afterAll(async () => {
     await db.connection.dropDatabase()
     await mongoose.disconnect()
+    await redis.quit()
     jest.clearAllMocks()
   })
 

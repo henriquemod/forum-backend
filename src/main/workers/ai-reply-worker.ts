@@ -43,7 +43,11 @@ export default (connection: ConnectionOptions): void => {
       console.error(`Job ${job?.id} failed with error: ${err?.message}`)
     },
     (job) => {
-      console.log(`Job ${job.id} completed`)
+      if (process.env.NODE_ENV === 'test') {
+        worker.close()
+      } else {
+        console.log(`Job ${job.id} completed`)
+      }
     }
   )
 }
