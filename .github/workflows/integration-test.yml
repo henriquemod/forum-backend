@@ -32,6 +32,7 @@ jobs:
         run: bun test:integration
         env:
           DB_PORT: 42069
+          NODE_ENV: test
 
   test-node:
     runs-on: ubuntu-latest
@@ -59,3 +60,4 @@ jobs:
         run: npm run test:integration
         env:
           DB_PORT: 42069
+          NODE_ENV: test
