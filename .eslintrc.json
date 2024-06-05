@@ -5,8 +5,7 @@
     "prettier"
   ],
   "plugins": [
-    "prettier",
-    "unused-imports"
+    "prettier"
   ],
   "parserOptions": {
     "project": "./tsconfig.json"
@@ -35,16 +34,6 @@
       "error",
       { "blankLine": "always", "prev": "function", "next": "*" },
       { "blankLine": "always", "prev": "*", "next": "return" }
-    ],
-    "unused-imports/no-unused-imports": "error",
-    "unused-imports/no-unused-vars": [
-      "warn",
-      {
-        "vars": "all",
-        "varsIgnorePattern": "^_",
-        "args": "after-used",
-        "argsIgnorePattern": "^_"
-      }
     ],
     "@typescript-eslint/member-ordering": [
       "error",
