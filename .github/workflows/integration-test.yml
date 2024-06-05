@@ -20,6 +20,11 @@ jobs:
           mongodb-replica-set: rs0
           mongodb-port: 42069
 
+      - uses: zhulik/redis-action@1.1.0
+        with:
+          redis version: '7'
+          number of databases: 10
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v1
         with:
@@ -32,7 +37,6 @@ jobs:
         run: bun test:integration
         env:
           DB_PORT: 42069
-          NODE_ENV: test
 
   test-node:
     runs-on: ubuntu-latest
@@ -48,6 +52,11 @@ jobs:
           mongodb-replica-set: rs0
           mongodb-port: 42069
 
+      - uses: zhulik/redis-action@1.1.0
+        with:
+          redis version: '7'
+          number of databases: 10
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -60,4 +69,3 @@ jobs:
         run: npm run test:integration
         env:
           DB_PORT: 42069
-          NODE_ENV: test
