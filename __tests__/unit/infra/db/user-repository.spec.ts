@@ -214,6 +214,23 @@ describe('UserMongoRepository', () => {
       const result = await sut.findByUsername('testuser')
 
       expect(result).toEqual(expect.objectContaining(omit(['password'], user)))
+      expect(result && 'password' in result).toBeFalsy()
+    })
+
+    it('should return the user with hashed password if safe is false', async () => {
+      const { sut } = makeSut()
+
+      const user = {
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'password'
+      }
+
+      await UserSchema.create(user)
+
+      const result = await sut.findByUsername('testuser', false)
+
+      expect(result).toEqual(expect.objectContaining(user))
     })
   })
 
