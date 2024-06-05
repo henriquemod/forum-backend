@@ -31,6 +31,8 @@
     "@types/jsonwebtoken": "9.0.6",
     "@types/ramda": "0.30.0",
     "@types/supertest": "6.0.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "@types/uuid": "9.0.8",
     "dotenv": "^16.4.5",
     "eslint": "8.57.0",
@@ -63,6 +65,8 @@
     "node-mailjet": "6.0.5",
     "openai": "4.47.1",
     "ramda": "0.30.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "9.0.1"
   },
   "husky": {
