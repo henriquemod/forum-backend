@@ -1,5 +1,5 @@
-import { authPath } from './paths/'
+import { userPath } from './paths/'
 
 export default {
-  '/user': authPath
+  '/user': userPath
 }

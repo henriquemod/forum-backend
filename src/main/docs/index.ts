@@ -26,13 +26,13 @@ export default {
   ],
   tags: [
     {
-      name: 'Login',
-      description: 'APIs relacionadas a Login'
-    },
-    {
-      name: 'Post',
-      description: 'APIs relacionadas a Postagem'
+      name: 'User',
+      description: 'APIs relacionadas a Usuário'
     }
+    // {
+    //   name: 'Post',
+    //   description: 'APIs relacionadas a Postagem'
+    // }
   ],
   paths,
   schemas,

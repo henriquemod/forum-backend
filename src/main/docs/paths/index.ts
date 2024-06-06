@@ -1,1 +1,1 @@
-export * from './auth-path'
+export * from './user-path'
